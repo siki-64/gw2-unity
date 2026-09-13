@@ -379,6 +379,9 @@ MonoBehaviour:
   highQualityFiltering:
     m_OverrideState: 1
     m_Value: 0
+  filter:
+    m_OverrideState: 1
+    m_Value: 0
   downscale:
     m_OverrideState: 1
     m_Value: 0
@@ -529,7 +532,7 @@ MonoBehaviour:
   resolution:
     m_OverrideState: 1
     m_Value: 4
-  chromaticAberrationIntensity:
+  chromaticAbberationIntensity:
     m_OverrideState: 1
     m_Value: 0.5
 --- !u!114 &1052315754049611418
