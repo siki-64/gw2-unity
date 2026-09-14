@@ -115,7 +115,7 @@ Compound, model, and mode-2 decal families have direct behavior/source evidence.
 Mode 2 is `EfCliEffectDecal`: its constructor's vtable points to destruction and
 placement routines asserting `EfCliEffectDecal.cpp`. Its runtime emits a separate
 map decal; it is not the persistent ground-targeting model. See
-[`skill-outlines.md`](skill-outlines.md). Audio, material, post-process, and
+Ground-targeting outline geometry is outside the scope of these findings. Audio, material, post-process, and
 camera-shake associations remain hypotheses rather than compiled enum names.
 
 ## Model-family transform (types 4, 6, 10)

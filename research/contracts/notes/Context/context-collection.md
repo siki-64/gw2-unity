@@ -178,11 +178,11 @@ The exhaustive slot/offset layout is owned by
 [`ContextCollection.cs`](../../Gw2.Contracts/Context/ContextCollection.cs). This note records only
 relationships needed to explain behavior.
 
-`Gw2.Core` resolves the TLS-scoped `ContextCollection` anchor once during process initialization. It
-validates the Native `ContextCollection.ChCliContext` field at `+0x98` and publishes only the root to
+The runtime resolves the TLS-scoped `ContextCollection` anchor once during process initialization. It
+validates the `ContextCollection.ChCliContext` field at `+0x98` and publishes only the root to
 the shared runtime features. The startup resolver may retry while the game is constructing its world
-payloads, but consumers do not rediscover the collection while reading state. Core never scans payload
-slots and never chooses a relationship from a shallow runtime shape; if the Native `+0x98` contract is
+payloads, but consumers do not rediscover the collection while reading state. The runtime never scans
+payload slots and never chooses a relationship from a shallow runtime shape; if the `+0x98` contract is
 not valid after startup resolution, context-backed features publish no data. All downstream access
 walks from that anchor through Native intra-object offsets; no image-relative function or vtable
 address is required.

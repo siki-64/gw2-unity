@@ -10,17 +10,20 @@ native contracts, and reusable analysis scripts.
 
 - **Ghidra project**: functions, symbols, namespaces/classes, signatures, data types, enums, comments,
   bookmarks, xrefs, and build-specific analysis state.
-- **`src/Gw2.Native/`**: confirmed reconstructed layouts, enums, identifiers, and native access
-  contracts suitable for compiled code.
-- **`re/notes/`**: durable evidence, reasoning, negative findings, and subsystem behavior.
-- **`re/scratch/`**: provisional observations that are not yet ready for durable notes.
-- **`re/ghidra/scripts/`**: deterministic Ghidra maintenance and analysis scripts when a maintained
-  script is needed; it currently contains only its repository guidance.
-- **`src/Gw2.Discovery/`**: reusable runtime/offline locators that must work independently of the local
-  Ghidra database.
+- **Reconstructed contract layer**: confirmed reconstructed layouts, enums, identifiers, and native
+  access contracts suitable for compiled code. These findings are published as
+  [`../Gw2.Contracts/`](../Gw2.Contracts/).
+- **Durable notes**: evidence, reasoning, negative findings, and subsystem behavior. These findings are
+  published as [`../notes/`](../notes/).
+- **Scratch work**: provisional observations that are not yet ready for durable notes. Scratch material
+  is not part of these findings.
+- **Ghidra scripts**: deterministic Ghidra maintenance and analysis scripts when a maintained script is
+  needed.
+- **Reusable locators**: runtime/offline locators that must work independently of the local Ghidra
+  database.
 
-There is no manually maintained TOML symbol catalog or build-address cache. The old `re/symbols/`
-maps were retired after migration into Ghidra.
+There is no manually maintained symbol catalog or build-address cache. Any earlier flat symbol maps were
+retired once their content moved into Ghidra.
 
 ## Naming
 
@@ -60,7 +63,7 @@ A productive loop is:
 
 ```text
 Ghidra/MCP navigation -> decompiler hypothesis -> opcode validation -> live validation when needed
-                     -> Gw2.Native / notes -> tests
+                     -> reconstructed contracts / notes -> tests
 ```
 
 Keep Ghidra writes conservative during exploration. Semantic renames and types may be useful locally, but
@@ -79,17 +82,17 @@ Ghidra investigation
     v
 evidence + validation
     |
-    +--> re/notes/
+    +--> durable notes
     |
     v
-Gw2.Native reconstruction
+reconstructed contract layer
     |
     v
 tests
 ```
 
-Ghidra may contain hypotheses and partially reconstructed types. `Gw2.Native` should contain only
-facts that are sufficiently confirmed for a compiled native contract.
+Ghidra may contain hypotheses and partially reconstructed types. The reconstructed contract layer
+should contain only facts that are sufficiently confirmed for a compiled native contract.
 
 ## Build changes
 
@@ -99,24 +102,16 @@ When the game updates:
 2. use Ghidra Version Tracking and structural evidence to transfer or re-find known identities;
 3. revalidate important symbols, signatures, layouts, constants, and call relationships;
 4. keep unmatched identities unresolved rather than borrowing an old address;
-5. update durable notes and `Gw2.Native` only after the new-build evidence supports them.
+5. update durable notes and the reconstructed contract layer only after the new-build evidence
+   supports them.
 
 Absolute VAs are useful local coordinates inside one analyzed build, not durable cross-build identities.
 
 ## Repository policy
 
-The local Ghidra project is ignored by Git:
+The local Ghidra project is ignored by Git: its project file, `.rep` database, `.gbf` database
+exports, and the original game executable are never committed. This repository carries no Ghidra
+project and no game binary at all; it holds only reusable scripts and human-readable notes.
 
-```text
-re/ghidra/*.gpr
-re/ghidra/*.rep/
-/re/**/*.gbf
-/re/**/gw2-64.exe
-```
-
-Do not commit `.gbf` database files or the original game executable. Commit reusable scripts and
-human-readable notes instead.
-
-Historical unresolved entries from the retired symbol catalog are quarantined in
-[`../notes/migration/unresolved-legacy-symbols.md`](../notes/migration/unresolved-legacy-symbols.md).
-They are leads only and must be re-proved against the active binary before promotion.
+Historical unresolved entries from retired flat symbol catalogs are leads only, and are not reproduced
+here. Any such entry must be re-proved against the active binary before promotion.

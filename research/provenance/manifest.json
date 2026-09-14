@@ -6,15 +6,14 @@
     "importedAtUtc":  "2026-09-14T07:19:16.1649434Z",
     "classification":  "reference-only; not registered wire contracts",
     "buildScope":  "Per source file; do not infer current server compatibility",
-    "note":  "Provenance record. Paths were regrouped into research/contracts and research/data; this file is not an in-place integrity check for the current layout. sha256 values are of the files as they exist in this repository. Deliberate deviations from the unmodified source:   1. Files with namespaceRenamed=true had their declaration namespace normalized (Gw2.Native -\u003e Gw2.Contracts, Gw2.Core.Dat -\u003e Gw2.Dat).   2. Files with refsNormalized=true had internal cross-references normalized to this repository layout: relative links now resolve here, and references to the upstream project layout or to projects not included in these findings were rewritten. Evidence content and findings are unchanged.   3. research/data/Gw2.Dat.Tests/Gw2.Dat.Tests.csproj has an amended ProjectReference to ../Gw2.Dat/Gw2.Dat.csproj. Files excluded from these findings have been kept out deliberately. 4. research/data/Directory.Packages.props had an unused Iced version pin removed; no project referenced it.",
+    "note":  "Provenance record. Paths were regrouped into research/contracts and research/data; this file is not an in-place integrity check for the current layout. sha256 values are of the files as they exist in this repository. Deliberate deviations from the unmodified source:   1. Files with namespaceRenamed=true had their declaration namespace normalized (Gw2.Native -\u003e Gw2.Contracts, Gw2.Core.Dat -\u003e Gw2.Dat).   2. Files with refsNormalized=true had internal cross-references normalized to this repository layout: relative links now resolve here, and references to the upstream project layout or to projects not included in these findings were rewritten. Evidence content and findings are unchanged.   3. research/data/Gw2.Dat.Tests/Gw2.Dat.Tests.csproj has an amended ProjectReference to ../Gw2.Dat/Gw2.Dat.csproj. Files excluded from these findings have been kept out deliberately. 4. research/data/Directory.Packages.props had an unused Iced version pin removed; no project referenced it. 5. research/contracts/methodology/patch-resilience.md is not published: patching is outside the scope of these findings. 6. References to the private upstream project layout and tooling were replaced with layer-neutral wording.",
     "files":  [
                   {
                       "originalPath":  "CREDITS.md",
                       "currentPath":  "research/provenance/CREDITS.md",
                       "sha256":  "e6ce516261f358a0dca652b60505e943ebd6ec48d27b5df5ed63fbb61e9d6fb2",
                       "namespaceRenamed":  false,
-                      "refsNormalized":  false,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  false
                   },
                   {
                       "originalPath":  "Directory.Packages.props",
@@ -29,1512 +28,1316 @@
                       "currentPath":  "research/provenance/LICENSE.txt",
                       "sha256":  "230184f60bae2feaf244f10a8bac053c8ff33a183bcc365b4d8b876d2b7f4809",
                       "namespaceRenamed":  false,
-                      "refsNormalized":  false,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  false
                   },
                   {
                       "originalPath":  "re/methodology/discovery.md",
                       "currentPath":  "research/contracts/methodology/discovery.md",
-                      "sha256":  "2810bb8529347ece3453b68ceb04f8bbbd6f576933b4dd0933b1f789be60b15c",
+                      "sha256":  "42d51f81c3a3e0df74c947e8d0ff5a3cf3168b59b9333ae640840c0c0fe5ed67",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/methodology/ghidra.md",
                       "currentPath":  "research/contracts/methodology/ghidra.md",
-                      "sha256":  "e98b8f29938d33b2e4bd87a50a420dd9a054a5651c0e7a61598a8011cf36ac0d",
+                      "sha256":  "121109bcf2b7c9b9575d8031736c4351be9313b7f439eaf3e57614019681d0d3",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
-                  },
-                  {
-                      "originalPath":  "re/methodology/patch-resilience.md",
-                      "currentPath":  "research/contracts/methodology/patch-resilience.md",
-                      "sha256":  "a1eb50bec0f3f1ecf5dc61e18eb9bfdbcd1584fd1b9af2dea542d28501ef52f5",
-                      "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/methodology/reconstruction.md",
                       "currentPath":  "research/contracts/methodology/reconstruction.md",
-                      "sha256":  "d8fffb151f2d8b267a0febee2d9caa1e8c4b287f23e432ee15423174e713bf13",
+                      "sha256":  "01fcf76dbbf77ab4752d925a0f233d4e4ad5539bbebbc0523df16979f3378a55",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/methodology/tooling.md",
                       "currentPath":  "research/contracts/methodology/tooling.md",
-                      "sha256":  "78749a55353173a3796d5ff13bff92ad8c040a0c9a53d8eb4be154f546e3d7c0",
+                      "sha256":  "75fc2f6e2d4e4924d62f272e08d80259c9c33373829b8a00306a2e455af09bbf",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/methodology/validation.md",
                       "currentPath":  "research/contracts/methodology/validation.md",
-                      "sha256":  "f602ee846bb9b15552b3ca99afef7f7af02349780fef783e9fddb7302eff0736",
+                      "sha256":  "f6ad1fa195f81d155daac2ada69d8407c75f1e68057a71ba2c3e769426fa9dae",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/Character/chcli-character-layout.md",
                       "currentPath":  "research/contracts/notes/Character/chcli-character-layout.md",
                       "sha256":  "d49fe84eb29f291539a49fce44b91408367f204aa8a9374993c0bb6085aafda1",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/Character/health-runtime.md",
                       "currentPath":  "research/contracts/notes/Character/health-runtime.md",
                       "sha256":  "d5748d6a344edf5056ff9a50296da908634bf2802cdec2804f01851a9d1a1d52",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/Character/player-name-resolution.md",
                       "currentPath":  "research/contracts/notes/Character/player-name-resolution.md",
                       "sha256":  "468e6fff974723ae8949f64b63fd2af166d4f94ff207d47f3e315f35c5f22af4",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/Character/profession-state.md",
                       "currentPath":  "research/contracts/notes/Character/profession-state.md",
                       "sha256":  "14e234b0c2a7cc814b9f785181e7b8bd3a880abdea8fabdae7c93355a3c3bcc1",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/Character/skillbar-runtime.md",
                       "currentPath":  "research/contracts/notes/Character/skillbar-runtime.md",
                       "sha256":  "c87b102ccb061f52cff4f271e518c8c1d1c2d1045ec0f9e76fb53bb20fe5c20f",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/Character/vtable-inventory.md",
                       "currentPath":  "research/contracts/notes/Character/vtable-inventory.md",
                       "sha256":  "0d864066ef708a28a0c8c991429fc14a4024d2bd964107b3452247251ccd0362",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/Context/Build/game-build.md",
                       "currentPath":  "research/contracts/notes/Context/Build/game-build.md",
                       "sha256":  "e3889ffdfab0b72d513899e8eaf0b0d40819b84182f407e00c8ec9f5de995972",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/Context/context-and-health.md",
                       "currentPath":  "research/contracts/notes/Context/context-and-health.md",
                       "sha256":  "b055ae0cf4689a5e699a9c76fa9cbcd2818f46d348468664413f4e119041e071",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/Context/context-collection.md",
                       "currentPath":  "research/contracts/notes/Context/context-collection.md",
-                      "sha256":  "5fd670f6bd154977d776b17f7a6275977d66f5c874cbd7a43e2ec8ee4edf5f2e",
+                      "sha256":  "f55b3fdcc4df24622eecb627242de4065d82844854889c1cea0bbdc328d9f5fc",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/Context/item-client.md",
                       "currentPath":  "research/contracts/notes/Context/item-client.md",
                       "sha256":  "90475d1eee3b085c373d9434649ac37efda4ad5f248e2f40928dbba808b5b26b",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/Context/pvp-queue-acceptance.md",
                       "currentPath":  "research/contracts/notes/Context/pvp-queue-acceptance.md",
                       "sha256":  "c264aeb9422c25c39712318581914e9563db82b62d09dee0a0b6e0284c422ce6",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/Context/selection-target.md",
                       "currentPath":  "research/contracts/notes/Context/selection-target.md",
                       "sha256":  "2b5a1733a43d4a3e341ff7bfe3d61cb00276a3a0e8d01f38da7a79bb6c854e71",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/Context/world-view.md",
                       "currentPath":  "research/contracts/notes/Context/world-view.md",
                       "sha256":  "3e3ef28dd719cb92a0583f5c7d552a59c38604072cc4daac14a04245b6f5a96f",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Widgets/framework.md",
                       "currentPath":  "research/contracts/notes/UI/Widgets/framework.md",
                       "sha256":  "e89ce64e13faf4f1892b8a0783d28c8f711dff0d82485b338af037d6e558233a",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Widgets/gear-inspect.md",
                       "currentPath":  "research/contracts/notes/UI/Widgets/gear-inspect.md",
-                      "sha256":  "536a2bc51cc350f0d3f737de68cb6b08e853145a1ffc325367d5dc35755ad5db",
+                      "sha256":  "979ec411ba79727fb3a49c4308dda21db19e6a5e9e1d2f2bffb5b409225191aa",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Widgets/ranked-leaderboard.md",
                       "currentPath":  "research/contracts/notes/UI/Widgets/ranked-leaderboard.md",
                       "sha256":  "c425bdc8d39d3064c303ef33ca0a60f991234859a7dfc9c922e2dc4c263a7729",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Widgets/remote-pvp-equipped-skills.md",
                       "currentPath":  "research/contracts/notes/UI/Widgets/remote-pvp-equipped-skills.md",
                       "sha256":  "c46e7c6be1329327bd897a0d5306dd76107b697e6d910c23966aed543f3d579b",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Widgets/resolved-identities.md",
                       "currentPath":  "research/contracts/notes/UI/Widgets/resolved-identities.md",
                       "sha256":  "8361aca209b0d35559b900e6d47e121a89b719fa7d86bb651de2c9c8b0fe7d7a",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Loading/map-loader.md",
                       "currentPath":  "research/contracts/notes/World/Loading/map-loader.md",
                       "sha256":  "864f0df91f9e1745c05409bf812d9fc484933aaa09cfef20de85734e86fc7f5a",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2.Dat.csproj",
                       "currentPath":  "research/data/Gw2.Dat/Gw2.Dat.csproj",
                       "sha256":  "e3124ab7702f42a488948551e9f05e451c708f523718dcbb66cd45e7c4199545",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2AssetDocument.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2AssetDocument.cs",
                       "sha256":  "7db9d9dca2df6d85ae3a638e847edef71eedc7f0b42826b3747d3f55de40f489",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2CntcPack.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2CntcPack.cs",
                       "sha256":  "ecee946b240474bcd2ae4e173c8ab35e545d65c912d7457e4fd307942d542c09",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2DatArchive.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2DatArchive.cs",
                       "sha256":  "4c3db9d166d1bd71f0597228fdca0ff3d7a9129137299c7d048c50375fc22f72",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2DatCrc.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2DatCrc.cs",
                       "sha256":  "866eafa6720e77e908a7d91d192920ad70595a88dd293f5a42cb6cb1e6b471b5",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2DatMethod0Decoder.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2DatMethod0Decoder.cs",
                       "sha256":  "5a3aeec51d7d53ee972b3ee4f5d07a0a22647c5da2af29110b18282c291e7558",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2DatScanner.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2DatScanner.cs",
                       "sha256":  "44680bbc7a0263dfd3d09e2c7d6ac01d59f0c5b836a40b1f8fc2e4ee426cf52e",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2PackFile.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2PackFile.cs",
                       "sha256":  "e379b1632bb01d32bf3e2461b64469ac3fb9ee628d273a2a1cc0db94e4d56bbf",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2PackReader.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2PackReader.cs",
                       "sha256":  "d8fcb925a4b0a034a1f6f654e813f56e58c51a78a409acf8b9de353f5896fe29",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2PackSchemaCatalog.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2PackSchemaCatalog.cs",
                       "sha256":  "af7606ffbd45cd0c350c20f69092cf4dcc1b5bd8aecd5dfe8d02cd06bdabfbe9",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2Texture.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2Texture.cs",
                       "sha256":  "8397f7fafa871d30fac180436418e3aa9715e99a0226de8d9bf81604e6073a6b",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2VertexBuffer.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2VertexBuffer.cs",
                       "sha256":  "6733783e99c3ee7af4c5f6e672752482e6e9ff02bbb6b4c9d9a2ff4bf6b129f6",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/pack-schemas.json",
                       "currentPath":  "research/data/Gw2.Dat/pack-schemas.json",
                       "sha256":  "52dfec889f45a5325f04c461cebd42d3c3780f7a6f8dd95e27dc83f70beb6f5f",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/README.md",
                       "currentPath":  "research/data/Gw2.Dat/README.md",
                       "sha256":  "52c934e5f16696bbfd383792243360d557d8058b9b11a905ff18f4ac0fa5415a",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Agent/AgChar.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Agent/AgChar.cs",
                       "sha256":  "6869a2377a2f5d3f66c98606a9933f7623ce75bc1b49d3470d6ebec698bc0ada",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Agent/Agent.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Agent/Agent.cs",
                       "sha256":  "897b03fd1b8f38e0dcee5e2fceefdb653f652be3ce35e9f1518665dd8e2b5bd6",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Agent/AgentEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Agent/AgentEnums.cs",
                       "sha256":  "26038794e299224eeeac7ce25732e42e3ad1f0b47b51f0b36c42bca646fc31ed",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Agent/AgKeyFramed.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Agent/AgKeyFramed.cs",
                       "sha256":  "055cdfa8f05fc49fcd3c84bd4a626216e8cb6f4e525fdef2bd291d476fea32fc",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Agent/CoChar.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Agent/CoChar.cs",
                       "sha256":  "77323ddcb3d8764adc60d786dd5f004add84b2f539f2bf9e253e00f2a40baee1",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Agent/CoCharSimpleCliWrapper.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Agent/CoCharSimpleCliWrapper.cs",
                       "sha256":  "18ae027f9fd0752dea4e27ce545f0d6dff2414e03a30584e6eb33bdb5354b2b6",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Agent/CoKeyFramed.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Agent/CoKeyFramed.cs",
                       "sha256":  "fa9f6b964f314f72e26e65fbea04c49a66411f40be504a8684fdebc34f16eab0",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Agent/ImportantUnitDefinitionId.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Agent/ImportantUnitDefinitionId.cs",
                       "sha256":  "3af39c45ab437b9326270e2ebb117d19be7842c0d97623a7f549940ef8e4da73",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/CharacterEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/CharacterEnums.cs",
                       "sha256":  "5125392d5cb6d689c538dcc7b8f537a66a123dc64e0029fca00a220f5e953bbb",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliAdventure.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliAdventure.cs",
                       "sha256":  "714ad362a2e3cb6f69421546462384fa6930474da1ef510730e1a25844a3ed97",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliCharacter.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliCharacter.cs",
                       "sha256":  "f911d139b87d4cda8b22a27bfb14efd3d2488b5c8ebf2893525d90b483a2df5f",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliCharacterContext.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliCharacterContext.cs",
                       "sha256":  "979461f993c19b250a741bdd0c76fd977c5b14de939fc031608399e77d251ca7",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliChatter.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliChatter.cs",
                       "sha256":  "777de3ff88263ae9b454500005c2b1164f6f2f505281b5e075442e83aa58c2db",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliCoreStats.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliCoreStats.cs",
                       "sha256":  "7b2ea3f1ea040b695637e052d66fbf546b710dcdcb8ed4aebba75f898965263c",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliEndurance.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliEndurance.cs",
                       "sha256":  "0e0accaa3cd7846c37f3341b3a2e9bb234952c6de0c04610788de631c7230580",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliEnergies.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliEnergies.cs",
                       "sha256":  "a69cec8d53d27f0d184b3ec2f3ef70173f99e9dd89799c063005582720f45d0e",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliHealth.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliHealth.cs",
                       "sha256":  "5c2fcdb3a998c888fa84cba48dbb8eb24e1eb06749d72057a6d6576e5db1d01f",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliKennel.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliKennel.cs",
                       "sha256":  "8b4d1898c626faf66239b236332e2054504a128918563ceac1ed3e8acd44cd25",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliMovement.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliMovement.cs",
                       "sha256":  "61323846714402239e10c93cbc02f7b4cb624af4eef4f180b7eb8ccc2eafe53e",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliOrder.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliOrder.cs",
                       "sha256":  "b77fdcac63e240408d49f9057e68bb8d17c401f880e0970a7816a7564c07e556",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliPlayer.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliPlayer.cs",
                       "sha256":  "d8a423bd89d4891a2be10c45d3a3a98b2a71edc3be185c04258c5874eb19eea0",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliProfession.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliProfession.cs",
                       "sha256":  "429489e0712c53515f2eeca7b639990d252cc419b69e67e7c18b8874f96c0d3c",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliProgress.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliProgress.cs",
                       "sha256":  "8ba54da73e08f15dae1d5ec3dced28752fefc1b94a1162ab2c703ef106458f62",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliPvp.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliPvp.cs",
                       "sha256":  "0f19c2552da9e73acb62c238a624a17ff5ff3e5a46b739032fddf05c2a39ad26",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliPvpHeroCollection.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliPvpHeroCollection.cs",
                       "sha256":  "db937c046f29349534f09eb1757d4442d86aab07fd7e78a1fd2dfaeb2f69aa28",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliSkill.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliSkill.cs",
                       "sha256":  "342ef0167391be6ea62080cf53148571c1750e6b46bfefa1925584e67363a7f2",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliSkillbar.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliSkillbar.cs",
                       "sha256":  "8c9f0ead43c362216de71acb37d450a8531fe99830ecc084f0fe49a0cf05f81d",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliSkillRecharge.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliSkillRecharge.cs",
                       "sha256":  "98b1845461760db833277b83da9afc9866374d65dcad4121ff856a174dc9ebcf",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliSpecialization.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliSpecialization.cs",
                       "sha256":  "cee8f6aa8fca4c1a0ce0329928680e91682ddf2234657eb83347263bf8102e84",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliTransformation.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliTransformation.cs",
                       "sha256":  "14585e3137ab138de5e66bf1a72afcaa0488f8f2ec6a64f3e5c1d5c9e8baae2f",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliWardrobe.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/ChCliWardrobe.cs",
                       "sha256":  "6e536e3df030ff185e7d7a6aad3fd5a9ca5ade7b4d37120c7089643274bd3f7f",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/SkillDefinition.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/SkillDefinition.cs",
                       "sha256":  "046ce868170e2d865586ba3b87c261f270e3d4dd5c5420a58232c3c35a5d056a",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/SkillEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/SkillEnums.cs",
                       "sha256":  "b7673db050f6c60587c6455457df1bec44dbb6ee0680819e4f11e6be80063fdb",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/SkillId.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/SkillId.cs",
                       "sha256":  "bf1f083e3fa17945b5f51616323ad141aea5cc9d7baf7707b80ef3067b82eb43",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/SpecializationDefinition.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/SpecializationDefinition.cs",
                       "sha256":  "8ed832ac744d29ab943ec85bdaba8d4d66ef365a68aa75cd3338b82cca4a7da6",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/SpecializationEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/SpecializationEnums.cs",
                       "sha256":  "5276de5f6bba013710c9ff4c4ddde93a574374437acb1129c35c0c8b1e03d312",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/SpecializationProgressionDefinition.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/SpecializationProgressionDefinition.cs",
                       "sha256":  "7d2714333ed64d705575ce1f6fcb62066e10f7575f1928ead28a377e461aca45",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/TraitDefinition.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/TraitDefinition.cs",
                       "sha256":  "dd2ebdc32bf35a0c6f5283b0c8d702f4cd9d9379fdee84231c893da382caf42b",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/TraitEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Character/TraitEnums.cs",
                       "sha256":  "47b3014553d076345cffcb30d5eca178e74efaab19704aa6bec6bc5233604afa",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Context/AsContext.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Context/AsContext.cs",
                       "sha256":  "f6d417108865709a1688d5061079e13b8f703de30a6ea5df9ce6746c8e3cd0ef",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Context/ChCliContext.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Context/ChCliContext.cs",
                       "sha256":  "4f1f0ec15ed0e07b09ef4c68472445302610bbc172b11f1993d65fa6fd05544a",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Context/CnContext.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Context/CnContext.cs",
                       "sha256":  "9d961f3c564c6f0c3c5babf3af2974b03643dc2c27658a766eb274c449ed73a5",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Context/ContextCollection.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Context/ContextCollection.cs",
                       "sha256":  "c63c74fe5ed33665037b9f480dd128323a4612f23e29558b94b95004817e843d",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Context/GdCliContext.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Context/GdCliContext.cs",
                       "sha256":  "8657d9941f1433cf062a56c89dd08565db53f46acea5edd1a58b963a6b4fce76",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Context/ItCliContext.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Context/ItCliContext.cs",
                       "sha256":  "45865bdaaddda52ccc3d016f6417c247047c6231c4c7fed725cd2ec29dc08d43",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Context/PexCliContext.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Context/PexCliContext.cs",
                       "sha256":  "5ec3874df15e799cc3927af9ebd6a641b333aa4e7ff05074f4542ee4995bf7d2",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Context/PlCliContext.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Context/PlCliContext.cs",
                       "sha256":  "71e3a4bfcf6d8053f02d291de0c965ae3975641761a0ad8541e621b322d1a410",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Context/PvpCliContext.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Context/PvpCliContext.cs",
                       "sha256":  "fb81c68f3dfa4e64225fda6e33fa85b1b467f8b611ddee2693d7c6affbe67a57",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/ChCliEquipmentEntry.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Item/ChCliEquipmentEntry.cs",
                       "sha256":  "3f6e63883aa2ac4cc67498c05d5641253ac8f003dcea17d17bb6edbf5bc199a8",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/ChCliInventory.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Item/ChCliInventory.cs",
                       "sha256":  "47ab56652fa4f6ec2e8143a37c4062c3e7194e67773a4e0275ff94c1e1e8aee9",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/ChCliItemStorageEquipment.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Item/ChCliItemStorageEquipment.cs",
                       "sha256":  "830099be240d97adcf170d0e58b8199671f1fe4156188a3d17fae2c52119c002",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/ItemDefinition.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Item/ItemDefinition.cs",
                       "sha256":  "327b3122877f248e25deafbcd83e886bcd5e97fac73da2b3c2e7e5bcb63bc6e7",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/ItemEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Item/ItemEnums.cs",
                       "sha256":  "602d0063b9ab06d4926b77af7b5c3a45de5ad55271d27be6b94e59ba44797be0",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/ItemStatDefinition.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Item/ItemStatDefinition.cs",
                       "sha256":  "a9636689c1a20728c98ee4b92919597aef3de7d4ac279eaeaff2562cd611cc3a",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/NoveltyItemId.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Item/NoveltyItemId.cs",
                       "sha256":  "2be684063d9016fc031993a4f96fb228a708b6400d16e078fa88f1e3d930b41c",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/Pvp/PvpAmuletId.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Item/Pvp/PvpAmuletId.cs",
                       "sha256":  "3befbd8ae699692256787bd59d8946461e3ff682017cad2e01830918fdb79893",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/Pvp/PvpRelicItemId.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Item/Pvp/PvpRelicItemId.cs",
                       "sha256":  "3ad8a38cc24e5d9b88df6c9610b0b9355f3a0b1ff9868bbc3fc924c6ae3093f5",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/Pvp/PvpRuneItemId.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Item/Pvp/PvpRuneItemId.cs",
                       "sha256":  "60b4efb0974b97cc4f812c4002ad96b244e6672e7d2a59230daeb8bd8cb2711c",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/Pvp/PvpSigilItemId.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Item/Pvp/PvpSigilItemId.cs",
                       "sha256":  "4cd8c48401e83763803ee542dedef1aa3126bba9f7a5279bb38c9278fcebb8d9",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/ToyDefinition.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Item/ToyDefinition.cs",
                       "sha256":  "4b5a9cbde6b1ece9a878535d31e4bf1a1f39c841a4a90dda125d228690bb2d8f",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Runtime/GameBuild.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Runtime/GameBuild.cs",
                       "sha256":  "2cac961bf518a2d65148209f6c5c03518968bd7e965e09b7127ef9a052d165e0",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/PvpGearProvider.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/UI/Widgets/PvpGearProvider.cs",
                       "sha256":  "8a38b1c6e5677f73b4714777cfddd634d52387f929a163e3ea92f6ab09c8a8f9",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "tests/Gw2.Dat.Tests/Gw2.Dat.Tests.csproj",
                       "currentPath":  "research/data/Gw2.Dat.Tests/Gw2.Dat.Tests.csproj",
                       "sha256":  "8f0544a737c010fc7bf5840f9a4ca8c42af59f3e2605b8d3c8c775c580f0bc30",
                       "namespaceRenamed":  false,
-                      "refsNormalized":  false,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  false
                   },
                   {
                       "originalPath":  "tests/Gw2.Dat.Tests/Gw2CntcPackTests.cs",
                       "currentPath":  "research/data/Gw2.Dat.Tests/Gw2CntcPackTests.cs",
                       "sha256":  "aa1ba2c0817371c4ebe45c7ddb3fb813a72f5e094d698a2bdb852d08c1a1d93a",
                       "namespaceRenamed":  false,
-                      "refsNormalized":  false,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  false
                   },
                   {
                       "originalPath":  "tests/Gw2.Dat.Tests/Gw2DatArchiveTests.cs",
                       "currentPath":  "research/data/Gw2.Dat.Tests/Gw2DatArchiveTests.cs",
                       "sha256":  "6c3d2179cfc37dc2eb1c78a252e23e150fefc77fc1ffb96f070ab5a185e02fb8",
                       "namespaceRenamed":  false,
-                      "refsNormalized":  false,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  false
                   },
                   {
                       "originalPath":  "tests/Gw2.Dat.Tests/Gw2DatIntegrityTests.cs",
                       "currentPath":  "research/data/Gw2.Dat.Tests/Gw2DatIntegrityTests.cs",
                       "sha256":  "cadf0de9f20b764e17d701baddbc4145aa77f604c47fd8e29fe2c1bc2596b2b9",
                       "namespaceRenamed":  false,
-                      "refsNormalized":  false,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  false
                   },
                   {
                       "originalPath":  "tests/Gw2.Dat.Tests/Gw2DatMethod0DecoderTests.cs",
                       "currentPath":  "research/data/Gw2.Dat.Tests/Gw2DatMethod0DecoderTests.cs",
                       "sha256":  "91e8f71f3398bf8f012c4a9041f17fd0f30f8959bd89ed7060cabd529b9c07a7",
                       "namespaceRenamed":  false,
-                      "refsNormalized":  false,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  false
                   },
                   {
                       "originalPath":  "tests/Gw2.Dat.Tests/Gw2TextureTests.cs",
                       "currentPath":  "research/data/Gw2.Dat.Tests/Gw2TextureTests.cs",
                       "sha256":  "fb35c0b69ca5ecd81521d0e018fff15e26dbe3c6370cacb791c8ac3f8af82ff0",
                       "namespaceRenamed":  false,
-                      "refsNormalized":  false,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  false
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Combat/ClientEffectContract.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Combat/ClientEffectContract.cs",
                       "sha256":  "e2430c6b88fff6b01d79837f6326d7920208d16cf5baaf31ea5796f7c41bed2f",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Combat/CmbtCliBreakBar.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Combat/CmbtCliBreakBar.cs",
                       "sha256":  "ba30a180b1fcec047300705ce21968e691204783b7d4c1ec90549de711a7e9b9",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Combat/CmbtCliBuff.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Combat/CmbtCliBuff.cs",
                       "sha256":  "f22e7a9b56cdc0ad5d9a6b760aa9b0ce020b9a6fff6f625531afb7362ba24da9",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Combat/CombatEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Combat/CombatEnums.cs",
                       "sha256":  "9363ae5339a2ed002370193b0dacf8cb1af57c1eaea34db23093a7e61d808cc5",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Combat/GroundTargeting.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Combat/GroundTargeting.cs",
                       "sha256":  "6c4f6900fd3a156f2d32230b9cf1f753d296017f0e1338c017b4c646f28c4500",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Combat/NoveltyPreviewEffectContract.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Combat/NoveltyPreviewEffectContract.cs",
                       "sha256":  "bb22fecf92d5c964cc89b7661bd38c4f28cf314fd27949ab64fbe3d5cfc2f8d3",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Combat/NoveltyWorldEffectContract.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Combat/NoveltyWorldEffectContract.cs",
                       "sha256":  "66a8dd53a0a1646130eb93a22ad00bd9766ddfcc43453bb8fcdc43d95e45b40f",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/AvCharEffect.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Effect/AvCharEffect.cs",
                       "sha256":  "a706afadb90c08c77e610ec1347992cdd7460c140da24599dbe20a4e32ea772b",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/EfCliContext.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Effect/EfCliContext.cs",
                       "sha256":  "b5c9627c149df5a3227c9dd9660285ceeb533c4b89b96471ed64688f3c4849ba",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/EfCliCreateArguments.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Effect/EfCliCreateArguments.cs",
                       "sha256":  "9b5ac3b08c93167ca88c92893418271f7766f671a34d5d71a0e8bf5248fe18a8",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/EfCliEffectDecal.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Effect/EfCliEffectDecal.cs",
                       "sha256":  "47b3e4aebcbb51da4fa12922a55eb7f98c31114172e89ad2874c8abb9c4f09e4",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/EfCliModelEffect.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Effect/EfCliModelEffect.cs",
                       "sha256":  "8d03b78279b02111438d60ac86686b91109153afd921c98713e53154b4d37544",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/EfCliModelPlacement.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Effect/EfCliModelPlacement.cs",
                       "sha256":  "220095bfabf0acb9ada0e2e7cb1f3a46b624efc530bf44e9b269c5857524d44d",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/EffectContentKey.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Effect/EffectContentKey.cs",
                       "sha256":  "1080a41e5fa3eb51e055217a8ec3532a75a2aa1bbbfc6c5246e4c973d971c00e",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/EffectDefinitionId.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Effect/EffectDefinitionId.cs",
                       "sha256":  "3d838ed0eab6b309bdd74157a53a7916fdae5059069cc9dec574a82fc3c702f4",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/EffectEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Effect/EffectEnums.cs",
                       "sha256":  "314e0a84dfeae9e89b43fcd1e824805091e4ef486dd18818b12e83c3c0866d5d",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/IEffectDef.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Effect/IEffectDef.cs",
                       "sha256":  "7c5af0fd4c839c36ed6fb5eaadcec03ae602ade7d00c114a2d226c42d5044404",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/SkillEffectApplicationEntry.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Effect/SkillEffectApplicationEntry.cs",
                       "sha256":  "80b984c3740206bf086fe224dddd153df3fafd9dc04853fe311f03f91fb6472e",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Gadget/GadgetAgentWrapper.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Gadget/GadgetAgentWrapper.cs",
                       "sha256":  "dfe182d2970c302dd0c5abc8af855eda9f476206e18ea1f5182f8e88696ceff5",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Gadget/GadgetEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Gadget/GadgetEnums.cs",
                       "sha256":  "7b7e42bb7fb34275d57145d6163b3d23a64e3f4150947290353e1f879b736976",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Gadget/GdCliGadget.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Gadget/GdCliGadget.cs",
                       "sha256":  "3947bd7c85aed759b5ef807599b5c96f87a53c102496444f7c4ddb8db326793a",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Graphics/FontContext.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Graphics/FontContext.cs",
                       "sha256":  "a13cd1957bd2ea3e76af9b18b3aa2275752b0317f690401a560d96f9107cacac",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Graphics/GrFont.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Graphics/GrFont.cs",
                       "sha256":  "18d9b274fe8f272b3be82c73a38c990b9535cfddab152dc6ac315bb3d2f85ce8",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Graphics/GrFontRle.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Graphics/GrFontRle.cs",
                       "sha256":  "76da9127cefc82bf7a20349065d6e9ce633a3fb8ff22e5de85531fad50e1244d",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Graphics/GrModel.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Graphics/GrModel.cs",
                       "sha256":  "2ba810ed104fe3a1cf7e1b4777f20d5b50311becabb965c3407d7e40ecbe7326",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Graphics/GrTex.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Graphics/GrTex.cs",
                       "sha256":  "1946e98c705d35bec0e986cb4ffc06fe8dd6770126ce98e57537b2fc8f5b2071",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Graphics/GrTex2d.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Graphics/GrTex2d.cs",
                       "sha256":  "403e39e22328f90db1b5b5e7780969fe61c041a89d2a18521e867bcaa6dc7a91",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/AsHealthWidget.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/InfoBars/AsHealthWidget.cs",
                       "sha256":  "382dd45c2570ac2051125481e57894e101d4a002dbf8af6e10b5a7efe3198a56",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/CtRecord.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/InfoBars/CtRecord.cs",
                       "sha256":  "eb4936fcc26ce6bf674b6f9ac3e670ab9ed7cd78c2ab931871676e08a5dc5613",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/FrameContentParams.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/InfoBars/FrameContentParams.cs",
                       "sha256":  "1f1c3080279143981ac713f5fc20bdbaca6bd1e7dc7a403aecb328747e2d4c3a",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/InfoBar.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/InfoBars/InfoBar.cs",
                       "sha256":  "8f83e94af15acdd3705c3e4a7ce4ff9e75cc9f5ab9e8cd1f0405992d8e398614",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/InfoBarConstants.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/InfoBars/InfoBarConstants.cs",
                       "sha256":  "7c2ccd7a74a9898fc66539173195a7348eef392198ee77f0c688a8ce700200a2",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/InfoBarEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/InfoBars/InfoBarEnums.cs",
                       "sha256":  "7f8bc49272403bd1d7aa88de1db1042a92c943714aa7287460a9c979da82c3b2",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/InfoBarPresentationSmoother.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/InfoBars/InfoBarPresentationSmoother.cs",
                       "sha256":  "c3b9db1650dd3e4dd3eec066f0fdc4e8efd02f7f39cdddca425fc3ae32681d21",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/InfoBarSlot7Widget.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/InfoBars/InfoBarSlot7Widget.cs",
                       "sha256":  "4a41932fbdf67a1187bbdfbbd7cb8098d040cbca79800eae34586acb2fea0050",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/NameCategory.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/InfoBars/NameCategory.cs",
                       "sha256":  "d004d8bb75ae7aab7b426b56a4b485382c662349143f7636ff3ee24445776534",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/NameCategoryPresentationFlags.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/InfoBars/NameCategoryPresentationFlags.cs",
                       "sha256":  "7c7db4aa4d4961903400830b721192eeaf354e5c1ec5c826363a5a3fcc16ca0e",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/NameRenderCtx.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/InfoBars/NameRenderCtx.cs",
                       "sha256":  "e6f8ce8ee081dede26c604e2559e4c81ffc4533dc75be8401d0e12c885b6bd2d",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/NameRenderingConstants.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/InfoBars/NameRenderingConstants.cs",
                       "sha256":  "30bf1361c7054c929f67775de333eeade606ad43e4cf38448f7af70ee6354f02",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Physics/Havok/HavokEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Physics/Havok/HavokEnums.cs",
                       "sha256":  "efb2dbda007459f7b2ed041eb7d65bf85e20481b4b7380b94e265a5b9e6828e1",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Physics/Havok/HkpPhysicsObjects.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Physics/Havok/HkpPhysicsObjects.cs",
                       "sha256":  "b7b16673774c5bb6a741e84499fc72acd931a9e63f6bd9aa18202d7567851156",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Physics/Havok/HkpShapes.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/Physics/Havok/HkpShapes.cs",
                       "sha256":  "6744350eefc81b3ec7fbc9bb9b2bb7038dd877aede16255d956e9cb019194bf3",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Frames/FrCache.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/UI/Frames/FrCache.cs",
                       "sha256":  "bb4f71dc458dfe00523a3d1bd2864ee2178207f1e2f7628502a8bdbfb8f6d2ed",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Frames/FrFrame.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/UI/Frames/FrFrame.cs",
                       "sha256":  "dc6ed999e695ca4c89d4ee97f007aace037ab165e6c77f7632b63931ec2373fd",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Frames/FrFrameContentQueue.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/UI/Frames/FrFrameContentQueue.cs",
                       "sha256":  "17d937d1f949da0219dcea40262cc91046fcb8489035aa3ac8caa9296608f1cc",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Frames/FrTextParams.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/UI/Frames/FrTextParams.cs",
                       "sha256":  "cf2b7522ac766922d013543735ac9a4d08b38702939db3ad9b3fe5e5a2b549a6",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/AccountNameControl.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/UI/Widgets/AccountNameControl.cs",
                       "sha256":  "df5a25394ddd0911448aae5cf187dcea1b988780ec622541b1d472c367b391a1",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/BtEqpSlot.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/UI/Widgets/BtEqpSlot.cs",
                       "sha256":  "a50413a077308edfb747bb48a3d3050eb5dcb75dc38f7a2cdf09e0bb73af8cdb",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/BtGear.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/UI/Widgets/BtGear.cs",
                       "sha256":  "c63415319c3d95ad219141dd9a4bb75fd7df361911defa64ad706e81792179b4",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/BtHero.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/UI/Widgets/BtHero.cs",
                       "sha256":  "3ad904bb60c28424d9c405250a655fba5ea8906b35171770fbdf6dc96582b8e2",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/BtHeroDisplay.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/UI/Widgets/BtHeroDisplay.cs",
                       "sha256":  "a7883fbe40f840289ee1560c6ed35bf787aaae40a4a93ab70149ae89794cbb9e",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/BtHeroInfoFrame.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/UI/Widgets/BtHeroInfoFrame.cs",
                       "sha256":  "849a8f12dd1c3657f37a92e37449a532ddb5a31db3cc3f7a486784bacf9fbdfb",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/BtInventory.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/UI/Widgets/BtInventory.cs",
                       "sha256":  "72a0ee698ca2aa3dd1ae4d7729e51d8985320de38068c77a2af0727d338fb950",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/BtTraits.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/UI/Widgets/BtTraits.cs",
                       "sha256":  "ac83fed390b0d67189228c93ffddd3cd5b9cf7cb4e6989cba8cb0d503a94eb1f",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/CtlText.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/UI/Widgets/CtlText.cs",
                       "sha256":  "d71459bcead5771d3c8af4bc6126240a08bae56ea89e89d031d34f103d7f79ca",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/LbEntry.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/UI/Widgets/LbEntry.cs",
                       "sha256":  "c20e8e33159afee013b8df2048a1b6e0b1cf00f068457ee224c6fef369e42d55",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/PvpRatingLeaderboard.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/UI/Widgets/PvpRatingLeaderboard.cs",
                       "sha256":  "73fb9d6d826be74baf3908f099e68b78a5da3c0dfeb6d63d7ae75375bd988753",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/SkEquipSpecLine.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/UI/Widgets/SkEquipSpecLine.cs",
                       "sha256":  "1a72ba66fd49f0d155d54b6961d3f8e98cc40fb4579fd83aa9a0df1a6e77adab",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/WidgetStateFlag.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/UI/Widgets/WidgetStateFlag.cs",
                       "sha256":  "668aa685abf21c717346ff96f1bee029b86b2168b64c8fdc5f961c56951ed078",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/World/MapLoader.cs",
                       "currentPath":  "research/contracts/Gw2.Contracts/World/MapLoader.cs",
                       "sha256":  "6601b7d701a810f765a7fcaee9a89bd7d1fad9da9083f1185c7b7dbfb5502019",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/InfoBars/healthbar-rendering.md",
                       "currentPath":  "research/contracts/notes/InfoBars/healthbar-rendering.md",
                       "sha256":  "c374c4e52672673c4e6762971e275f7785a95d229bd0c882a677bef5ea09d751",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/InfoBars/name-rendering.md",
                       "currentPath":  "research/contracts/notes/InfoBars/name-rendering.md",
                       "sha256":  "5ef7abd308133df6db38ac313c3ee076d6e437b8fd1fef2e9f983fed55102d88",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/InfoBars/native-layout.md",
                       "currentPath":  "research/contracts/notes/InfoBars/native-layout.md",
                       "sha256":  "56db0008a9f796cfc19b39da2d269e5361e87a551c229ecb234e75e2a760bccd",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/InfoBars/occlusion.md",
                       "currentPath":  "research/contracts/notes/InfoBars/occlusion.md",
                       "sha256":  "9b5b06f5b17c508e2e941e1569889078d56bb5656dee51d1eb4745b2c24c2959",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/InfoBars/pipeline.md",
                       "currentPath":  "research/contracts/notes/InfoBars/pipeline.md",
                       "sha256":  "dacec771f0f2f09f5ba67d85e0cf3006e7a019a740815ae3299258eea9f159d2",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/Input/pipeline.md",
                       "currentPath":  "research/contracts/notes/Input/pipeline.md",
                       "sha256":  "d9246cb0f93187a73f5473bb9d7e76321f03357aa3daee09b2624ba63ef16482",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Frames/addon-content-lifetime.md",
                       "currentPath":  "research/contracts/notes/UI/Frames/addon-content-lifetime.md",
                       "sha256":  "56d78c17f11d0b2a76f2c26294acf06f0384c574d44692db7a2c7749b314e44b",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Frames/frapi.md",
                       "currentPath":  "research/contracts/notes/UI/Frames/frapi.md",
                       "sha256":  "cf880100ebcc194537a55ae67e0f86d7963800831749457a6e99e51c2466c8f6",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Frames/native-rendering.md",
                       "currentPath":  "research/contracts/notes/UI/Frames/native-rendering.md",
                       "sha256":  "352e4041ac659bbf1d7436c9929350da3ed0f5eadc86a619fafffc99d2c54497",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Frames/native-text-rendering.md",
                       "currentPath":  "research/contracts/notes/UI/Frames/native-text-rendering.md",
                       "sha256":  "697790620c96c80e1dbd7c778d6546e044b8ec079a73b623f5c1931dc2617437",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Text/native-localization.md",
                       "currentPath":  "research/contracts/notes/UI/Text/native-localization.md",
                       "sha256":  "4cbb77db0c8ce309a5ce519b3e91e8f2fa40bb27e64a2db41aa751a061f6e84b",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Collision/havok-objects.md",
                       "currentPath":  "research/contracts/notes/World/Collision/havok-objects.md",
                       "sha256":  "5a04e286e55325f710c3e12ba7ecc9266fdcba38b789a558aed9fdecf99b6645",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Effects/client-novelty-cmbt-buff-path.md",
                       "currentPath":  "research/contracts/notes/World/Effects/client-novelty-cmbt-buff-path.md",
                       "sha256":  "f03d89d1e27d55490fdd8499cfb85265e7a13abf61bd9702f7d2f2c38398f581",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Effects/client-novelty-metadata-source.md",
                       "currentPath":  "research/contracts/notes/World/Effects/client-novelty-metadata-source.md",
                       "sha256":  "ec4b0190ad1582e872ad86c7123bdd82f8fbabd644750f08c2af8738f922c599",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Effects/client-novelty-preview-path.md",
                       "currentPath":  "research/contracts/notes/World/Effects/client-novelty-preview-path.md",
                       "sha256":  "4f7d6836da2a3ecfdce721a1ddc1575e54efc928877de92bb47c8b3ed9dd8348",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Effects/client-novelty-world-state.md",
                       "currentPath":  "research/contracts/notes/World/Effects/client-novelty-world-state.md",
                       "sha256":  "08f68c8e8196c4f78ad4734bf39bbd0dac0d5a51a96a9fb519d0747dd185989b",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Effects/client-novelty.md",
                       "currentPath":  "research/contracts/notes/World/Effects/client-novelty.md",
                       "sha256":  "5b00a85dd60f94db74a51a8f395201ee70a501d5431d70d8dd8030c619edcf22",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Effects/efcli-context.md",
                       "currentPath":  "research/contracts/notes/World/Effects/efcli-context.md",
-                      "sha256":  "f5024520594d6ec5a9cdd24f5e21d23eff139990e6602cea81122d266ab5c642",
+                      "sha256":  "486d63b5a5d496c4f9dd311e96e235610d578123c3a8e31a534584cd3eeaa3a8",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Effects/model-drawing-layout.md",
                       "currentPath":  "research/contracts/notes/World/Effects/model-drawing-layout.md",
-                      "sha256":  "0a2defe07d38e93fd01e900bf1772b6d25d6825392e738ee0e6be51158425908",
+                      "sha256":  "8e485f3af30b570b44d9b194b2e59b1371f96b3a25c0e7f8fc84a0c3ab12d0c4",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Graphics/native-content.md",
                       "currentPath":  "research/contracts/notes/World/Graphics/native-content.md",
                       "sha256":  "332ba52cb5c3eaebabf9ba810738936a2399208e0dbe8003b2aa8f6140b846da",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/RE_NOTES.md",
                       "currentPath":  "research/contracts/notes/RE_NOTES.md",
                       "sha256":  "ade37d6f1e3f2d35267f63e874e8cc15ab904cab4117b8976971421cf9f57405",
                       "namespaceRenamed":  true,
-                      "refsNormalized":  true,
-                      "unusedPackagePinRemoved":  null
+                      "refsNormalized":  true
                   }
               ]
 }

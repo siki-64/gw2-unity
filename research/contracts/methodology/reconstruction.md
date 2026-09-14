@@ -2,7 +2,7 @@
 
 The repository reconstructs `gw2-64.exe` as named native contracts rather than as a list of addresses.
 
-`Gw2.Native` is an **object-oriented reconstruction of native C++ contracts**. Reconstructed C# should
+The reconstructed contract layer is an **object-oriented reconstruction of native C++ contracts**. Reconstructed C# should
 organize recovered native objects, embedded subobjects, fields, enums, vtable relationships, and callable
 contracts into coherent types while preserving the binary facts that justify them. Object-oriented
 organization must not introduce source-level semantics that the binary has not established, hide exact
@@ -16,11 +16,11 @@ Prose and reconstructed code refer to semantic symbols. Active identities, names
 
 ## Layout and accessor boundaries
 
-`src/Gw2.Native/` contains the raw native layout overlays and their evidence-backed declarations.
-`src/Gw2.Native/Access/` is intentionally narrower: it exists only to reproduce native accessor
-behavior, including vtable dispatch, accessor slots, native call signatures, and the validity/null
-semantics established by the recovered code. It is not a second object model or a place to add
-convenient field-based shortcuts when a native accessor contract is known.
+The layout sources contain the raw native layout overlays and their evidence-backed declarations.
+A narrower access boundary is kept separate: it exists only to reproduce native accessor behavior,
+including vtable dispatch, accessor slots, native call signatures, and the validity/null semantics
+established by the recovered code. It is not a second object model or a place to add convenient
+field-based shortcuts when a native accessor contract is known.
 
 This separation is the long-term boundary: layouts describe what native memory contains, while Access
 describes how native code reaches and validates that state. Direct field reads remain appropriate when
@@ -28,8 +28,8 @@ the recovered native path itself reads the field directly.
 
 # Naming
 
-Folder names and native declaration names serve different purposes. Organize `src/Gw2.Native/` into
-human-readable semantic domains for navigation. Within those folders, preserve binary-supported native
+Folder names and native declaration names serve different purposes. Organize the reconstructed layout
+sources into human-readable semantic domains for navigation. Within those folders, preserve binary-supported native
 names, subsystem prefixes, layout identities, and provisional names as closely as the evidence permits.
 A readable folder name is not evidence for renaming a native type or member.
 
@@ -248,7 +248,7 @@ address-free reconstructed name:
 - functions/routines → role names such as `NameRender`, `Clamp01Fade`, `ApplyFadeOpacity`;
 - globals → `g_` prefix such as `g_Settings`, `g_CombatTracker`;
 - stable constants → `k_` prefix such as `k_DimCap`;
-- structs/enums → reconstructed C# types in the owning `src/Gw2.Native/` folder;
+- structs/enums → reconstructed C# types in the owning layout folder;
 - struct members → semantic names such as `Health`, `Inventory`, `Profession`, or `TrackedClientHead`.
 
 Unknown members remain `UnknownXXX`; opaque ranges remain `UnknownXXXStorage`; confirmed flags may use
@@ -285,7 +285,8 @@ Flags178 -> CharacterFlags
 Routine54CEB0 -> GetContextCollection
 ```
 
-If the role remains uncertain, keep the provisional name and place the interpretation in `re/scratch/SCRATCH.md`.
+If the role remains uncertain, keep the provisional name and record the interpretation as scratch work
+rather than promoting it.
 
 # Canonical ownership
 
@@ -295,10 +296,10 @@ A finding may legitimately exist in several layers when each owns a different as
 active Ghidra project
     analysis identity + build-specific address + analysis metadata
 
-C# under src/Gw2.Native/
+reconstructed C# contracts
     canonical reconstructed layout / enum / stable value
 
-re/notes/
+durable notes
     confirmed runtime behavior
 ```
 
@@ -306,7 +307,7 @@ Do not duplicate canonical definitions between layers.
 
 ### Evidence status in subsystem notes
 
-Each authoritative `re/notes/<area>/...` document should make its evidence scope obvious near the top:
+Each authoritative note (`notes/<area>/...`) should make its evidence scope obvious near the top:
 
 - **Confirmed build(s):** builds on which the described behavior was directly validated;
 - **Status:** `build-local`, `cross-build confirmed`, or `current invariant`;
@@ -349,8 +350,8 @@ Common locator forms include:
 | locator | typical resolver |
 |---|---|
 | string xref | Ghidra string references |
-| byte/AOB signature | Ghidra byte search; reusable `Gw2.Discovery` scanner |
-| data signature | Ghidra byte search; reusable `Gw2.Discovery` scanner |
+| byte/AOB signature | Ghidra byte search; reusable discovery-layer scanner |
+| data signature | Ghidra byte search; reusable discovery-layer scanner |
 | static global reached through code | Ghidra instruction listing and xrefs |
 | call/xref relationship | Ghidra xrefs |
 | vtable candidate / references | Ghidra pointer-table inspection and xrefs |
@@ -360,7 +361,7 @@ Use the existing tooling described in [`tooling.md`](tooling.md).
 All build-sensitive tool runs should identify the game build:
 
 ```text
-Gw2.Tools --build <game-build> ...
+<operator-tool> --build <game-build> ...
 ```
 
 # Build updates
@@ -370,7 +371,8 @@ On a game update:
 1. capture or obtain a fresh image for the new build;
 2. rerun the symbol locators;
 3. validate each resolved identity;
-4. update only the active Ghidra analysis state for that build, then promote confirmed facts to notes or `Gw2.Native`.
+4. update only the active Ghidra analysis state for that build, then promote confirmed facts to notes
+   or the reconstructed contract layer.
 
 Confirmed reconstructed source names, layouts, and behavioral docs should remain unchanged unless the
 underlying native contract itself changed. Ghidra analysis identities may remain tool-facing even when the
@@ -387,6 +389,7 @@ Other docs should cross-reference that subject rather than duplicate the full re
 If a previous interpretation is disproven:
 
 - replace stale behavior in the authoritative doc;
-- record the negative finding in `re/notes/RE_NOTES.md` only when it is useful enough to prevent future mistakes.
+- record the negative finding in [`../notes/RE_NOTES.md`](../notes/RE_NOTES.md) only when it is useful
+  enough to prevent future mistakes.
 
 Git retains chronology; durable docs should describe the current confirmed model.

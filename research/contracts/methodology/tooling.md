@@ -2,13 +2,13 @@
 
 This document owns the practical tool/cache workflow used to re-find and inspect native GW2 code and data.
 
-General evidence/promotion rules live in [`reconstruction.md`](reconstruction.md). Patch locator design lives in [`patch-resilience.md`](patch-resilience.md).
+General evidence/promotion rules live in [`reconstruction.md`](reconstruction.md).
 
 # Before creating tooling
 
 Before creating or modifying an RE scanner, reader, debugger helper, or analysis script:
 
-1. inspect `tools/`;
+1. inspect the existing operator tooling;
 2. reuse an existing command if it already supports the task;
 3. otherwise extend the closest existing tool;
 4. create a new tool only when the existing cache/tooling architecture cannot reasonably support it.
@@ -32,7 +32,7 @@ For normal decomp work, start in Ghidra/MCP to find the relevant surface, then v
 Build-sensitive commands should identify the game build:
 
 ```text
-Gw2.Tools --build <game-build> [--pid <pid>] [--format text|json] <group> <command> ...
+<operator-tool> --build <game-build> [--pid <pid>] [--format text|json] <group> <command> ...
 ```
 
 This keeps captured output tied to the binary it describes. The public command surface is grouped by risk and semantics:
@@ -49,15 +49,15 @@ normalized command string, exit code, stdout lines, and stderr lines. Text remai
 Legacy flat command names are accepted for compatibility but are intentionally hidden from help and must
 not be used in new automation or documentation.
 
-The command project is an operator-facing shell, not the canonical home of reusable native knowledge:
+The command surface is an operator-facing shell, not the canonical home of reusable native knowledge:
 
-- layouts, enums, and shared access contracts belong in `Gw2.Native`;
-- scanners, instruction analysis, and reusable locators belong in `Gw2.Discovery`;
-- patch operations, sites, and trampoline mechanics belong in `Gw2.Patching`;
-- tool-only process attachment, capture orchestration, formatting, and dump provenance validation remain in
-  `tools/`.
+- layouts, enums, and shared access contracts belong in the reconstructed contract layer;
+- scanners, instruction analysis, and reusable locators belong in the discovery layer;
+- mutation operations, sites, and relocation mechanics belong in their own dedicated layer;
+- tool-only process attachment, capture orchestration, formatting, and dump provenance validation remain
+  in the tool layer.
 
-Tools must not depend on `Gw2.RuntimeFeatures` merely to reuse a reader or native contract. Move that
+Tools must not depend on a runtime feature layer merely to reuse a reader or native contract. Move that
 contract to its owning lower layer instead.
 
 # Ghidra workspace and dump evidence
@@ -65,20 +65,18 @@ contract to its owning lower layer instead.
 Ghidra is the authoritative store for active binary-analysis state: symbols, namespaces, comments,
 types, xrefs, signatures, and build-specific addresses. See [`ghidra.md`](ghidra.md).
 
-The retired TOML symbol catalogs under `re/symbols/` and their CLI validator/editor have been removed.
-Do not create a second manually maintained address map beside Ghidra. Build-specific analysis addresses
-belong in the active Ghidra project; reusable locators remain code in `Gw2.Discovery`.
+Retired flat symbol catalogs and their CLI validator/editor have been removed. Do not create a second
+manually maintained address map beside Ghidra. Build-specific analysis addresses belong in the active
+Ghidra project; reusable locators remain code in the discovery layer.
 
-Runtime/offline locators remain code in `Gw2.Discovery`; they must validate the image they operate on
-rather than trusting a Ghidra VA. Ghidra addresses are analysis coordinates for one build, not runtime
-ASLR-adjusted addresses.
+Runtime/offline locators must validate the image they operate on rather than trusting a Ghidra VA.
+Ghidra addresses are analysis coordinates for one build, not runtime ASLR-adjusted addresses.
 
-Mapped-module binaries under `re/evidence/dumps/` are local evidence and are ignored by Git. The
-`dump-module` command writes the image atomically, records the supplied build in an adjacent
-`.build.txt` sidecar, and writes a JSON manifest containing the build, runtime base, image size,
-SHA-256, and capture time. Generated dump sidecars, manifests, temporary files, and `.snap` captures
-under `re/evidence/` are local artifacts and are ignored as well. Do not use a dump when its provenance
-is absent, unknown, or inconsistent with the task.
+Mapped-module binaries are local evidence and are ignored by Git. The `dump-module` command writes the
+image atomically, records the supplied build in an adjacent `.build.txt` sidecar, and writes a JSON
+manifest containing the build, runtime base, image size, SHA-256, and capture time. Generated dump
+sidecars, manifests, temporary files, and `.snap` captures are local artifacts and are ignored as well.
+Do not use a dump when its provenance is absent, unknown, or inconsistent with the task.
 
 # Rules of thumb for live instrumentation
 
@@ -92,15 +90,15 @@ is absent, unknown, or inconsistent with the task.
 ## PvP state observation
 
 PvP gear changes are observed by polling the same live object graph used by the
-runtime accessors. In the injected application, Core resolves and publishes the
-`ContextCollection` anchor once during initialization. The standalone inspection
-command resolves an equivalent anchor because it runs outside that process, then
-walks `ChCliContext.Players` and compares each player's
-`ChCliPlayer.PvpGearManager` payload. It does not install a breakpoint or depend
-on a build-local code address:
+runtime accessors. The runtime resolves and publishes the `ContextCollection`
+anchor once during initialization. A standalone inspection command resolves an
+equivalent anchor because it runs outside that process, then walks
+`ChCliContext.Players` and compares each player's `ChCliPlayer.PvpGearManager`
+payload. It does not install a breakpoint or depend on a build-local code
+address:
 
 ```text
-Gw2.Tools --build <game-build> --pid <pid> gw2 pvp gear-trace [seconds] [max-events]
+<operator-tool> --build <game-build> --pid <pid> gw2 pvp gear-trace [seconds] [max-events]
 ```
 
 The output distinguishes provider creation, field changes, and provider removal.
@@ -122,7 +120,7 @@ The durable identity of a symbol is its evidence-backed semantic/structural iden
 Capture the main module in mapped-memory layout with:
 
 ```text
-Gw2.Tools --build <game-build> --pid <pid> debug dump-module re/evidence/dumps/gw2-64-dump.bin
+<operator-tool> --build <game-build> --pid <pid> debug dump-module <output-path>
 ```
 
 The command replaces the dump atomically and records the associated build.
@@ -133,13 +131,13 @@ For the build-205.780 font investigation, `debug font-dump` captures a live oper
 using the absolute `font=0x...` value recorded by the native text probe:
 
 ```text
-Gw2.Tools --build 205780 --pid <pid> debug font-dump <GrFont-VA> re/evidence/font-dumps
+<operator-tool> --build 205780 --pid <pid> debug font-dump <GrFont-VA> <output-directory>
 ```
 
 The read-only capture writes a timestamped directory with a top-level `font.json`, per-range metadata,
 glyph-record fields, and the decoded-length-bounded encoded stream for each loaded range. The pointer is
 not durable: the command must run against the same process that produced the probe address. The dump is
-used to validate the native range format and metric payload before any runtime injection is attempted.
+used to validate the native range format and metric payload before any runtime code is written.
 
 Offline image commands should operate against either an installed PE image or the mapped-memory dump, depending on what the specific resolver requires.
 
@@ -161,18 +159,12 @@ A practical constructor-anchor workflow is:
 
 Do not infer class semantics from the vtable location alone.
 
-# Iced instruction layer
+# Instruction layer
 
-Iced is the canonical x64 decoding/relocation backend.
+General x64 decoding and relocation go through a single shared instruction layer backed by an
+established decoder library, rather than ad-hoc opcode parsing.
 
-New instruction-analysis code should go through:
-
-```text
-X64Decoder
-X64Relocator
-```
-
-Use Iced-backed instruction metadata for:
+New instruction-analysis code should go through that layer for:
 
 - instruction length;
 - branch classification;
@@ -181,20 +173,13 @@ Use Iced-backed instruction metadata for:
 - RIP-relative references;
 - relocation.
 
-Legacy helpers such as:
+Keep the decoder library contained behind the instruction layer unless exposing one of its types is a
+deliberate API decision.
 
-```text
-Insn.OpcodePos
-TryGetJcc()
-```
+Simple fixed-format operations remain reasonable when no general decoding is needed, for example a
+verified 5-byte `E8 rel32` call site.
 
-exist only for compatibility with callers not yet migrated. Do not add new callers.
-
-Keep Iced contained behind the instruction layer unless exposing an Iced type is a deliberate API decision.
-
-Simple fixed-format operations remain reasonable when no general decoding is needed, for example a verified 5-byte `E8 rel32` call-site patch.
-
-All instruction-layer changes must continue to work in the project's `win-x64` NativeAOT build.
+All instruction-layer changes must continue to work in a `win-x64` NativeAOT build.
 
 # Xref scanning
 
@@ -213,14 +198,15 @@ Keep repository tooling focused on capabilities that Ghidra does not replace or 
 Ghidra-derived conclusions:
 
 - mapped-module capture and provenance (`debug dump-module`);
-- exact decoded opcode/image inspection in Ghidra and reusable `Gw2.Discovery` locators for verification;
-- reusable GW2 locator/scanner execution under `gw2`;
-- read-only live debugger, watchpoint, tracepoint, and memory sessions under `debug`;
-- mutation and patch-validation operations under the visibly separate `patch` group;
+- exact decoded opcode/image inspection in Ghidra, plus reusable discovery-layer locators for
+  verification;
+- reusable GW2 locator/scanner execution;
+- read-only live debugger, watchpoint, tracepoint, and memory sessions;
+- mutation and validation operations kept in a visibly separate command group;
 - small development generators that still produce maintained source artifacts;
-- the single `gw2-tools.ps1` operator wrapper, which requires an explicit `-Build`.
+- a single operator wrapper that requires an explicit build argument.
 
-Do not add subsystem-specific wrapper scripts when `gw2-tools.ps1` can invoke the command directly.
+Do not add subsystem-specific wrapper scripts when the operator wrapper can invoke the command directly.
 Delete one-off investigation helpers once their durable findings have been promoted and no maintained
 workflow or generated artifact depends on them.
 

@@ -233,7 +233,7 @@ refresh operation.
 The reusable correlator is:
 
 ```text
-Gw2.Tools.exe --build 205.780 --pid <pid> gw2 pvp world-entry-correlation 180 100000
+<operator-tool> --build 205.780 --pid <pid> gw2 pvp world-entry-correlation 180 100000
 ```
 
 It logs low-volume outbound records with their raw payload and caller RVA, logs
@@ -246,7 +246,7 @@ ring-buffer-wrap decode paths together with the raw outbound send entry, so one
 transition is sufficient and both directions share one monotonic timeline:
 
 ```text
-Gw2.Tools.exe --build 205.780 --pid <pid> gw2 pvp message-payloads 60 4096
+<operator-tool> --build 205.780 --pid <pid> gw2 pvp message-payloads 60 4096
 ```
 
 Each matching record includes the message id, dispatch type, handler and schema
@@ -255,7 +255,7 @@ handled it. The tracer suspends peer threads while single-stepping and restores
 all temporary breakpoints on completion. Outbound records include their message
 id, raw bytes, and caller RVA. The lower-level
 `inbound-pvp-message` tracepoint mode remains available for isolated site
-testing. This functionality is intentionally part of `Gw2.Tools`.
+testing. This functionality is intentionally part of the operator tooling.
 
 For build `205.780`, the four pre-dispatch sites are RVAs `0xFE9339`,
 `0xFE9348`, `0xFE94F4`, and `0xFE9503`: two handler-call forms on each decode
@@ -391,8 +391,8 @@ ids, all seven PvP gear definitions, and physical inventory weapons when the
 player's character/inventory exists:
 
 ```text
-Gw2.Tools.exe --build 205.780 --pid <pid> gw2 pvp provider-scan 20
-Gw2.Tools.exe --build 205.780 --pid <pid> gw2 pvp spectator-graph 256
+<operator-tool> --build 205.780 --pid <pid> gw2 pvp provider-scan 20
+<operator-tool> --build 205.780 --pid <pid> gw2 pvp spectator-graph 256
 ```
 
 The spectator graph command starts at the same `ContextCollection` anchor as
@@ -406,8 +406,8 @@ Use those fields to correlate the provider with the player, then read the
 provider and its non-null payload objects directly:
 
 ```text
-Gw2.Tools.exe --build 205.780 --pid <pid> debug qwords <provider-va> 28
-Gw2.Tools.exe --build 205.780 --pid <pid> debug qwords <payload-va> 8
+<operator-tool> --build 205.780 --pid <pid> debug qwords <provider-va> 28
+<operator-tool> --build 205.780 --pid <pid> debug qwords <payload-va> 8
 ```
 
 `provider +0x60` is a `PvpHeroDefinition*`. Its live objects carry content
@@ -419,10 +419,10 @@ For change correlation, snapshot the provider before and after a controlled
 rank or equipment update:
 
 ```text
-Gw2.Tools.exe --build 205.780 --pid <pid> debug memory-diff <provider-va> 0xD8 30
-Gw2.Tools.exe --build 205.780 --pid <pid> debug snapshot <provider-va> 0xD8 before.snap
-Gw2.Tools.exe --build 205.780 --pid <pid> debug snapshot <provider-va> 0xD8 after.snap
-Gw2.Tools.exe --build 205.780 debug snapshot-diff before.snap after.snap
+<operator-tool> --build 205.780 --pid <pid> debug memory-diff <provider-va> 0xD8 30
+<operator-tool> --build 205.780 --pid <pid> debug snapshot <provider-va> 0xD8 before.snap
+<operator-tool> --build 205.780 --pid <pid> debug snapshot <provider-va> 0xD8 after.snap
+<operator-tool> --build 205.780 debug snapshot-diff before.snap after.snap
 ```
 
 The four sigils are independently verified by reading

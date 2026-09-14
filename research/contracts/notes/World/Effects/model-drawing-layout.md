@@ -13,8 +13,8 @@ definition tree and application metadata are still needed to establish which run
 families realize that specific visual. The following structures describe the shared
 model family (applicationTargetMode 4/6/10); they are not a claim that the captured
 Chalice root itself has one of those modes. Compound definitions may instantiate
-children from other families. See [client-novelty-static-closure.md](client-novelty-static-closure.md)
-for the external-content boundary.
+children from other families. The external-content boundary is described by the client-novelty notes in
+this directory rather than by a separate static-closure note.
 
 ## Created model, host, listener, and attachment
 
