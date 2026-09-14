@@ -863,3 +863,138 @@ negative result on channel `0x14`, `0x264` is now negative in every site decoded
 5. Recover the KSA at `140feea50`.
 
 
+---
+
+# Addendum 6: the two table shapes, read from the validators
+
+**Status:** stride error found in Addendum 4's walk; layout now resolved from source asserts
+**This addendum supersedes the layout claims in Addendum 4 and part of Addendum 2.**
+
+## Resolved from the registrar decompilation
+
+`FUN_140fed730` (`MsgChannel_RegisterTablePair`), decompiled:
+
+```c
+void FUN_140fed730(int param_1, int param_2, uint param_3, longlong *param_4,
+                   uint param_5, longlong *param_6, undefined4 param_7)
+{
+  MsgChannel_ValidateTableFlat(param_3, param_4);    // table A
+  MsgChannel_ValidateTablePairs(param_5, param_6);   // table B
+  ...
+}
+```
+
+Signature: **7 parameters**, two tables with two counts. `get_function_signature` reports
+`param_count: 7`, consistent.
+
+## The two validators define the two shapes
+
+Both call `FUN_1409dda80` with source-quoted assert strings, which are far more reliable than
+anything inferred from disassembly:
+
+| Validator | Address | Assert | File:line |
+| --- | --- | --- | --- |
+| `MsgChannel_ValidateTableFlat` | `140fec7d0` | `curr->defArray[0].fieldType == MP_MSGID` | `MsgChannel.cpp:0x7a` |
+| `MsgChannel_ValidateTablePairs` | `140fec700` | *(identical assert)* | `MsgChannel.cpp:0x7a` |
+| both | — | `defSize <= MAX_WORD` | `:0x7d` |
+| both | — | `maxSize <= MAX_WORD` | `:0x80` |
+| both | — | `maxSize <= MSG_MAX_BUFFER_SIZE` | `:0x81` |
+
+**Every pointer in both tables is a defArray.** Both validators dereference `*param_2` and
+assert it is a `defArray` whose first field is `MP_MSGID`. This confirms Addendum 4's correction
+and **disproves** the `{defArray, handlerFn}` reading that Addendum 2 (and a plate comment in
+`FUN_140fed080`) carried.
+
+`maxSize <= 0x2000` is now **verified from source**, not inferred. `MSG_MAX_BUFFER_SIZE` is
+asserted at `MsgChannel.cpp:0x81`. This closes the "asserted but unchecked" caveat.
+
+## The difference between the shapes is stride
+
+```c
+/* ValidateTableFlat */   puVar1 = param_2 + (param_1 & 0xffffffff);  // +1 pointer  = 8 bytes
+                          param_2 = param_2 + 1;
+
+/* ValidateTablePairs */  puVar2 = param_2 + (ulonglong)param_1 * 2;  // +2 pointers = 16 bytes
+                          param_2 = param_2 + 2;
+```
+
+| Table | Shape | Stride |
+| --- | --- | --- |
+| A | flat pointer array | **8 bytes** |
+| B | pair array | **16 bytes** |
+
+`ValidateTablePairs` walks **2n** pointers for `n` entries, i.e. each element is `{ptrA, ptrB}`.
+`ValidateTableFlat` walks **n** pointers with no pairing.
+
+## Why this matters: Addendum 4 used the wrong stride
+
+Addendum 4 walked channel `0x14` with a **16-byte stride** and read `{pA, pB}` at `+0` and `+8`.
+Table A is flat, so a 16-byte stride **skips every other entry**. That is the real explanation for
+the "every other id" symptom of `1c, 1f, 21, 23, 25` — I attributed it to a `String.format`
+column shift and fixed the formatting, but **the stride was the actual error**, and it is still
+live in the committed extraction.
+
+**Arithmetic confirmation, independent of the decompiler.** Table A is at `142167030` with 220
+entries; table B is at `142167710`.
+
+| Stride | Byte extent | Result |
+| --- | --- | --- |
+| 8 (flat) | 220 x 8 = `0x6E0` | `142167030 + 0x6E0` = **`142167710`** — exactly table B's start |
+| 16 | 220 x 16 = `0xDC0` | runs 1760 bytes **past** into table B |
+
+The tables are exactly adjacent under the 8-byte stride. That is a second, independent
+confirmation that table A is flat, and it does not depend on my reading of the decompiler at all.
+
+## The Addendum 4 "index 110 boundary" is an artefact
+
+Addendum 4 reported a single clean transition at index 110 where column B stopped being a schema
+and became a `.text` pointer. Under a 16-byte stride on a flat 220-pointer table, index 110 lands
+at byte offset `110 x 16 = 1760` = `0x6E0` — **exactly the end of table A**. So "index 110" was
+the boundary of the table, not a structural feature inside it. The transition is real; the
+interpretation as a heterogeneous table was wrong.
+
+## Consequences for the committed corpus
+
+- **`ch14-recv-pairs.csv` is invalid.** It was produced with the 16-byte stride on a flat table and
+  its "pairs" are an artefact. It must be regenerated, not interpreted.
+- **`all-sites.csv` is affected.** The sweep used a 16-byte stride for both tables. Clean sites are
+  those where the wrong stride still happened to land on valid descriptors; the 8 "suspect" sites
+  may be stride damage rather than argument-recovery damage. **Both diagnoses need re-testing.**
+- The Addendum 5 partition (51 clean / 8 suspect) is **not trustworthy as a partition**, because
+  the stride error was confounded with the argument error.
+- Addendum 4's verified match of `1c, 1e, 1f, 20` against `ch14-recv.json` remains valid: the
+  hand-walked values were read by hand one pointer at a time and did not use a stride.
+
+## What this establishes
+
+- `MsgChannel_RegisterTablePair` takes 7 params: two (count, table) pairs;
+- both tables are arrays of defArray pointers, asserted `fieldType == MP_MSGID`;
+- table A is flat (8-byte stride), table B is paired (16-byte stride);
+- `maxSize <= 0x2000` verified from `MsgChannel.cpp:0x81`;
+- the Addendum 4 "index 110 transition" is the end of table A, not a heterogeneous table;
+- source path recovered: `D:\Perforce\Live\NAEU\v2\Code\Gw2\Services\Msg\MsgChannel.cpp`.
+
+## What this does not establish
+
+- **The validators' comparison boundary is not fully read.** Control flow branches on
+  `maxSize < 0x10000` then `0x2000 < maxSize`, consistent with `maxSize <= 0x2000`, but the exact
+  comparison was not single-stepped.
+- Which table is *recv* and which is *send* is still inferred from call-site argument order in
+  `FUN_14020a000`, not proven. `RegisterRecvOnly` calling `ValidateTablePairs` inverts the naive
+  naming assumption, so this attribution deserves its own check.
+- None of the ids are reconciled with the runtime record array or a catalog entry.
+- `0x264` remains unfound, and the search that produced that result used the wrong stride for table
+  A, so **the negative result is not trustworthy** and must be re-run.
+- **Still no wire fixture.**
+
+## Next steps
+
+1. Regenerate channel `0x14` with 8-byte stride on table A, 16-byte on table B.
+2. Re-run the 59-site sweep with per-table stride. Re-derive the 8 suspect sites, now suspecting
+   stride rather than argument recovery.
+3. Re-search `0x264` after (1) and (2). The current absence is void.
+4. Determine authoritatively which table is recv and which is send.
+5. Compute `maxSize` per descriptor and assert `<= 0x2000` across the corpus.
+
+
+
