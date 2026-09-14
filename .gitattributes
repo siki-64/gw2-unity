@@ -171,4 +171,5 @@ Packages/packages-lock.json linguist-generated
 LightingData.asset     binary
 
 # Preserve imported evidence hashes byte-for-byte
-research/imports/** -text
+research/contracts/** -text
+research/data/** -text

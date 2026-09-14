@@ -17,11 +17,13 @@ Create `artifacts/` before running that command and close this project's interac
 | Assets/, Packages/, ProjectSettings/ | Unity project, presentation and eventual main-thread state projection |
 | Packages/com.siki.gw2.protocol/ | Engine-independent protocol contracts and eventual codecs |
 | protocol/ | Build-scoped message catalog and evidence templates |
-| research/imports/ | Hashed, attributed snapshots of reverse-engineering findings; excluded from Unity compilation |
+| research/contracts/ | Recovered game structure and routine contracts with the notes that describe them; excluded from Unity compilation |
+| research/data/ | Offline archive/tooling source with its tests; excluded from Unity compilation |
+| research/provenance/ | License, attribution and the findings manifest with per-file SHA-256 |
 | tools/ | Future offline asset conversion and replay tools |
 | tests/fixtures/ | Sanitized, documented fixtures for future codec/replay tests |
 | captures/local/ | Ignored private capture workspace; create on demand, never tracked |
 | local-assets/ | Ignored local game assets and conversion output; create on demand, never tracked |
 | docs/ | Architecture and evidence workflow |
 
-Start with [the workflow](docs/workflow.md). Imported reverse-engineering findings retain their original license in each snapshot; see `THIRD_PARTY_NOTICES.md`.
+Start with [the workflow](docs/workflow.md). Imported reverse-engineering findings retain their original license; see `THIRD_PARTY_NOTICES.md`.

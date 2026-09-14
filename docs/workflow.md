@@ -6,7 +6,7 @@ Inbound: transport bytes -> session framing/decryption/decompression -> build-sp
 
 Outbound: user intent -> session/state validation -> semantic command -> build-specific encoder -> session framing -> transport.
 
-Keep transport, session, protocol, state, assets and Unity presentation as distinct responsibilities. Add assemblies when each has implementation, rather than create empty projects now. Runtime code must not reference injection, pointers, native UI, discovery or patching from reverse-engineering findings. Offline .NET 10 asset tools may reuse Gw2.Dat independently after review; do not reference its DLL directly from Unity.
+Keep transport, session, protocol, state, assets and Unity presentation as distinct responsibilities. Add assemblies when each has implementation, rather than create empty projects now. Runtime code must not reference injection, pointers, native UI, discovery or patching from reverse-engineering findings. Offline .NET 10 asset tools may reuse `research/data/Gw2.Dat` independently after review; do not reference its DLL directly from Unity.
 
 ## Evidence progression
 
@@ -29,12 +29,12 @@ Keep transport, session, protocol, state, assets and Unity presentation as disti
 
 ## Scope of the findings
 
-The research spans build 205780 and is a historical evidence scope, not a declaration of current server support. Reuse the re/notes research, the Gw2.Native contracts (field semantics, enum values, handler records; not pointer offsets or ABI) and the Gw2.Dat archive/texture/schema tooling source. Do not reuse native UI, D3D11 proxy, injection or patching, which are tied to the official client's in-process execution, nor live captures, caches, dumped fonts or game assets.
+The research spans build 205780 and is a historical evidence scope, not a declaration of current server support. Reuse `research/contracts/notes`, the `research/contracts/Gw2.Native` contracts (field semantics, enum values, handler records; not pointer offsets or ABI) and the `research/data/Gw2.Dat` archive/texture/schema tooling source. Do not reuse native UI, D3D11 proxy, injection or patching, which are tied to the official client's in-process execution, nor live captures, caches, dumped fonts or game assets.
 
 No confirmed wire encoders, transport handshake or complete message schema catalog have been established, so the initial runtime registers no supported wire messages.
 
 ## Updating findings
 
-Snapshots under `research/imports/reverse-engineering-findings/<source-commit>/` are immutable. To refresh, add a new snapshot named by the full source commit of a clean checkout rather than editing an existing one, and record each file's original path and SHA-256 in its `manifest.json`. Review manifest differences before promoting facts. Do not import dumps, generated atlases or private traces by globbing the whole repository.
+Snapshots of findings are reference material under `research/contracts/` and `research/data/`, kept separate from runtime code. When a later source commit changes something, review the manifest difference in `research/provenance/` and add or update the affected files rather than silently editing them in place. Do not add dumps, generated atlases or private traces by globbing a whole repository.
 
 Unity reference: https://discussions.unity.com/t/unity-6-6-is-now-available/1735357. The local editor version is authoritative for this checkout; validate compatibility in the editor rather than infer it from a .NET SDK build.
