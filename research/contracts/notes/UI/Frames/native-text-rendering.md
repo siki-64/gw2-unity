@@ -13,9 +13,8 @@ callback and its current frame id.<br>
 **Scope:** this note records build-local evidence only. RVAs below are relative to the 205.780
 `Gw2-64.exe` image base.
 
-This is the native text path behind ordinary UI labels. It is distinct from the temporary
-`NativeWindowUi` solid-quad glyph fallback and from the generic `FrameContentParams` quad
-submitter.
+This is the native text path behind ordinary UI labels. It is distinct from the solid-quad glyph
+fallback and from the generic `FrameContentParams` quad submitter.
 
 ## Recovered call chain
 
@@ -109,7 +108,7 @@ The wrapper:
 
 The `contentGroup` value is passed to the `FrContent` layer-array index. Native `CtlText` calls use
 zero in the directly recovered callback; another native text caller uses six. The accepted range is
-not revalidated as an client contract here.
+not revalidated as a client contract here.
 
 ### Measurement boundary: `sub_14106F280` (`RVA 0x106F280`)
 
@@ -417,7 +416,7 @@ lookup. A successful bridge emits a `native-font-range-asset` diagnostic record.
 
 All four synthetic paths are live-validated together in native 15px chat using Greek/Cyrillic
 `΁E΁E΁EΩ` / `ЁEЁEЁEЁEЯ`, kana `ぁEア ぁEカ`, Bopomofo `㄁E㄁E㄁E㄁E, and fullwidth
-`�E� �E� �E�E�E�`. Fresh same-run diagnostics recorded `loaded-synthetic` for keys
+`�E�E�E� �E�E�E� �E�E�E�E�E�E�E�`. Fresh same-run diagnostics recorded `loaded-synthetic` for keys
 `gw2reverse/font/greek-cyrillic`, `gw2reverse/font/hiragana-katakana`,
 `gw2reverse/font/bopomofo`, and `gw2reverse/font/halfwidth-fullwidth`; subsequent lookups returned
 the exact `U+03A9`, `U+0416`, `U+3042`, and `U+30AB` native records from the new concrete ranges.
@@ -505,7 +504,7 @@ client caller.
 The first broad C# text test exposed two independent coordinate facts. `sub_141071AA0` starts a
 laid-out line from the rectangle's upper Y edge and subtracts the resolved font height before each
 following line. Native text therefore uses a bottom-origin vertical rectangle for this call context;
-the managed `NativeWindowUi` layout uses top-origin screen coordinates. This is why the same sequence
+the managed layout uses top-origin screen coordinates. This is why the same sequence
 appeared bottom-to-top when submitted without conversion.
 
 The broad test also proved that the observed `sub_14106A400` frame is not a safe client root. In the
@@ -597,7 +596,7 @@ produced 20 hits on thread `3048`, all from `caller-rva=0x010763FC`. `sub_140A85
 hits on that thread, all from `caller-rva=0x01075DAC`, the static call site inside
 `sub_141075CE0`. Together with the static body, this confirms that traversal calls the frustum
 assignment helper for content models. It does not yet constitute a single-event timestamp ordering
-trace between an client append and that assignment, so the long-term callback ABI remains unconfirmed.
+trace between a client append and that assignment, so the long-term callback ABI remains unconfirmed.
 
 The root-frame proof crash is therefore classified as an ordering/lifetime failure: the client model
 was appended without a guaranteed subsequent traversal that assigns its frustum. The later cache
@@ -675,8 +674,8 @@ so the native transform convention remains unresolved. It does not enable native
 ## managed native text UI route
 
 The managed native GUI route is active whenever its validated build and phase guards are available.
-`NativeWindowUi.DrawTextAt` keeps the existing C# layout and queues each non-empty line for the next
-validated content callback. `NativeWindowSubmission` runs the host callback and then calls the
+The managed text route keeps the existing C# layout and queues each non-empty line for the next
+validated content callback. The submission path runs the host callback and then calls the
 recovered `sub_14106AF90` wrapper synchronously before native content traversal. The queue is copied
 and cleared before invoking native code; no UTF-16, frame, font, model, or material pointer is
 retained across the call. If the native route is unavailable, text is dropped for that frame.
@@ -765,7 +764,7 @@ safe read. Each readable record includes the absolute return address and a modul
 `caller-rva`, allowing the control-side call site to be identified without dereferencing the
 caller. A successful record inside `phase=inner` would correlate native text measurement with the
 same FrContent traversal that already carried the live frame-content submissions, but it would
-still not authorize an client-owned measurement call.
+still not authorize a client-owned measurement call.
 
 ## Draw ABI observation
 

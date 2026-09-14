@@ -24,10 +24,10 @@ traversal entry, including when client windows are hidden. Do not request it fro
 the content callback: that would reinsert a node during the same list drain.
 Never clear a borrowed child's native layers directly; they also contain game UI.
 
-`NativeFrameRedrawRequest` validates the complete build-local wrapper bytes before
-calling it and resolves the frame ID anew. No native frame pointer is retained.
-Also keep `SetEnabled(true)` idempotent: applying settings during GUI rendering
-must not reset the anchor or allow another submission in the same traversal.
+The redraw request validates the complete build-local wrapper bytes before calling
+it and resolves the frame ID anew. No native frame pointer is retained. Also keep
+`SetEnabled(true)` idempotent: applying settings during GUI rendering must not reset
+the anchor or allow another submission in the same traversal.
 
 Acceptance: close the client's tool windows, start/end a queue, hover native
 tooltips, and change client settings. Verify that old windows and offset timer

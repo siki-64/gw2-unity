@@ -361,7 +361,7 @@ The retired overlay path was structurally different from the native path:
 ```text
 module callback
   -> managed layout/state in the client UI
-  -> DXGI PresentHook
+  -> DXGI `Present` hook
   -> retired C++ overlay backend
   -> client-owned D3D11 render target
 ```
@@ -377,12 +377,11 @@ native sub_14106A400(frameId, FrameContentParams*)
   -> sub_14106A400 on the current validated child frame
 ```
 
-`NativeFrameContentSubmissionPatch` is observation-only: it preserves the native call and invokes
-the managed callback with the exact current frame id and descriptor. `NativeWindowSubmission` copies
-the descriptor, uses its live material and frame id, and never retains native model/material pointers.
-The module-facing `Gw2HostGui*` names are the current narrow ABI. Their host implementation is
-managed C# and forwards into the managed GUI renderer; there is no separate overlay backend or
-second D3D11 draw path.
+The frame-content submission observer preserves the native call and invokes the managed callback with
+the exact current frame id and descriptor. The submission path copies the descriptor, uses its live
+material and frame id, and never retains native model/material pointers. The host-facing
+`Gw2HostGui*` names are the current narrow ABI. Their host implementation is managed C# and forwards
+into the managed GUI renderer; there is no separate overlay backend or second D3D11 draw path.
 
 The C# UI keeps its managed rectangle queue as the window API and submits it with the recovered
 neutral solid material. It does not borrow a live healthbar/PvP-panel `EmitDrawQuad` payload.
@@ -390,10 +389,10 @@ The recovered native text path is recorded separately in
 [`native-text-rendering.md`](native-text-rendering.md); both paths share the validated frame/phase
 ownership rules and fail closed when those guards are unavailable.
 
-Calling `sub_14106A400`, `sub_141074350`, or `sub_140A6D150` from `PresentHook` remains unsafe: the
-native frame id, active device state, cache lifetime, and material handle ownership are phase-sensitive.
-The implementation therefore only submits from the intercepted native content phase and preserves the
-original native payload on every disabled, unmatched, or failed path.
+Calling `sub_14106A400`, `sub_141074350`, or `sub_140A6D150` from a DXGI `Present` hook remains unsafe:
+the native frame id, active device state, cache lifetime, and material handle ownership are
+phase-sensitive. The implementation therefore only submits from the observed native content phase and
+preserves the original native payload on every disabled, unmatched, or failed path.
 
 ## What this enables
 
@@ -469,19 +468,18 @@ sub_141070270(params, packedColor)    // optional tint; required for arbitrary R
 sub_14106A400(frameId, params)
 ```
 
-The managed `NativeWindowUi.FillRect` queue uses the recovered neutral solid-material recipe
-during the validated `sub_14106A400` callback. If material acquisition or root-viewport resolution
+The managed rectangle queue uses the recovered neutral solid-material recipe during the validated
+`sub_14106A400` callback. If material acquisition or root-viewport resolution
 fails, the queue is dropped for that frame; there is no healthbar/PvP live-template fallback.
 Absence, incorrect texture/color, flicker, duplication, a crash, or failure across a GW2 tooltip/map
 transition rejects the candidate; the build/phase guard must keep the native route fail-closed while
 retaining the original game payload.
 
 
-## Managed GUI hardening on top of the native renderer
+## Managed GUI layer on top of the native renderer
 
 The renderer remains the recovered FrApi/FrText path described above. The tool-window layer above it
-is now explicitly a managed immediate-mode GUI; ImGui and the retired overlay bridge are not part of
-the active architecture.
+is a managed immediate-mode GUI; ImGui is not part of the active architecture.
 
 Build-205.780 hardening now includes:
 
@@ -502,7 +500,7 @@ Build-205.780 hardening now includes:
 - tooltips are real transient managed containers instead of no-op API calls;
 - `FrameContentParams` colors are packed as native `AARRGGBB`. The GUI palette intentionally keeps
   its warm/brown panel treatment rather than relying on the previous accidental byte swap;
-- the window shell no longer draws a second implicit title; `ToolUi` owns the visible header.
+- the window shell no longer draws a second implicit title; the tool-UI layer owns the visible header.
 
 These changes do not alter the native model/material lifetime rules. The GUI still queues value-only
 rectangles/text and the runtime still acquires/releases native materials synchronously in the validated
