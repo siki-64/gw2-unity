@@ -396,3 +396,121 @@ KSA at `140feea50` where MD5-family constants are mixed into the permutation.
 
 The previous steps 1 and 2 (define `140fec590`; bound the frame `kind` field) are resolved: the
 kind table is handshake/control only, and mode-3 traffic never reaches it.
+
+---
+
+# Addendum 2: the static message registry
+
+**Status:** schema corpus located and partially enumerated; **still no wire fixture**
+
+The previous addendum's next step 1 was "locate the registry instance". The static side of it is
+now located. This does **not** close that step — the *runtime* record array is still not read —
+but the static tables that populate it are, and they yield concrete message ids.
+
+## New source unit: MsgChannel.cpp
+
+Registration lives in `Gw2\Services\Msg\MsgChannel.cpp`, a third file alongside `MsgConn.cpp`
+and `MsgUtil.cpp`. Its asserts use the same shape as the others.
+
+## Registration path
+
+```
+static initialiser (one per channel)
+  -> MsgChannel_RegisterRecvOnly      140fed7f0
+       (u32 channelId, u32 protocol, u32 count, MsgChannelEntry* table, u32 flags)
+  -> MsgChannel_RegisterBidirectional 140fed670  (adds a second, send-side table)
+
+  each does:
+    1. MsgChannel_ValidateTableFlat/Pairs   validate every entry (MsgChannel.cpp)
+    2. EnterCriticalSection(DAT_142890034)  guarded by DAT_142890030
+    3. FUN_140fed080(channelId, protocol)   resolve the per-channel registry
+    4. FUN_140fecd10 / FUN_140fecb20 / FUN_140fecf00   install
+```
+
+**Validation runs before the lock is taken and only reads static tables.** It is a startup
+self-check of the shipped schema corpus, not a runtime guard.
+
+### Validated bounds (MsgChannel.cpp line numbers in-image)
+
+| Assert | Line | Meaning |
+| --- | --- | --- |
+| `curr->defArray[0].fieldType == MP_MSGID` | `0x7a` | every entry's first field must be the id |
+| `defSize <= MAX_WORD` | `0x7d` | 0xFFFF |
+| `maxSize <= MAX_WORD` | `0x80` | 0xFFFF |
+| `maxSize <= MSG_MAX_BUFFER_SIZE` | `0x81` | **0x2000 — the binding bound** |
+
+So **no message in this build may exceed 8192 bytes decoded**. That is a hard, static fact about
+the corpus and a useful sanity check for any reimplementation.
+
+## The static table format
+
+21 registrars exist. Their channel ids: `2, 4, 5, 0xd, 0x12, 0x13, 0x14, 0x19, 0x1c, 0x22,
+0x24, 0x26, 0x2b, 0x2c, 0x31, 0x33, 0x35, 0x36, 0x37, 0x3a, 0x3b`.
+
+`MsgChannelEntry` (16 bytes):
+
+| Offset | Type | Field |
+| --- | --- | --- |
+| `0x00` | `void*` | `defArray` — the MsgPackFieldDef chain, or points into `.text` for descriptors embedded in code |
+| `0x08` | `void*` | `handlerFn` — dispatch target, called `(ctx, decoded)` |
+
+Note the static tables are grouped **per channel**, while the runtime record array is a flat
+**dense id index**. Registration translates one into the other, which is why ids in the record
+array are contiguous even though the tables are grouped.
+
+## Enumerated ids
+
+Read from descriptor `[0]` of each entry (`fieldType` verified `== 1` / `MP_MSGID`, id taken from
+`+0x10`):
+
+| Channel | Table | Entries | Message ids | Consecutive |
+| --- | --- | --- | --- | --- |
+| `2` | `1421350d8` | 2 | `0x2EB`, `0x2EC` | yes |
+| `5` | `142138a30` | 5 | `0x11`, `0x12`, `0x13`, `0x14`, `0x16` | gaps |
+| `0xd` | `14217cdf0` | 13 | `0x2DE`..`0x2E5` at entries 0..7 | yes |
+
+Handler signatures confirmed against the `dispatchType == 0` shape `(ctx, decoded)`, e.g.
+`FUN_1410f1830` (`1410f1830`, 0x31 bytes) and `FUN_1410f15d0` for channel 5.
+
+**The dense-index hypothesis is confirmed.** Channel `0xd`'s eight schema entries carry ids
+`0x2DE` through `0x2E5` with no gaps, and channel `2`'s carry `0x2EB`/`0x2EC`. Ids are allocated
+contiguously across the corpus, not per channel.
+
+### Two caveats on the enumeration
+
+- Entries 8 and 12 of channel `0xd` point at `140348050` and `14038C050`, inside `.text`. Those
+  are descriptors embedded in code rather than in `.rdata`; they were not decoded. Entry 9 points
+  at `1412bfd80`, a thunk (`MOV RAX,[RCX+0x20]`), not a descriptor.
+- The ids above are **read from the static tables**. They are not yet reconciled with the runtime
+  record array, and nothing ties any of them to a catalog entry.
+
+## What this establishes
+
+- the registration path, its source unit, and that 21 channels exist with the ids listed;
+- the `MsgChannelEntry` layout and the flat/pairs table variants;
+- that validation proves `maxSize <= 0x2000` for every message at startup;
+- concrete message ids for channels `2`, `5` and `0xd`, confirming ids are dense and allocated
+  contiguously;
+- handler entry points per channel with the `(ctx, decoded)` calling shape.
+
+## What this does not establish
+
+- **The runtime record array is still not read.** `FUN_140fed080`'s object is resolved by
+  (channelId, protocol) at runtime; its base, its `count` at `+0x7c` and every installed record
+  remain unread. The static tables show what *should* be installed, not what is.
+- **The remaining 18 channels were not enumerated.** Only `2`, `5` and `0xd` were walked.
+- The `dispatchType` value per entry (the static tables do not obviously carry it) and the
+  mapping from `channelId`/`protocol` to the id space.
+- Any id to catalog message id mapping. `0x264` is **not** among the ids enumerated here.
+- **Still no wire fixture.** Nothing here is a decoded frame.
+
+## Next steps
+
+1. Walk the remaining 18 channels' tables and emit the full id corpus. The method is proven; this
+   is mechanical.
+2. Read `FUN_140fed080` to recover how (channelId, protocol) maps into the flat id space, then
+   read `count` from a live instance if a debugger session is available.
+3. Decode the two `.text`-embedded descriptors on channel `0xd` (entries 8 and 12).
+4. Recover the KSA at `140feea50` (unchanged).
+5. Reconcile ids with catalog entries, then take a captured frame end to end.
+
