@@ -12,7 +12,7 @@ Keep transport, session, protocol, state, assets and Unity presentation as disti
 
 1. Select one scenario and build. Record executable hash, capture point, connection role, direction, timestamps and triggering action. Store private captures under captures/local.
 2. Trace both sides of the boundary: wire bytes and native schema-decoder/serializer output. Record framing, bit packing, sizes, state prerequisites and transforms separately. A handler record is not a wire fixture.
-3. Add a catalog entry using protocol/message-template.json. Mark each claim as unknown, static, observed or independently reproduced. Keep contradictory evidence explicit.
+3. Add a catalog entry using protocol/message-template.json, or a message artifact under protocol/messages/&lt;build&gt;/ containing the field tree and unresolved list. Mark each claim as unknown, static, observed or independently reproduced. Keep contradictory evidence explicit. The offline tooling in [`../tools/`](../tools/README.md) records the build stamp, hashes private inputs and validates the result against [`../tools/schema/catalog.schema.json`](../tools/schema/catalog.schema.json).
 4. Write a sanitized fixture with its provenance and expected semantic result. Synthetic fixtures test implementation only; they cannot confirm the protocol. Preserve unknown fields and avoid assigning unproven names.
 5. Implement one bounded codec and deterministic state update. Validate truncation at every boundary, bad lengths/counts, unknown IDs, allocation limits and no partial state mutation. Round trips supplement independent fixtures; they do not replace them.
 6. Replay offline, then visualize the resulting state in Unity. Keep Unity API access on the main thread and bound inbound work per frame.

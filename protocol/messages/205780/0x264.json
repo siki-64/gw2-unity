@@ -1,0 +1,75 @@
+{
+  "name": "ConfiguredSkillRecordLead",
+  "build": 205780,
+  "buildLabel": "205.780",
+  "connectionRole": "game",
+  "direction": "server-to-client",
+  "messageId": "0x264",
+  "representation": "decoded-handler-record",
+  "evidenceLevel": "observed",
+  "pipeline": {
+    "id": "unknown",
+    "state": "unknown",
+    "opcodeEncoding": "unknown",
+    "stages": []
+  },
+  "sourceReferences": [
+    {
+      "kind": "note",
+      "path": "research/contracts/notes/UI/Widgets/remote-equipped-skills.md",
+      "label": "remote-equipped-skills"
+    }
+  ],
+  "fields": [
+    {
+      "id": "field_0x00",
+      "offset": 0,
+      "kind": "u32",
+      "confidence": "unknown",
+      "note": "Handler-record slot 0. Native memory, not a wire field."
+    },
+    {
+      "id": "field_0x04",
+      "offset": 4,
+      "kind": "u32",
+      "confidence": "unknown"
+    },
+    {
+      "id": "field_0x08",
+      "offset": 8,
+      "kind": "u32",
+      "confidence": "unknown"
+    },
+    {
+      "id": "field_0x0C",
+      "offset": 12,
+      "kind": "opaque",
+      "rawHex": "00000000",
+      "confidence": "unknown",
+      "note": "Trailing bytes preserved because their role is not established."
+    }
+  ],
+  "sessionPrerequisites": [
+    "A game connection exists and the handler record was produced by the client's own decoder."
+  ],
+  "wireFixtures": [],
+  "unresolved": [
+    {
+      "question": "What are the wire bytes, framing, opcode encoding and transforms for this message?",
+      "kind": "framing",
+      "note": "The 12-byte handler record is a decoded native structure. It is not a wire fixture."
+    },
+    {
+      "question": "Which build-specific schema variant selects this record's shape?",
+      "kind": "schema-variant"
+    }
+  ],
+  "validation": {
+    "static": true,
+    "synthetic": false,
+    "capturedReplay": false,
+    "unity": false,
+    "liveInterop": false
+  },
+  "noClaim": "Records handler-level evidence for one build only. It does not establish wire compatibility, an encoder, or current server support."
+}

@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "description": "Decoder/encoder pipeline identifiers shared by protocol/catalog.json and protocol/messages artifacts. A pipeline id records which framing/decoding variant a claim belongs to. The stage list on an id is documentation of the variant's shape, not a claim about this repository's build: per-message artifacts are the only place where stage order and opcode encoding become evidence.",
+  "rule": "Never inherit a stage order from a variant. Record it per build in the message artifact, and leave it empty when the framing stage is not established.",
+  "pipelines": [
+    {
+      "id": "msgpack-schema",
+      "shape": "sizeof-prefixed frame -> schema/variant table lookup -> type-directed field decode",
+      "stages": [
+        "frame-size",
+        "build-variant",
+        "payload",
+        "type-directed-fields"
+      ],
+      "status": "one observed variant",
+      "notes": "A frame is a little-endian message size followed by a type-directed payload. Some builds prepend an additional two-byte prefix for a subset of messages. A variant index selects the schema, so several structures can share one numeric id. Message ids shown as ranges mean the observable bytes are per-message prefixes of a packed value, not that every value in the range is documented."
+    },
+    {
+      "id": "opcode-prefixed",
+      "shape": "opcode -> length -> payload",
+      "stages": ["opcode", "length", "payload"],
+      "status": "hypothesized",
+      "notes": "Plausible for a simpler connection variant. Not this repository's build evidence."
+    },
+    {
+      "id": "unknown",
+      "shape": "not established",
+      "stages": [],
+      "status": "unknown",
+      "notes": "Default. The framing stage of this build has not been established in this repository, so no stage order is recorded."
+    }
+  ],
+  "opcodeEncoding": {
+    "description": "Allowed values for pipeline.opcodeEncoding in a message artifact. The default is 'unknown' until a trace shows the encoding.",
+    "values": ["unknown", "u16le", "u16be", "varint", "bit-packed", "none"]
+  }
+}
