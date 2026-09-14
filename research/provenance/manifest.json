@@ -165,29 +165,29 @@
                   },
                   {
                       "originalPath":  "re/notes/UI/Widgets/gear-inspect.md",
-                      "currentPath":  "research/contracts/notes/UI/Widgets/gear-inspect.md",
-                      "sha256":  "e46a0e23433b2a2add437cdedf5c96db7f7bb8fdabea34719547b119bca64f58",
+                      "currentPath":  "research/contracts/notes/UI/Widgets/pvp-equipment-state.md",
+                      "sha256":  "3b238b4ff1b9a6996fea177618bc7b319fb0a1ed20ea75afd6fd182f1e87cbda",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Widgets/ranked-leaderboard.md",
                       "currentPath":  "research/contracts/notes/UI/Widgets/ranked-leaderboard.md",
-                      "sha256":  "c425bdc8d39d3064c303ef33ca0a60f991234859a7dfc9c922e2dc4c263a7729",
+                      "sha256":  "52b0b6e9ac7d1dbca899623152f76d39c29f8b8d580a0e44142e1cf3b8df561d",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Widgets/remote-pvp-equipped-skills.md",
-                      "currentPath":  "research/contracts/notes/UI/Widgets/remote-pvp-equipped-skills.md",
-                      "sha256":  "c46e7c6be1329327bd897a0d5306dd76107b697e6d910c23966aed543f3d579b",
+                      "currentPath":  "research/contracts/notes/UI/Widgets/remote-equipped-skills.md",
+                      "sha256":  "4205dc43cb6d2cceac6d9d963babe144a11ec8d3e7f03d821d8bab0304ca69b5",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Widgets/resolved-identities.md",
-                      "currentPath":  "research/contracts/notes/UI/Widgets/resolved-identities.md",
-                      "sha256":  "8361aca209b0d35559b900e6d47e121a89b719fa7d86bb651de2c9c8b0fe7d7a",
+                      "currentPath":  "research/contracts/notes/UI/Widgets/match-member-identity.md",
+                      "sha256":  "e9642af6d1781e81a0a65a706fd4ce5c6d2791d841aeb4d844be111509aa2e2f",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },

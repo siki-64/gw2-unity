@@ -1,4 +1,4 @@
-# Ranked leaderboard widget
+# Ranked leaderboard
 
 **Confirmed build(s):** `205.780`.  
 **Status:** static reconstruction of bind, identity refresh, color storage and render fallback;
@@ -95,8 +95,8 @@ palette below is different; page colors do not establish entry-name behavior.
 
 ## Live account-name evidence
 
-With the ranked leaderboard open, the visible label `gabumon` existed in decoded heap data as the
-full UTF-16 account handle `gabumon.5298`. Other entries in the same data region also carried hidden
+With the ranked leaderboard open, the visible label `accountname` existed in decoded heap data as the
+full UTF-16 account handle `accountname.1234`. Other entries in the same data region also carried hidden
 four-digit discriminators. The ranked UI therefore has a stable account identity available even
 though it renders only the name portion.
 

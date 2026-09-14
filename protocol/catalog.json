@@ -10,7 +10,7 @@
       "direction": "server-to-client",
       "representation": "decoded-handler-record",
       "evidenceLevel": "observed",
-      "source": "research/contracts/notes/UI/Widgets/remote-pvp-equipped-skills.md",
+      "source": "research/contracts/notes/UI/Widgets/remote-equipped-skills.md",
       "wireVerified": false,
       "note": "12-byte configured-skill handler record; wire packing not established"
     },
@@ -20,7 +20,7 @@
       "direction": "server-to-client",
       "representation": "decoded-handler-record",
       "evidenceLevel": "static",
-      "source": "research/contracts/notes/UI/Widgets/remote-pvp-equipped-skills.md",
+      "source": "research/contracts/notes/UI/Widgets/remote-equipped-skills.md",
       "wireVerified": false,
       "note": "Runtime skillbar for the owned character; live triggering evidence incomplete"
     },
@@ -30,7 +30,7 @@
       "direction": "server-to-client",
       "representation": "decoded-handler-record",
       "evidenceLevel": "observed",
-      "source": "research/contracts/notes/UI/Widgets/gear-inspect.md",
+      "source": "research/contracts/notes/UI/Widgets/pvp-equipment-state.md",
       "wireVerified": false,
       "note": "PvP equipment/rank provider updates; descriptor sizes are runtime records"
     },
@@ -40,7 +40,7 @@
       "direction": "server-to-client",
       "representation": "semantic-call-trace",
       "evidenceLevel": "observed",
-      "source": "research/contracts/notes/UI/Widgets/gear-inspect.md",
+      "source": "research/contracts/notes/UI/Widgets/pvp-equipment-state.md",
       "wireVerified": false,
       "note": "Starts world loading; not a complete session implementation"
     },
@@ -50,7 +50,7 @@
       "direction": "client-to-server",
       "representation": "semantic-call-trace",
       "evidenceLevel": "observed",
-      "source": "research/contracts/notes/UI/Widgets/gear-inspect.md",
+      "source": "research/contracts/notes/UI/Widgets/pvp-equipment-state.md",
       "wireVerified": false,
       "note": "Acknowledges world-load completion; prerequisites and serialization unknown"
     }

@@ -1,10 +1,12 @@
-# Resolved identity widget
+# Match member identity
 
-The widget is shown automatically while enabled and queued. It reads only the
-current incoming match channel's members, including names cached by friends or
-earlier matches. There is no resolver-timing baseline or general-registry fallback.
-The roster refreshes every 250 ms, including after acceptance, and clears when the
-queue ends. An unresolved name retains its match ID and shows as name pending.
+Native match-channel member identity: how the current incoming match channel resolves
+member account identities, and the offsets that expose them.
+
+The reader consumes only the current incoming match channel's members, including names
+cached by friends or earlier matches. There is no general-registry fallback. The channel
+is re-read on a 250 ms cadence and its members are discarded when the queue ends. A member
+whose name has not resolved retains its match ID and is reported as pending.
 
 ## Static contract (build 205.780)
 
@@ -39,12 +41,12 @@ user-object read confirming a module vtable at +0x10.
 
 The reader bounds counts to 256, validates channel type and user vtables, excludes
 duplicate/zero IDs, and discards failed reads or changed owner/array pointers.
-The existing host ABI marks each returned row as a match member.
+Each returned row is classified as a match member.
 
 ## Validation
 
 Synthetic-memory tests cover cached names, ID offset, duplicate members, removed
-members, invalid pointers/counts, and non-match channels. GUI filtering tests cover
+members, invalid pointers/counts, and non-match channels. Consumption tests cover
 cached friends and earlier-pop identities without accepting unrelated identities.
 
 Live inspection confirmed the portal-user ID offset. The match pointer was null

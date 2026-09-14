@@ -1,4 +1,4 @@
-# PvP gear inspection
+# PvP equipment state
 
 **Confirmed build(s):** `205.780`.<br>
 **Status:** read-only PvP provider, equipment, spectator graph, and entry-message reconstruction.<br>
@@ -8,7 +8,7 @@ intra-object offsets. Build-local code coordinates are not part of the access co
 
 ## Authoritative state boundaries
 
-The inspector combines independent replicated state rather than reading one
+The recovered equipment state combines independent replicated sources rather than reading one
 monolithic spectator or world-entry payload:
 
 - Physical weapon sets come from ordinary character/inventory world state at
@@ -24,7 +24,7 @@ That message starts the client world/load operation; after the client sends
 per-player PvP provider records. The spectator Equipment and Specializations
 tabs only consume already-populated player state and bind UI objects to it.
 
-The gear inspector follows this same global path:
+The recovered equipment path is this global chain:
 
 ```text
 ContextCollection anchor
@@ -165,9 +165,9 @@ provider notification path used by the bound equipment slots.
 `BtEqpSlot::BindPvpProvider` only reads `ChCliPlayer +0x97B0` through
 `ChCliPlayer` vtable slot `+0x330`, registers its listener, and rebuilds the
 slot. It does not create or populate the manager. Consequently a remote
-player can be inspected by reading this provider once the PvP update has
-arrived, but an inspector should not call `EnsurePvpManager`: that would
-allocate an empty manager and would not request the missing remote update.
+player's equipment can be read from this provider once the PvP update has
+arrived, but a reader must not call `EnsurePvpManager`: that would allocate an
+empty manager and would not request the missing remote update.
 
 ## Remote-player population rule
 
@@ -434,10 +434,15 @@ offhand. A null remote character or inventory still makes those physical item
 ids unavailable for that particular roster entry.
 
 
-## Presentation target
+## Native build semantics are authoritative
 
-The presentation layer intentionally follows the legacy spectator PvP build-panel
-information architecture rather than a generic property table:
+The ContextCollection/native graph is authoritative for build semantics. The public GW2 API must
+not be used to decide which specialization, trait, weapon or competitive equipment a player has
+equipped; API data is presentation enrichment only (for example artwork, icons and tooltip text)
+and only after the native identity is already known.
+
+The recovered field semantics follow the spectator PvP build-panel information architecture rather
+than a flat property table:
 
 ```text
 player
@@ -448,15 +453,6 @@ player
   sigils                 | below the corresponding weapon slot
   centered PvP equipment | amulet | rune | relic
 ```
-
-The current text layout preserves those lanes so specialization background art and trait/item
-icons can replace the textual cells later without changing the panel structure. Raw content ids
-remain in the separate Diagnostics view.
-
-The ContextCollection/native graph is authoritative for build semantics. The inspector must not
-use the public GW2 API to decide which specialization, trait, weapon, or competitive equipment a
-player has equipped. API data is presentation enrichment only (for example artwork, icons, and
-tooltip text) after the native identity is already known.
 
 Native specialization ids and public `/v2/specializations` ids are different namespaces.
 `TraitDefinition.Id` is likewise a client-native id and is not a public `/v2/traits` id.
@@ -492,7 +488,7 @@ This path is distinct from runtime message `0x27C`, which updates
 `ChCliCharacter +0x520 -> ChCliSkillbar` and can represent temporary combat
 state such as transformations. For remote build/spectator inspection, the
 per-player `ChCliSkill` state is therefore the stronger configured-skill
-source. See `remote-pvp-equipped-skills.md` for the recovered handler,
+source. See `remote-equipped-skills.md` for the recovered handler,
 payload layout, and remaining reader-side unknowns.
 
 ## Specializations and selected traits

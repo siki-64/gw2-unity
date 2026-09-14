@@ -8,9 +8,9 @@ intra-object offsets. Build-local code coordinates are not part of the access co
 
 Build target: `205.780`.
 
-This note records the per-player configured-skill path used for remote roster
-state. It is separate from both the PvP equipment provider messages
-(`0x200..0x207`) and the current character's runtime `ChCliSkillbar`.
+This note records the per-player configured-skill path used for remote players.
+It is separate from both the PvP equipment provider messages (`0x200..0x207`)
+and the current character's runtime `ChCliSkillbar`.
 
 ## Recovered player skill state
 
