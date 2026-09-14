@@ -1,0 +1,6 @@
+{
+  "name": "Gw2.Protocol",
+  "rootNamespace": "Gw2.Protocol",
+  "noEngineReferences": true,
+  "allowUnsafeCode": false
+}
