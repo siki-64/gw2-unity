@@ -734,3 +734,132 @@ A consumer that assumes one uniform shape will mis-read half the table.
 6. Recover the KSA at `140feea50`.
 
 
+---
+
+# Addendum 5: full 59-site sweep, and a partial-failure boundary
+
+**Status:** 51 of 59 sites extracted cleanly; 8 sites suspect and quarantined;
+**still no wire fixture**
+
+## Discovery, done programmatically
+
+All 59 registration sites were found by scanning for `CALL rel32` targeting the three
+registrar entry points, rather than transcribed by hand. The per-registrar split came out
+21 / 36 / 2 — **independently reproducing** the instruction-search count from Addendum 3 by a
+different method. Two independent routes agreeing is the first time a count in this note has
+had that.
+
+## Three harness defects found and fixed, all mine
+
+Each produced plausible-looking wrong output before being caught.
+
+**1. Table operand not an `Address`.** A `LEA R9,[0x1421350d8]` displacement comes back from
+Ghidra as a **`Scalar`**, not an `Address`. The first version tested `instanceof Address` and
+emitted `?` for every table while still decoding the `R8D` counts correctly — a signature that
+looked like "counts work, tables don't".
+
+**2. Two calling patterns, not one.** Two sites (`14021fc0a`, `140222bfa`) pass arguments on
+the **stack**, not in registers:
+
+```asm
+LEA RAX,[0x1422e4568]
+MOV qword ptr [RSP+0x28],RAX     ; table
+MOV dword ptr [RSP+0x20],0x2     ; count
+CALL 0x140fed730
+```
+
+A register-only window reader reports nothing for these. They are the 2 `NOARGS` rows.
+
+**3. Unmapped-pointer crash.** `Memory.getBlock()` returns null for a pointer into no mapped
+block, and the first full run **crashed** on it. Now recorded as `PTR_UNMAPPED` rather than
+thrown.
+
+## The result
+
+| Tag | Rows | Meaning |
+| --- | --- | --- |
+| `OK` | 854 | valid `MP_MSGID` descriptor |
+| `CODE` | 352 | pointer into `.text` (handler, per Addendum 4) |
+| `PTR_UNMAPPED` | 14 | pointer into no mapped block |
+| `NULL` | 13 | zero column |
+| `NOARGS` | 2 | argument setup not recovered |
+| `BADFT` | 1 | first descriptor not `MP_MSGID` |
+
+**The 14 `PTR_UNMAPPED` and 1 `BADFT` are my bugs, not binary features.** The giveaway is that
+the "pointers" are UTF-16 text fragments:
+
+| Reported pointer | As ASCII | Actually |
+| --- | --- | --- |
+| `7466656c` | `lfet` | fragment of a UTF-16 string |
+| `6f4378614d74756f` | `outMaxCo` | fragment of a UTF-16 string |
+
+A descriptor pointer cannot be two ASCII characters. Those rows are mis-decoded arguments
+where my 14-instruction window picked up a `LEA` from neighbouring unrelated code.
+
+## The boundary: 51 clean, 8 suspect
+
+| | Sites |
+| --- | --- |
+| Clean (only `OK`/`CODE`/`NULL` rows) | **51** |
+| Suspect (any `UNMAPPED`/`BADFT`/`NOARGS`) | **8** |
+
+The 8 suspect sites, named so they can be re-derived and are not silently trusted:
+`14020a8e1`, `14021b991`, `14021cf01`, `14021df71`, `14021f1d1`, `14021fc0a`, `1402201f1`,
+`140222bfa`.
+
+**Site `14021cf01` is the worst** — 16 rows, all suspect. Its reported "pointers" include
+`1000000000572613`, which is not a plausible address.
+
+## Verification against ground truth
+
+Site `14020a031` (channel `0x14`) reproduces the hand-verified sequence exactly:
+
+```
+col0 OK 1c  1425b6300  .data
+col1 OK 1e  1425b6420  .data
+col0 OK 1f  1425b6540  .data
+col1 OK 20  1425b66b0  .data
+col0 OK 21  1425b6840  .data
+col1 OK 22  1425b6980  .data
+```
+
+That matches the committed `ch14-recv.json` values field for field. **This is the check that
+justifies trusting the 51 clean sites.**
+
+## Corpus totals (clean subset only)
+
+- 854 `OK` descriptor rows, **677 distinct ids**
+- id range `0x01` to `0x516`
+- 352 `CODE` pointers, consistent with Addendum 4's finding that column B can be a handler
+
+## `0x264` is still not found
+
+Searched across all 854 cleanly-decoded descriptors: **absent**. Combined with Addendum 4's
+negative result on channel `0x14`, `0x264` is now negative in every site decoded successfully.
+
+**This does not yet close the `identity-mapping` question**, because 8 sites remain suspect, and
+`0x264` could sit in one of them. Closing it requires the 8 to be re-derived.
+
+## What this does not establish
+
+- **8 of 59 sites are not trustworthy.** Their rows are in `all-sites.csv` tagged as suspect, but
+  the tags come from the same argument decoder that produced them, so a site could be
+  mis-decoded *and* mis-tagged as clean. Only `14020a031` was independently verified.
+- The `OK` rows are descriptor decodes; the `CODE` rows are **not** decoded at all, so 352
+  column-B values are pointers of unknown meaning.
+- **Argument recovery is a heuristic**, not a proof. Sites with more than one table argument or
+  unusual register allocation may decode wrongly without being flagged.
+- `maxSize <= 0x2000` is still unchecked — the extractor does not compute it.
+- Nothing is reconciled with the runtime record array or any catalog entry.
+- **Still no wire fixture.** `wireVerified` remains false.
+
+## Next steps
+
+1. Re-derive the 8 suspect sites by reading their arguments from the registrar call rather than a
+   fixed instruction window. `14021cf01` and `1402201f1` first.
+2. Compute `maxSize` per descriptor and assert `<= 0x2000` across the clean corpus.
+3. Decode the 352 `.text` pointers to functions, to name handlers.
+4. Re-search `0x264` after the 8 suspect sites are resolved. Only then is the absence meaningful.
+5. Recover the KSA at `140feea50`.
+
+
