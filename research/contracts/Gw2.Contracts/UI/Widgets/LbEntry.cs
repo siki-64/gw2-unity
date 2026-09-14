@@ -5,7 +5,7 @@ namespace Gw2.Contracts;
 /// <summary>
 /// Partial LbEntry control state for GameBuild.SupportedGameBuild.
 /// Recovered from allocation/destruction and bind accesses; gaps are unmodeled native storage.
-/// See re/notes/UI/Widgets/ranked-leaderboard.md. Does not own the name color.
+/// See research/contracts/notes/UI/Widgets/ranked-leaderboard.md. Does not own the name color.
 /// </summary>
 [StructLayout(LayoutKind.Explicit, Size = 0xD0)]
 internal struct LbEntry

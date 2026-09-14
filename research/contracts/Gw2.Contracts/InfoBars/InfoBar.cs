@@ -32,7 +32,7 @@ internal unsafe struct InfoBar
     [FieldOffset(0xB8)] internal ChCliCharacter* Character;
     [FieldOffset(0xC0)] internal nint PlayerLookupResult;
     // Channels are named by storage offset: their consumer sets overlap.
-    // See re/notes/InfoBars/native-layout.md for instruction evidence.
+    // See research/contracts/notes/InfoBars/native-layout.md for instruction evidence.
     [FieldOffset(0xC8)] internal InfoBarPresentationSmoother PresentationC8;
     [FieldOffset(0xDC)] internal InfoBarPresentationSmoother PresentationDC;
     [FieldOffset(0xF0)] internal InfoBarPresentationSmoother PresentationF0;

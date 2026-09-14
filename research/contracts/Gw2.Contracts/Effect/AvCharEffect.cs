@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 namespace Gw2.Contracts;
 
 // Reconstructed receive-side character-effect object. This type contains only native object/data
-// relationships; executable RVAs and callsites belong to discovery/patching evidence, not Native.
+// relationships; executable addresses and callsites are not modelled here.
 [StructLayout(LayoutKind.Explicit)]
 internal unsafe struct AvCharEffect
 {
