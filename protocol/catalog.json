@@ -8,7 +8,8 @@
       "buildLabel": "205.780",
       "stampedAtUtc": "2026-09-14T00:00:00Z",
       "tool": "gw2re/1",
-      "notes": "Historical findings scope. The source snapshot did not record an image hash, so no imageSha256 is claimed. A current-build stamp is required before any live work."
+      "imageSha256": "D2AE84876A0B93277FCCB368969046B848BB0403FD09DB420389C813D2459B23",
+      "notes": "Image identity confirmed by the operator: Gw2-64.exe SHA-256 matches the Ghidra image analysed for this build. The historical scope recorded no hash; this entry supplies it. The stamp records image identity only and asserts no wire compatibility."
     }
   ],
   "messages": [
