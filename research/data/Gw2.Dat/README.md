@@ -56,5 +56,5 @@ Do not interpret an indexed root's estimated byte extent as a recovered class
 layout. No proprietary archive fixtures are included.
 
 Validation: `dotnet test data/Gw2.Dat.Tests/Gw2.Dat.Tests.csproj` runs standalone
-synthetic archive, compression, and content-store fixtures without the addon.
+synthetic archive, compression, and content-store fixtures without the game client.
 These tests do not establish compatibility with every record in a real Gw2.dat.

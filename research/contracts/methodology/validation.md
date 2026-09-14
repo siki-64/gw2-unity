@@ -74,7 +74,7 @@ Check both project references and source usage:
 
 Review the diff for unsupported semantics, guessed names, duplicated canonical definitions, stale or
 wrong-build addresses, bare VAs in durable prose, stale comments, scratch leakage, unrelated edits, and
-conflation of native behavior with addon design.
+conflation of native behavior with client design.
 
 The final report states what changed, the evidence and build when applicable, validation performed,
 unresolved items, and any tooling/cache changes.

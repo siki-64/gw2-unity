@@ -2,7 +2,7 @@
 
 **Evidence scope:** build 205780 static RE, refreshed 2026-09-05; older imported observations are labeled separately.<br>
 **Status:** partial frame layout, creation, visibility, recursive destruction, and content/cache paths recovered.<br>
-**Unresolved:** complete callback ABI, resource retention, stable locators, and live addon-owned frame lifecycle validation.
+**Unresolved:** complete callback ABI, resource retention, stable locators, and live client-owned frame lifecycle validation.
 
 The generic frame subsystem is broader than the InfoBar-specific use of frame ids already documented in
 [../Widgets/framework.md](../Widgets/framework.md). The imported evidence exposes a reusable FrApi-like
@@ -55,10 +55,11 @@ data pointer/capacity/count at `+0x08/+0x10/+0x14`.
 `sub_141074350 @ 0x141074350` consumes that list. Type 1 calls the native device draw
 `sub_140A6D150`, which requires the active device and type-9 `GrModel*` entries; type 2 calls
 `sub_140A6DB90` with a normalized viewport rectangle. This is the first confirmed queue-to-device
-handoff, but its cache globals and render context/state are not an addon ABI. In a live build-205.780 trace,
+handoff, but its cache globals and render context/state are not a client-callable ABI. In a live build-205.780 trace,
 `sub_140A6D150` ran on thread `13108` from caller RVA `0x107457C` with counts `0x6C`, `1`, `0x13`,
 and `1`; the render-context/state pointer and `0x1008000` mode word were also stable across those calls.
-This confirms execution of the type-1 handoff, not that an addon may call the function directly.
+This confirms execution of the type-1 handoff, not that a caller outside the game may invoke the
+function directly.
 
 The BGFX-facing names are documented as upstream semantic correlations in
 [`native-rendering.md`](native-rendering.md#upstream-bgfx-name-correlation). ArenaNet's `GrDevWin360`,
@@ -81,7 +82,7 @@ needs ABI, material-retention, and lifetime validation before any additional GUI
 
 Direct tracing of `sub_141075FC0` produced four hits on the same thread, all returning to RVA
 `0x106F0FF` inside `sub_14106F090`. Its root frame is resolved internally, while viewport values are
-passed in XMM registers; the integer argument registers are not an addon-visible root-frame ABI. This
+passed in XMM registers; the integer argument registers are not a client-visible root-frame ABI. This
 supports using the traversal-entry boundary as the eventual adapter seam, subject to an inline-hook
 ABI proof. The traversal function may skip only the recursive root walk when its cached viewport
 floats are unchanged; its pending-list drain still runs, so an adapter must avoid duplicate submission.
@@ -124,7 +125,7 @@ Unlisted bytes remain unknown; the allocation size does not imply a fully recove
 
 Addresses below are static-image VAs (image base `0x140000000`), not live process pointers. Names are
 descriptive. Integer IDs/flags are 32-bit; pointer arguments follow Windows x64 calling conventions.
-These signatures describe static evidence, not approved addon-call contracts.
+These signatures describe static evidence, not approved client-call contracts.
 
 | VA | recovered operation |
 |---|---|
@@ -220,5 +221,5 @@ The long-term native UI backend can use the frame surface where useful without e
 - recover the minimal callback/base-procedure contract, creation parameter access, and reentrancy rules;
 - recover layout, focus, and resource-retention semantics;
 - live-validate isolated create/show/hide/redraw/destroy behavior at the proven UI-thread boundary
-  before exposing native frame construction to addons;
+  before exposing native frame construction to client code;
 - recover text creation/measurement below full widget construction if possible.

@@ -34,7 +34,7 @@ The existing partial graphics types model ArenaNet texture objects. The native c
 
 The exact handoff between MaterialCache entries and `GrTex2d` is still unresolved.
 
-This is the right place to continue the native UI image primitive work: recover how ArenaNet turns a content/file/icon handle into a material/texture accepted by the same native submission path used by `EmitDrawQuad`, rather than translating to an SRV and drawing it through an addon D3D backend.
+This is the right place to continue the native UI image primitive work: recover how ArenaNet turns a content/file/icon handle into a material/texture accepted by the same native submission path used by `EmitDrawQuad`, rather than translating to an SRV and drawing it through a separate D3D backend.
 
 ## Validation behavior
 

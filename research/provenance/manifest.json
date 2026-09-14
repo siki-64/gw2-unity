@@ -61,7 +61,7 @@
                   {
                       "originalPath":  "re/methodology/validation.md",
                       "currentPath":  "research/contracts/methodology/validation.md",
-                      "sha256":  "f6ad1fa195f81d155daac2ada69d8407c75f1e68057a71ba2c3e769426fa9dae",
+                      "sha256":  "c9599feeb11a0e83ebfbb5ddef6e7dd2c691efe7e3fe3549f547455aeee4756c",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
@@ -138,7 +138,7 @@
                   {
                       "originalPath":  "re/notes/Context/pvp-queue-acceptance.md",
                       "currentPath":  "research/contracts/notes/Context/pvp-queue-acceptance.md",
-                      "sha256":  "c264aeb9422c25c39712318581914e9563db82b62d09dee0a0b6e0284c422ce6",
+                      "sha256":  "5a56b40bf43e55ad3fac24784c4633c5600e775eb873af847d5d4ce6c60630a5",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
@@ -292,7 +292,7 @@
                   {
                       "originalPath":  "src/Gw2.Dat/README.md",
                       "currentPath":  "research/data/Gw2.Dat/README.md",
-                      "sha256":  "52c934e5f16696bbfd383792243360d557d8058b9b11a905ff18f4ac0fa5415a",
+                      "sha256":  "ed975eb4b4c5b298996704d29eff0cf9d01d11006040b0e8e5e908b3094267ff",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
@@ -1195,70 +1195,70 @@
                   {
                       "originalPath":  "re/notes/InfoBars/healthbar-rendering.md",
                       "currentPath":  "research/contracts/notes/InfoBars/healthbar-rendering.md",
-                      "sha256":  "c374c4e52672673c4e6762971e275f7785a95d229bd0c882a677bef5ea09d751",
+                      "sha256":  "c3200e530bafd4112a511ca8ce0d76cdf1aa59c467b5e7ccb0756970fe2069f8",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/InfoBars/name-rendering.md",
                       "currentPath":  "research/contracts/notes/InfoBars/name-rendering.md",
-                      "sha256":  "5ef7abd308133df6db38ac313c3ee076d6e437b8fd1fef2e9f983fed55102d88",
+                      "sha256":  "c1c80530b1b6721c0b03ae14775bd9547de06d1378a77a6a5bd9d7d3f55c15f9",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/InfoBars/native-layout.md",
                       "currentPath":  "research/contracts/notes/InfoBars/native-layout.md",
-                      "sha256":  "56db0008a9f796cfc19b39da2d269e5361e87a551c229ecb234e75e2a760bccd",
+                      "sha256":  "ab068ee6cbaaead10b5a2874653c4b35cfe1804b11284a2a0ba83f6de12dfbdc",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/InfoBars/occlusion.md",
                       "currentPath":  "research/contracts/notes/InfoBars/occlusion.md",
-                      "sha256":  "9b5b06f5b17c508e2e941e1569889078d56bb5656dee51d1eb4745b2c24c2959",
+                      "sha256":  "eef87f97edfc4653ee6679ba6de5010851f92118ea160a527147f82246dfd4d7",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/InfoBars/pipeline.md",
                       "currentPath":  "research/contracts/notes/InfoBars/pipeline.md",
-                      "sha256":  "f08de4935a70747407bb3c3bae64ced540e69356200c2b7f61c2177e3fe9e1cb",
+                      "sha256":  "9903815b38af31ba150449bd9ed60c869697db375c7c2ea4b014d26d99e98b56",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/Input/pipeline.md",
                       "currentPath":  "research/contracts/notes/Input/pipeline.md",
-                      "sha256":  "d9246cb0f93187a73f5473bb9d7e76321f03357aa3daee09b2624ba63ef16482",
+                      "sha256":  "3505077688bb90a79361cf844778c253c993bffdd332edef1c9ed09466c76cb0",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Frames/addon-content-lifetime.md",
-                      "currentPath":  "research/contracts/notes/UI/Frames/addon-content-lifetime.md",
-                      "sha256":  "56d78c17f11d0b2a76f2c26294acf06f0384c574d44692db7a2c7749b314e44b",
+                      "currentPath":  "research/contracts/notes/UI/Frames/content-lifetime.md",
+                      "sha256":  "6282ee3d7f323d79687373f666b6a1506008ce8c387e921ec2ea2358389e4a59",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Frames/frapi.md",
                       "currentPath":  "research/contracts/notes/UI/Frames/frapi.md",
-                      "sha256":  "cf880100ebcc194537a55ae67e0f86d7963800831749457a6e99e51c2466c8f6",
+                      "sha256":  "c8fc051d31629f97647019acae8a37b6ceb4920105303e876aee0ee663e9c1b5",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Frames/native-rendering.md",
                       "currentPath":  "research/contracts/notes/UI/Frames/native-rendering.md",
-                      "sha256":  "352e4041ac659bbf1d7436c9929350da3ed0f5eadc86a619fafffc99d2c54497",
+                      "sha256":  "586f8b92723b455e3d47238465d96e3f80211539a212df950c09d6b10a30d8f2",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Frames/native-text-rendering.md",
                       "currentPath":  "research/contracts/notes/UI/Frames/native-text-rendering.md",
-                      "sha256":  "697790620c96c80e1dbd7c778d6546e044b8ec079a73b623f5c1931dc2617437",
+                      "sha256":  "2e637b0afc0ca7718d5b434238a4166f2ddc291c552e50c8632d6ef9dfc85a83",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
@@ -1307,14 +1307,14 @@
                   {
                       "originalPath":  "re/notes/World/Effects/client-novelty.md",
                       "currentPath":  "research/contracts/notes/World/Effects/client-novelty.md",
-                      "sha256":  "5b00a85dd60f94db74a51a8f395201ee70a501d5431d70d8dd8030c619edcf22",
+                      "sha256":  "73685c1dbdc46011eabe8f0277fec2aae785b55e25d721bac91e31ac9676d72a",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Effects/efcli-context.md",
                       "currentPath":  "research/contracts/notes/World/Effects/efcli-context.md",
-                      "sha256":  "486d63b5a5d496c4f9dd311e96e235610d578123c3a8e31a534584cd3eeaa3a8",
+                      "sha256":  "70f305b816dccca04f9656d3daf500e2f569f5fa9b190cc64a4964e382168fea",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
@@ -1328,7 +1328,7 @@
                   {
                       "originalPath":  "re/notes/World/Graphics/native-content.md",
                       "currentPath":  "research/contracts/notes/World/Graphics/native-content.md",
-                      "sha256":  "332ba52cb5c3eaebabf9ba810738936a2399208e0dbe8003b2aa8f6140b846da",
+                      "sha256":  "1c081f41c28be677d02e57d54c6961f04f4088d062a80ba741cb2782b5c6f9cb",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },

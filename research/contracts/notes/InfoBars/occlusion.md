@@ -7,7 +7,7 @@
 This document defines the confirmed occlusion behavior shared by InfoBar names and `AsHealth`
 healthbars, and separates that behavior from higher-level visibility, fading, and widget-state gates.
 
-The final addon design should preserve ArenaNet's native projection, occlusion, fading, scaling, and draw
+The client design should preserve ArenaNet's native projection, occlusion, fading, scaling, and draw
 submission. Through-wall experiments are reverse-engineering evidence, not the intended product behavior.
 
 Name rendering is documented in [`name-rendering.md`](name-rendering.md). Healthbar rendering and the
@@ -281,7 +281,7 @@ unresolved.
 - `NameRenderCtx.agent` gate != vanilla friendly-player through-wall policy
 - property `0x4D` != Party/Squad-specific visibility state
 - settings bit 0 != per-unit occlusion state
-- through-wall RE bypasses != intended addon product behavior
+- through-wall RE bypasses != intended client behavior
 
 # Open leads
 

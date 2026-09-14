@@ -1,10 +1,10 @@
 # Native GUI rendering foundation
 
 **Confirmed build:** 205.780.<br>
-**Status:** current-build renderer, queue, traversal, pooled-model, and FrCache-to-device stages recovered; the C# native-window submission path is implemented behind a signature-gated observer, while live addon acceptance and resource ownership remain open.<br>
+**Status:** current-build renderer, queue, traversal, pooled-model, and FrCache-to-device stages recovered; the C# native-window submission path is implemented behind a signature-gated observer, while live acceptance and resource ownership remain open.<br>
 **Scope:** static Ghidra evidence, the live-validated healthbar submission path, and the unvalidated C# native-window implementation.<br>
 
-This note tracks the minimum native surface required to render addon-owned GUI primitives through the
+This note tracks the minimum native surface required to render client-owned GUI primitives through the
 game's frame renderer. It intentionally separates frame lifecycle, content submission, materials, text,
 and input.
 
@@ -29,7 +29,7 @@ widget / control behavior
 `0x8D80FCFC` is validated as a vector constant and uploaded to the material's `control` uniform. This
 establishes BGFX as a lower material/shader/backend layer, not the native widget or layout system.
 
-The addon-facing abstraction should therefore target `FrApi` submission plus managed material handles.
+The client-facing abstraction should therefore target `FrApi` submission plus managed material handles.
 It should not expose BGFX shader packages or D3D11 resources directly.
 
 ## Confirmed submission chain
@@ -71,7 +71,7 @@ array[id]      FrFrame*
 ```
 
 Id zero is rejected by the FrApi submitter. A valid pointer in this table does not by itself establish
-that a frame is visible, alive for the next frame, or safe for addon ownership.
+that a frame is visible, alive for the next frame, or safe for client ownership.
 
 ## `FrFrame` renderer-facing layout
 
@@ -125,7 +125,7 @@ index down, walks each layer's entries in insertion order, toggles clipping arou
 For the type-`2` path emitted by `sub_14106A400`, `sub_141075830 @ 0x141075830` returns each model to
 the frame-model pool through `sub_14107E040`. The pool is drained during frame teardown by
 `sub_14107DF40`; these model pointers are therefore frame-lifetime values and must not be retained by
-addon code.
+client code.
 
 When `FrameContentParams.OrderingKey != -1`, a second `0x10`-byte entry is appended:
 
@@ -170,7 +170,7 @@ lines `0xEB`, `0xF5`, and `0xF6`. It:
 - builds rectangle geometry from X/Y and width/height;
 - binds shader token `0x8D80FCFC` to the supplied float4 control value.
 
-The model is pooled. No addon code should retain the returned pointer across frames.
+The model is pooled. No client code should retain the returned pointer across frames.
 
 The material pointer is not the `DAT_142893888` resource used as the default rectangle geoset.
 `sub_140A83190` creates a type-9 model from that geoset plus a one-element material-handle array;
@@ -267,7 +267,7 @@ the public BGFX ABI. The useful correlation is:
 
 Two details matter for the replacement design. First, `sub_140B0BE70` is not a public
 `bgfx::submit` thunk: it serializes an ArenaNet `GrDevWin360` record whose effect key and material
-inputs are already selected. Second, `sub_140B04CC0`/`sub_140B03890` are not safe addon entry points;
+inputs are already selected. Second, `sub_140B04CC0`/`sub_140B03890` are not safe client entry points;
 they require the game-owned DDI buffer, bind table, and active `BgfxDraw` state. Upstream BGFX makes
 the same ownership split explicit: API-side encoders accumulate state and render items, `Context::frame`
 publishes a frame, and the render thread later calls `renderFrame` and the backend `submit` method.
@@ -282,7 +282,7 @@ same render/UI thread as the FrContent path. Four read-only hits at `sub_140A6D1
 `13108`, all called from RVA `0x107457C` (the type-1 branch of `sub_141074350`); the observed calls
 passed model counts `0x6C`, `1`, `0x13`, and `1`, model-array pointers in `RDX`, render context/state
 `0x2243C127570` in `R8`, and flags `0x1008000` in `R9`. This validates the static operation-to-device
-handoff, but not an addon-call ABI or ownership contract.
+handoff, but not a client-call ABI or ownership contract.
 
 The same session's live cache snapshot showed the expected operation records: a leading type-2
 viewport operation followed by type-1 model ranges `(start=1,count=14)`, `(14,1)`, and `(15,19)` in
@@ -311,7 +311,7 @@ idempotent even on frames where the root walk is skipped.
 
 The caller `sub_140956330` invokes `sub_140A6DDB0` once more immediately after `sub_14106F090`.
 Thus `sub_140A6DDB0` is a shared flush boundary around the traversal, while the explicit model draw
-path through `sub_140A6D150` remains a different FrCache operation. A native addon callback should be
+path through `sub_140A6D150` remains a different FrCache operation. A client callback should be
 placed after the internal pre-flush and before `sub_141075FC0` (the call-return boundary at
 `0x14106F0F4`, or a detour at `sub_141075FC0` entry), rather than at the start of `sub_14106F090`.
 This preserves the current render context and lets newly queued models be consumed by the traversal.
@@ -360,19 +360,19 @@ The retired overlay path was structurally different from the native path:
 
 ```text
 module callback
-  -> managed layout/state in the Core-owned GUI
+  -> managed layout/state in the client UI
   -> DXGI PresentHook
   -> retired C++ overlay backend
-  -> addon-owned D3D11 render target
+  -> client-owned D3D11 render target
 ```
 
 The current C# path is:
 
 ```text
 native sub_14106A400(frameId, FrameContentParams*)
-  -> Core-owned C# callback once per game-thread generation
-  -> module layout/input through Gw2.Gui and transient rectangle list
-  -> addon-owned solid material acquisition
+  -> managed C# callback once per game-thread generation
+  -> managed layout/input and transient rectangle list
+  -> client-owned solid material acquisition
   -> native FrameContentParams descriptor
   -> sub_14106A400 on the current validated child frame
 ```
@@ -381,11 +381,11 @@ native sub_14106A400(frameId, FrameContentParams*)
 the managed callback with the exact current frame id and descriptor. `NativeWindowSubmission` copies
 the descriptor, uses its live material and frame id, and never retains native model/material pointers.
 The module-facing `Gw2HostGui*` names are the current narrow ABI. Their host implementation is
-managed C# and forwards into the Core-owned GUI renderer; there is no separate overlay backend or
+managed C# and forwards into the managed GUI renderer; there is no separate overlay backend or
 second D3D11 draw path.
 
 The C# UI keeps its managed rectangle queue as the window API and submits it with the recovered
-addon-owned solid material. It does not borrow a live healthbar/PvP-panel `EmitDrawQuad` payload.
+neutral solid material. It does not borrow a live healthbar/PvP-panel `EmitDrawQuad` payload.
 The recovered native text path is recorded separately in
 [`native-text-rendering.md`](native-text-rendering.md); both paths share the validated frame/phase
 ownership rules and fail closed when those guards are unavailable.
@@ -398,7 +398,7 @@ original native payload on every disabled, unmatched, or failed path.
 ## What this enables
 
 The healthbar experiment proved the generic descriptor path, and the solid-material route now submits
-addon-owned rectangles through that same `sub_14106A400` seam. Healthbar/PvP live-template replay is
+client-owned rectangles through that same `sub_14106A400` seam. Healthbar/PvP live-template replay is
 retired from the GUI renderer.
 
 It does **not** yet prove that the managed module surface is accepted across all UI states, materials,
@@ -411,13 +411,13 @@ layer ordering, and resize behavior.
    `sub_141073900`/`sub_141074350` cache consumption.
 2. Recover material acquisition and retain/release rules, beginning with a neutral untextured UI material.
 3. Validate layer ordering, clipping/scissor ownership, opacity propagation, and resize behavior.
-4. Validate the recovered native text measurement/glyph-model path for arbitrary addon strings, and
+4. Validate the recovered native text measurement/glyph-model path for arbitrary client strings, and
    keep font-resource/range extension separate from generic renderer material recovery.
 5. Keep mouse/keyboard focus and frame lifecycle separate from renderer submission until their ownership is proven.
 
 Do not construct or destroy native frames yet. The current layouts make inspection and submission possible,
 but the statically recovered [parent/child destruction path](frapi.md#build-205780-lifecycle-surface)
-still needs callback ABI, resource-retention, and live addon-owned lifecycle validation.
+still needs callback ABI, resource-retention, and live client-owned lifecycle validation.
 
 ## Neutral solid-material acquisition
 
@@ -448,7 +448,7 @@ embedded built-in material definitions. Its table is the `m_solidMaterialTable` 
 The returned object follows the native `Handle` convention already visible in `EmitDrawQuad @
 0x1403A7B20`: the cache lookup increments the reference count at handle `+0x08`; after synchronous
 `sub_14106A400` submission, the caller atomically decrements that count through
-`sub_1409B48B0 @ 0x1409B48B0` and invokes handle vtable `+0x08` only when it reaches zero. An addon
+`sub_1409B48B0 @ 0x1409B48B0` and invokes handle vtable `+0x08` only when it reaches zero. A client
 must mirror this scope and must not retain the handle across native UI traversals.
 
 Built-in shader id `3` is used by concrete solid-quad callers. `sub_140378CF0 @ 0x140378CF0` is the
@@ -469,7 +469,7 @@ sub_141070270(params, packedColor)    // optional tint; required for arbitrary R
 sub_14106A400(frameId, params)
 ```
 
-The managed `NativeWindowUi.FillRect` queue uses the recovered addon-owned solid-material recipe
+The managed `NativeWindowUi.FillRect` queue uses the recovered neutral solid-material recipe
 during the validated `sub_14106A400` callback. If material acquisition or root-viewport resolution
 fails, the queue is dropped for that frame; there is no healthbar/PvP live-template fallback.
 Absence, incorrect texture/color, flicker, duplication, a crash, or failure across a GW2 tooltip/map
@@ -480,8 +480,8 @@ retaining the original game payload.
 ## Managed GUI hardening on top of the native renderer
 
 The renderer remains the recovered FrApi/FrText path described above. The tool-window layer above it
-is now explicitly a self-implemented managed immediate-mode GUI; ImGui and the retired overlay bridge
-are not part of the active architecture.
+is now explicitly a managed immediate-mode GUI; ImGui and the retired overlay bridge are not part of
+the active architecture.
 
 Build-205.780 hardening now includes:
 
@@ -493,7 +493,7 @@ Build-205.780 hardening now includes:
   omitting the receiving frame's `ScreenY0` shifts the displayed controls upward while leaving
   their managed hitboxes in place;
 - Win32 `ScreenToClient` is only a fallback and is scaled by root logical size versus client pixels;
-- addon-window interaction bounds are published to a thread-local mouse hook so button/wheel messages
+- client-window interaction bounds are published to a thread-local mouse hook so button/wheel messages
   do not click through into GW2 without taking WndProc ownership;
 - child containers retain their own scroll offset/content extent, consume wheel input only while
   hovered, intersect their clip with the parent clip, and draw a managed scrollbar;

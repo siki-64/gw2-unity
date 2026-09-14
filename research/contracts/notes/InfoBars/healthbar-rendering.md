@@ -542,7 +542,7 @@ The known native `Attitude` enum is:
 
 Do not assign canonical health color pairs to `Indifferent` or `Neutral` until directly recovered.
 
-A useful addon-side design concept is to classify **health presentation** separately from native
+A useful client-side design concept is to classify **health presentation** separately from native
 attitude, for example:
 
 ```text
@@ -553,7 +553,7 @@ SpectatorRed
 Unknown
 ```
 
-This is an addon architecture concept, not a confirmed native enum.
+This is a client architecture concept, not a confirmed native enum.
 
 Spectator team bars likely use different authored color pairs. Exact pairs should be captured from the
 native path rather than guessed from screenshots.

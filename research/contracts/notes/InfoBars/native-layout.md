@@ -1,6 +1,6 @@
 # InfoBar native layout recovery
 
-Static audit: 2026-09-13. Source: active Ghidra `gw2-re` project, `/Gw2-64.exe`,
+Static audit: 2026-09-13. Source: active Ghidra analysis project, the client image,
 image base `0x140000000`, imported SHA256
 `d2ae84876a0b93277fccb368969046b848bb0403fd09db420389c813d2459b23`.
 The import was created September 1; its generic PE product version does not establish

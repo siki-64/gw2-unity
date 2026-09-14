@@ -353,7 +353,7 @@ instruction when all of the following are validated at runtime:
 An observation callback at this boundary must preserve the original `RCX`/`RDX` pair across the callback,
 provide aligned Windows x64 shadow space for its own call, preserve nonvolatile registers, and contain all
 failures before resuming native execution. It must not cache either native pointer beyond the observed
-call. These are addon hook requirements derived from the native entry contract, not claims about a native
+call. These are client hook requirements derived from the native entry contract, not claims about a native
 ArenaNet callback mechanism.
 
 # Stage 3 — `InfoBarUpdate`
@@ -511,7 +511,7 @@ The current-target fast path sets presentation targets to `1.0`. The Stage-3 set
 separate global visibility-routing branch and must not be confused with an occlusion/depth bit; see
 [`occlusion.md`](occlusion.md).
 
-The implementation consequence remains: addon code should add or transform presentation semantics while
+The implementation consequence remains: client code should add or transform presentation semantics while
 preserving the native OR-chain, interpolation, fading, projection, occlusion, scaling, and drawing.
 
 ## `AsHealth`

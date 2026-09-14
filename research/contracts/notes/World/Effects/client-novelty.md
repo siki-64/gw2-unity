@@ -434,7 +434,7 @@ Direct creation deliberately bypasses the following authored `AvCharEffect` work
 - replicated activation/deactivation ownership.
 
 That bypass does not prevent `EfCliContext` from owning and ticking a successfully
-created runtime object. It does mean Companion must retain the returned object and
+created runtime object. It does mean the client must retain the returned object and
 request removal through virtual `+0x30` before replacement, shutdown, or a
 world/character transition. Losing that pointer can leave a persistent local effect
 outside `AvCharEffect`'s normal removal bookkeeping.

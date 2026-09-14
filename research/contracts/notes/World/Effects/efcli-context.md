@@ -200,5 +200,5 @@ native completion and unlink.
 
 No explicit thread-id assertion was found. Creation, removal, registration, and tick
 mutate unsynchronized intrusive collections. The `inTick` flag handles same-thread
-callback reentrancy, not cross-thread access. Addon operations must use the established
+callback reentrancy, not cross-thread access. Client operations must use the established
 game-thread dispatcher.

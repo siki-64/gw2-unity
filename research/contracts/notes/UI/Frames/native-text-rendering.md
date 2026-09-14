@@ -7,14 +7,14 @@ statically recovered and partially live-traced. A build-205.780 live glyph probe
 tested unsupported Greek/Cyrillic and kana code units reach exact lookup, return no glyph record,
 and render as blank advance-only gaps. Literal `U+25A1` resolves to a real square glyph; it is not
 automatically substituted for an unsupported code unit.
-A fixed addon-owned draw call has been live-validated. The root pre-traversal submission experiment was rejected by a live
+A fixed client-owned draw call has been live-validated. The root pre-traversal submission experiment was rejected by a live
 `GrModel::m_frustum` assertion; the current safe experiment uses the already-observed native content
 callback and its current frame id.<br>
 **Scope:** this note records build-local evidence only. RVAs below are relative to the 205.780
 `Gw2-64.exe` image base.
 
 This is the native text path behind ordinary UI labels. It is distinct from the temporary
-`Gw2.Gui.NativeWindowUi` solid-quad glyph fallback and from the generic `FrameContentParams` quad
+`NativeWindowUi` solid-quad glyph fallback and from the generic `FrameContentParams` quad
 submitter.
 
 ## Recovered call chain
@@ -69,7 +69,7 @@ sub_141042C60 -> sub_14106DA10(frameId, 0x51, 0, decodedText)
 
 `sub_14106DA10` resolves the frame and dispatches the message through the frame message list. The
 extended form `sub_14106DAA0` copies the six stack/register payload values into a temporary message
-record before dispatching it. These are control/widget message boundaries, not yet addon-facing APIs.
+record before dispatching it. These are control/widget message boundaries, not yet client-facing APIs.
 
 `sub_1410446B0` is the current-build `CtlText` message/update dispatcher. Its measurement case (`0x38`)
 builds a temporary text parameter block and calls `sub_14106F280`. Its draw/update cases reach
@@ -109,7 +109,7 @@ The wrapper:
 
 The `contentGroup` value is passed to the `FrContent` layer-array index. Native `CtlText` calls use
 zero in the directly recovered callback; another native text caller uses six. The accepted range is
-not revalidated as an addon contract here.
+not revalidated as an client contract here.
 
 ### Measurement boundary: `sub_14106F280` (`RVA 0x106F280`)
 
@@ -136,7 +136,7 @@ from the resulting bounds. This is the best future `CalcTextWidth` candidate bec
 a `GrFont*` to managed code.
 
 The measurement ABI remains an uncalled candidate boundary. The draw ABI has been live-validated in a
-normal game world and is now used by the Core-owned renderer. The renderer uses the recovered wrapper
+normal game world and is now used by the managed renderer. The renderer uses the recovered wrapper
 only; it does not construct a native widget or retain any native object.
 
 ## `FrTextParams` layout
@@ -195,7 +195,7 @@ these raw flags as a managed public API yet.
 64-bit font key to a cached font-data entry, loads a `GrFont` when needed, and explicitly addrefs the
 returned `GrFont*`. It also returns the resolved height and metadata. `sub_141071AA0` releases that
 font reference after all line models have been built. This confirms operation-scoped font ownership;
-it does not authorize retaining the pointer in addon code.
+it does not authorize retaining the pointer in client code.
 
 `sub_140AD6A80` creates the standard glyph model from the borrowed `GrFont*`, UTF-16 span, height,
 position, bounds, color, and layout flags. `sub_140AD6BC0` adds a borrowed material-byte pointer and
@@ -205,7 +205,7 @@ until its byte-copy behavior is independently confirmed.
 The returned glyph models are placed into the current frame's content group by `sub_141074A80`. The
 text wrapper does not release those model references after appending them; native frame/content
 cleanup therefore owns the models for the frame. This is strongly inferred from the wrapper and the
-frame cleanup path, and is sufficient to prohibit addon retention across frames.
+frame cleanup path, and is sufficient to prohibit client retention across frames.
 
 ## GrFont glyph coverage and font registration
 
@@ -336,7 +336,7 @@ derived metric fields. The managed offline model and round-trip/live-prefix test
 
 The reusable FrText path does not create a sanitized character buffer before GrFont lookup.
 `sub_141071AA0` and `sub_1410715C0` retain line spans as pointers/counts into the original UTF-16
-input and pass those same spans into the GrFont measurement/model builders. The direct addon-owned
+input and pass those same spans into the GrFont measurement/model builders. The direct client-owned
 draw wrapper likewise supplies its caller-owned UTF-16 buffer synchronously.
 
 Consequently, at this layer `U+0416`, `U+03A9`, `U+3042`, and `U+30AB` reach
@@ -416,8 +416,8 @@ marks the range loaded, and invokes the native metric rebuild. Any failure prese
 lookup. A successful bridge emits a `native-font-range-asset` diagnostic record.
 
 All four synthetic paths are live-validated together in native 15px chat using Greek/Cyrillic
-`Α Β Γ Ω` / `А Б В Ж Я`, kana `あ ア か カ`, Bopomofo `ㄅ ㄆ ㄇ ㄈ`, and fullwidth
-`Ａ Ｂ １ ２`. Fresh same-run diagnostics recorded `loaded-synthetic` for keys
+`΁E΁E΁EΩ` / `ЁEЁEЁEЁEЯ`, kana `ぁEア ぁEカ`, Bopomofo `㄁E㄁E㄁E㄁E, and fullwidth
+`�E� �E� �E�E�E�`. Fresh same-run diagnostics recorded `loaded-synthetic` for keys
 `gw2reverse/font/greek-cyrillic`, `gw2reverse/font/hiragana-katakana`,
 `gw2reverse/font/bopomofo`, and `gw2reverse/font/halfwidth-fullwidth`; subsequent lookups returned
 the exact `U+03A9`, `U+0416`, `U+3042`, and `U+30AB` native records from the new concrete ranges.
@@ -498,7 +498,7 @@ a fallback implementation.
 The UTF-16 text, `FrTextParams`, bounds/line-data outputs, offset pointer, and custom material bytes
 must all remain valid for the duration of the synchronous call only. The native raw-text setter copies
 its input into `CtlText` storage; this does not make the FrApi draw wrapper asynchronous-safe for an
-addon caller.
+client caller.
 
 ## Native coordinate and root-frame validation
 
@@ -508,7 +508,7 @@ following line. Native text therefore uses a bottom-origin vertical rectangle fo
 the managed `NativeWindowUi` layout uses top-origin screen coordinates. This is why the same sequence
 appeared bottom-to-top when submitted without conversion.
 
-The broad test also proved that the observed `sub_14106A400` frame is not a safe addon root. In the
+The broad test also proved that the observed `sub_14106A400` frame is not a safe client root. In the
 live session the first callback commonly carried frame `0x2A`; the current value-only `FrFrame` read
 for that id was approximately `(1117.5,42.0)-(1222.5,147.0)`. The independently recovered root
 relation `sub_141086220` returns `DAT_142893CB0 - 0x60`, and the same pointer matched the frame-table
@@ -517,10 +517,10 @@ which child content appeared first, explaining the user-visible change in placem
 
 The runtime resolves that root id by value-only reads of the build-local frame manager at
 `0x142893C10` (`+0x08` object array, `+0x14` count) and root-table head at `0x142893CB0`, then reads
-only the root `FrFrame` screen rectangle for coordinate conversion. It submits addon text using the
+only the root `FrFrame` screen rectangle for coordinate conversion. It submits client text using the
 current native content callback's frame id, not the separately resolved root id. If that callback is
 already the root frame, text is skipped fail-closed because a late root append is unsafe. A failed
-root resolution also drops addon text rather than using an arbitrary child. The pointer is used only
+root resolution also drops client text rather than using an arbitrary child. The pointer is used only
 for the synchronous read and is never retained; the submitted native text still owns no frame, font,
 model, or material pointer.
 
@@ -562,7 +562,7 @@ restored after each capture:
 | `sub_140A69220` (`RVA 0xA69220`) | 20 hits on thread `15592`; the stable `FontContext` object was observed at runtime, with opaque font-key arguments. |
 
 These captures confirm execution of the native text path and its thread/phase relationship. They do not
-prove that an arbitrary addon call to `sub_14106AF90` is legal from the current
+prove that an arbitrary client call to `sub_14106AF90` is legal from the current
 `sub_14106A400` observation callback, nor do they prove the long-term callback candidate's detour ABI.
 
 ## Live boundary confirmation in the current session
@@ -597,9 +597,9 @@ produced 20 hits on thread `3048`, all from `caller-rva=0x010763FC`. `sub_140A85
 hits on that thread, all from `caller-rva=0x01075DAC`, the static call site inside
 `sub_141075CE0`. Together with the static body, this confirms that traversal calls the frustum
 assignment helper for content models. It does not yet constitute a single-event timestamp ordering
-trace between an addon append and that assignment, so the long-term callback ABI remains unconfirmed.
+trace between an client append and that assignment, so the long-term callback ABI remains unconfirmed.
 
-The root-frame proof crash is therefore classified as an ordering/lifetime failure: the addon model
+The root-frame proof crash is therefore classified as an ordering/lifetime failure: the client model
 was appended without a guaranteed subsequent traversal that assigns its frustum. The later cache
 render reached `sub_140A883D0`, which asserted `GrModel + 0x40` (`m_frustum`) was null. The accepted
 text arguments and the successful child-frame proof show that this was not evidence against the
@@ -672,9 +672,9 @@ produced visible text in the
 normal game world without instability. Its raw rectangle did not yet map one-to-one to screen pixels,
 so the native transform convention remains unresolved. It does not enable native measurement.
 
-## Core-owned native text UI route
+## managed native text UI route
 
-The Core-owned native GUI route is active whenever its validated build and phase guards are available.
+The managed native GUI route is active whenever its validated build and phase guards are available.
 `NativeWindowUi.DrawTextAt` keeps the existing C# layout and queues each non-empty line for the next
 validated content callback. `NativeWindowSubmission` runs the host callback and then calls the
 recovered `sub_14106AF90` wrapper synchronously before native content traversal. The queue is copied
@@ -683,14 +683,14 @@ retained across the call. If the native route is unavailable, text is dropped fo
 
 The outer `sub_141075FC0` observation entry owns the renderer generation. The generic game-thread
 dispatcher is intentionally not used as a frame boundary: in a normal world it can run more than
-once during a single outer/inner UI traversal, which caused the full addon text set to be appended
+once during a single outer/inner UI traversal, which caused the full client text set to be appended
 repeatedly to that traversal and presented as flickering duplicates. The outer entry resets the
 once-per-traversal guards before any inner text/content submissions begin.
 
 Generation ownership alone is insufficient because the first child content submission is unstable:
 hovering a native GW2 control can make its tooltip child arrive first. The runtime therefore pins the
 first validated non-root submission frame and waits for that same frame in subsequent traversals
-instead of migrating addon text between child queues. After eight complete traversals without the
+instead of migrating client text between child queues. After eight complete traversals without the
 pinned frame, the anchor is discarded and reacquired; this bounded fallback covers map/root lifecycle
 changes without retaining a native frame pointer.
 
@@ -765,7 +765,7 @@ safe read. Each readable record includes the absolute return address and a modul
 `caller-rva`, allowing the control-side call site to be identified without dereferencing the
 caller. A successful record inside `phase=inner` would correlate native text measurement with the
 same FrContent traversal that already carried the live frame-content submissions, but it would
-still not authorize an addon-owned measurement call.
+still not authorize an client-owned measurement call.
 
 ## Draw ABI observation
 
@@ -799,7 +799,7 @@ offset  field
 The callback safe-reads the rectangle and capped UTF-16 preview, then logs the scalar style,
 layout, color, content-group, phase, and caller RVA. It does not call `sub_14106AF90`, modify its
 arguments, or retain any native pointer. This is intended to identify the real `CtlText` draw
-callers and compare their arguments with the measurement stream before any addon-owned draw call
+callers and compare their arguments with the measurement stream before any client-owned draw call
 is considered.
 
 ## Live validation after removing `-maploadinfo`
@@ -845,7 +845,7 @@ promoted `FrameContentParams` fields at `+0x00` ordering key, `+0x04` layer, `+0
 `payload=unreadable`. The logger is capped at 128 frame submission records and does not alter the
 native call or retain the descriptor/material pointers.
 
-## Historical live validation of the addon-owned draw path
+## Historical live validation of the client-owned draw path
 
 A fresh build-205.780 session after the proof-window extension remained responsive in the normal
 world frame. The screen showed `GW2 NATIVE TEXT TEST` over the game world, not only on the loading
@@ -888,20 +888,20 @@ current build. The `FrTextParams` offsets above are supported by the `0x40` copy
 owned by the current frame content group after `sub_141074A80`, and font references are operation-scoped.
 
 **Confirmed:** the existing generic frame-content callback is inside the same native draw traversal
-in the validated session and accepts the recovered `sub_14106AF90` call with addon-owned stack data,
+in the validated session and accepts the recovered `sub_14106AF90` call with client-owned stack data,
 but late root-frame insertion is not safe because the new models may miss frustum assignment.
 
 **Strongly supported by static and observation traces:** the inner phase entry is before the
 `sub_141075CE0`/`sub_140A85050` traversal work. The guarded implementation now builds and submits
-addon text there, while keeping the original frame-content callback for the existing rectangle path.
+client text there, while keeping the original frame-content callback for the existing rectangle path.
 The new pre-traversal placement still requires live validation after deployment; until that test
 passes, no proof/UI gate is required; the renderer remains controlled only by build/signature
 validation.
 
 Remaining risks are sustained call rate, the exact CtlText vtable/message ABI for arbitrary
-addon-created controls, the complete text-flag enum, the safe content-group choice, model cleanup
+client-created controls, the complete text-flag enum, the safe content-group choice, model cleanup
 under all frame modes, custom material copying, and whether the existing generic observation callback
-remains suitable for a full addon text API without ordering side effects. Root-frame lookup and the
+remains suitable for a full client text API without ordering side effects. Root-frame lookup and the
 bottom-origin conversion are confirmed for this build/session but remain build-local and require
 revalidation after game updates or a different root-frame lifecycle.
 

@@ -46,10 +46,10 @@ Confirmed against build **204.489** by disassembly and a live import from the Op
 - `GetIbContext` returns `g_IbContext`. The static initializer passes that same storage to
   `IbContext::ctor`, which installs the vtable containing `IbContext::ImportBindings`.
 
-## Auto-swap specialization source
+## Local-player specialization source
 
-Auto-swap reads the local player's specialization from reconstructed native state; Mumble Link is
-not the runtime specialization source.
+The local player's specialization is read from reconstructed native state; Mumble Link is not the
+runtime specialization source.
 
 The guarded sampling path is:
 
@@ -71,22 +71,22 @@ The player wrapper is selected by exact native pointer identity against `LocalCh
 than by correlating an external player identifier.
 
 The third specialization slot is not itself equivalent to an elite specialization. The shared
-addon-owned game-state snapshot preserves the selected slot-2 native definition id and its elite
-flag. Auto-swap interprets a non-elite third slot as the `core` preset and translates elite native
-definition ids to preset names before the existing debounce/import state machine consumes them.
+game-state snapshot preserves the selected slot-2 native definition id and its elite flag. A
+non-elite third slot is the `core` configuration, and elite native definition ids are separate
+values rather than preset names.
 
 Sampling runs from the recovered recurring game-thread dispatcher and is throttled to 100 ms. The
 same refresh reads `ChCliContext` once and publishes both the character `Agent* -> Profession` table
-used by profession healthbar colors and the local-player specialization state used by auto-swap.
+used by profession healthbar colors and the local-player specialization state.
 All foreign-memory traversal uses the guarded process-memory reader, so map teardown or a stale
 context root produces empty/unavailable snapshot state rather than a raw pointer dereference.
 
 
 ## Native UI pointer coordinates (build 205.780)
 
-The self-implemented addon GUI originally treated `ScreenToClient` output as if it were already in
-GW2 logical UI coordinates. That was incorrect whenever the client pixel size and native UI scale
-differed, producing a hit-test offset that grew with screen position.
+`ScreenToClient` output was originally treated as if it were already in GW2 logical UI coordinates.
+That is incorrect whenever the client pixel size and native UI scale differ, producing a hit-test
+offset that grows with screen position.
 
 Build 205.780's FrMouse path at `sub_14107E440` reads:
 
@@ -104,15 +104,15 @@ scaledX = rawX * uiScaleX
 scaledY = rawY * uiScaleY
 ```
 
-The scaled pair remains in the native frame's bottom-origin screen space. The managed addon layout
-is top-origin, so Core converts the scaled Y value back through the live root frame height before
+The scaled pair remains in the native frame's bottom-origin screen space. The managed client layout
+is top-origin, so the scaled Y value is converted back through the live root frame height before
 hit testing. It reads only scalar values and does not retain a native input/frame pointer. If the
-validated native snapshot cannot be read, Core falls back to a Win32 client point scaled by
+validated native snapshot cannot be read, the client falls back to a Win32 client point scaled by
 `rootViewportSize / clientPixelSize`; simply adding the root origin is no longer used.
 
-Wheel delivery is currently addon glue rather than a claimed recovered FrMouse wheel ABI. A
+Wheel delivery is currently client-side handling rather than a claimed recovered FrMouse wheel ABI. A
 thread-local `WH_MOUSE` observer on the GW2 window thread accumulates vertical wheel deltas and keeps
-the existing WndProc untouched. The GUI publishes its window bounds once per completed frame so
-left-button/wheel messages inside addon windows can be prevented from clicking/zooming through into
+the existing WndProc untouched. The UI publishes its window bounds once per completed frame so
+left-button/wheel messages inside client windows can be prevented from clicking/zooming through into
 the game while physical button state remains available to the immediate-mode controls. Right-button
 messages remain game-owned because GW2 uses their press/release pair for camera control.

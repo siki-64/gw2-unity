@@ -780,7 +780,7 @@ Confirmed categories relevant to the occlusion path are:
 | `Unknown10` | `10` |
 
 The `FriendlyPlayer` value is produced by `ResolveNameCategory` for the type-0 relationship/category
-path rather than being an addon-only classification. Category-specific through-wall behavior belongs in
+path rather than being a client-only classification. Category-specific through-wall behavior belongs in
 [`occlusion.md`](occlusion.md).
 
 Build `205.780` custom-arena spectator captures found no separate blue/red name category for the
