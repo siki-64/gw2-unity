@@ -20,7 +20,7 @@ Create `artifacts/` before running that command and close this project's interac
 | research/contracts/ | Recovered game structure and routine contracts with the notes that describe them; excluded from Unity compilation |
 | research/data/ | Offline archive/tooling source with its tests; excluded from Unity compilation |
 | research/provenance/ | License, attribution and the findings manifest with per-file SHA-256 |
-| tools/ | Future offline asset conversion and replay tools |
+| tools/ | Offline reverse-engineering workflow tooling: catalog validation and build stamping, evidence hashing and provenance, findings hash cross-check, and the Ghidra anchor export. See [tools/README.md](tools/README.md) |
 | tests/fixtures/ | Sanitized, documented fixtures for future codec/replay tests |
 | captures/local/ | Ignored private capture workspace; create on demand, never tracked |
 | local-assets/ | Ignored local game assets and conversion output; create on demand, never tracked |

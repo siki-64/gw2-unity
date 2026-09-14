@@ -1,0 +1,370 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gw2-unity.local/tools/schema/catalog.schema.json",
+  "title": "GW2 protocol catalog and message artifact",
+  "description": "Shared value definitions for protocol/catalog.json and protocol/messages/<build>/<id>.json. The schema describes evidence bookkeeping, not a recovered wire encoding. It deliberately permits unknown field kinds and extra properties so an incomplete finding can still be recorded.",
+  "$defs": {
+    "build": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Numeric game build as reported by the client (MumbleLink getBuildInfo). Native content IDs and public API IDs are separate namespaces and never appear here."
+    },
+    "hexId": {
+      "type": "string",
+      "pattern": "^0x[0-9A-Fa-f]{1,8}(?:\\.\\.0x[0-9A-Fa-f]{1,8})?$",
+      "description": "Message id, or an inclusive id range, in hexadecimal. A range is a research lead only: it cannot be registered as a supported wire message."
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "direction": {
+      "enum": ["unknown", "server-to-client", "client-to-server", "local"]
+    },
+    "representation": {
+      "enum": [
+        "unknown",
+        "wire-bytes",
+        "transport-frame",
+        "native-memory",
+        "decoded-handler-record",
+        "semantic-call-trace",
+        "serialization-call-trace"
+      ],
+      "description": "Which layer of the client the evidence describes. native-memory and decoded-handler-record are never wire encodings."
+    },
+    "evidenceLevel": {
+      "enum": ["unknown", "static", "observed", "reproduced"]
+    },
+    "connectionRole": {
+      "enum": ["unknown", "login", "platform", "game", "local"]
+    },
+    "pipeline": {
+      "description": "Decoder/encoder pipeline selector. See tools/pipelines/taxonomy.json. Stage order recorded here is a build-specific claim, not a default: msgpack-schema is one observed variant, not the observed transport.",
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "state": {
+          "enum": ["documented", "hypothesized", "unknown"],
+          "description": "documented: the order is supported by this build's trace evidence. hypothesized: plausible, not this build's evidence. unknown: framing stage not established."
+        },
+        "opcodeEncoding": {
+          "enum": ["unknown", "u16le", "u16be", "varint", "bit-packed", "none"]
+        },
+        "stages": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "sourceReference": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "note",
+            "contract-source",
+            "catalog-entry",
+            "image-anchor-export",
+            "module-snapshot",
+            "external-documentation"
+          ]
+        },
+        "path": { "type": "string" },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "label": { "type": "string" },
+        "url": { "type": "string", "pattern": "^https?://" },
+        "note": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "field": {
+      "type": "object",
+      "required": ["id", "kind", "confidence"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Structural identifier only. An unproven field keeps an offset-derived id such as field_0x21; a semantic name is only used once the evidence supports it."
+        },
+        "offset": { "type": "integer", "minimum": 0 },
+        "bitOffset": { "type": "integer", "minimum": 0 },
+        "bitWidth": { "type": "integer", "minimum": 1 },
+        "kind": {
+          "enum": [
+            "u8", "u16", "u32", "u64",
+            "i8", "i16", "i32", "i64",
+            "f32", "f64",
+            "f32x2", "f32x3", "f32x4",
+            "bool",
+            "compressed-int",
+            "string-ascii", "string-utf8", "string-utf16",
+            "guid",
+            "struct",
+            "array-fixed", "array-dynamic", "buffer-dynamic",
+            "optional",
+            "opaque", "unknown"
+          ]
+        },
+        "count": { "type": "integer", "minimum": 0 },
+        "countField": {
+          "type": "string",
+          "description": "id of the field that carries this field's element count."
+        },
+        "nested": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/field" }
+        },
+        "rawHex": {
+          "type": "string",
+          "pattern": "^(?:[0-9A-Fa-f]{2})+$",
+          "description": "Preserved bytes for a compressed, encrypted or unparsed region. Presence of rawHex is what keeps unknown content auditable."
+        },
+        "value": {
+          "description": "Observed value when it is stable and meaningful. Never used to infer a name."
+        },
+        "confidence": {
+          "enum": ["unknown", "static", "observed", "reproduced"]
+        },
+        "note": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "unresolved": {
+      "type": "object",
+      "required": ["question"],
+      "properties": {
+        "question": { "type": "string", "minLength": 1 },
+        "kind": {
+          "enum": [
+            "framing",
+            "opcode-encoding",
+            "packing",
+            "schema-variant",
+            "session-state",
+            "value-domain",
+            "identity-mapping",
+            "compression",
+            "encryption",
+            "other"
+          ]
+        },
+        "note": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "validation": {
+      "type": "object",
+      "required": ["static", "synthetic", "capturedReplay", "unity", "liveInterop"],
+      "description": "Recorded separately on purpose. Replay or editor compilation is not live server compatibility.",
+      "properties": {
+        "static": { "type": "boolean" },
+        "synthetic": { "type": "boolean" },
+        "capturedReplay": { "type": "boolean" },
+        "unity": { "type": "boolean" },
+        "liveInterop": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "wireFixture": {
+      "type": "object",
+      "required": ["kind", "direction", "sha256"],
+      "properties": {
+        "kind": {
+          "enum": ["synthetic", "sanitized-capture"],
+          "description": "synthetic bytes test an implementation and never confirm the protocol."
+        },
+        "direction": { "$ref": "#/$defs/direction" },
+        "build": { "$ref": "#/$defs/build" },
+        "artifactRef": {
+          "type": "string",
+          "description": "relative path of an evidence manifest entry whose sha256 matches this fixture."
+        },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "length": { "type": "integer", "minimum": 0 },
+        "provenance": { "type": "string" },
+        "sanitization": { "type": "string" },
+        "expectedDecode": { "type": "string" },
+        "unknownFields": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "buildStamp": {
+      "type": "object",
+      "required": ["build", "stampedAtUtc", "tool"],
+      "properties": {
+        "build": { "$ref": "#/$defs/build" },
+        "buildLabel": { "type": "string" },
+        "imageSha256": { "$ref": "#/$defs/sha256" },
+        "processName": { "type": "string" },
+        "runtimeBase": { "type": "string", "pattern": "^0x[0-9A-Fa-f]+$" },
+        "imageSize": { "type": "integer", "minimum": 0 },
+        "capturedAtUtc": { "type": "string" },
+        "stampedAtUtc": { "type": "string", "minLength": 1 },
+        "tool": { "type": "string", "minLength": 1 },
+        "evidence": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "messageArtifact": {
+      "type": "object",
+      "required": [
+        "name",
+        "build",
+        "direction",
+        "messageId",
+        "representation",
+        "evidenceLevel",
+        "pipeline",
+        "fields",
+        "sessionPrerequisites",
+        "sourceReferences",
+        "wireFixtures",
+        "unresolved",
+        "validation"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Identifier of the finding, not a claimed native symbol. Use a provisional name while the native identity is unproven."
+        },
+        "buildLabel": { "type": "string" },
+        "build": { "$ref": "#/$defs/build" },
+        "imageSha256": { "$ref": "#/$defs/sha256" },
+        "connectionRole": { "$ref": "#/$defs/connectionRole" },
+        "direction": { "$ref": "#/$defs/direction" },
+        "messageId": { "$ref": "#/$defs/hexId" },
+        "representation": { "$ref": "#/$defs/representation" },
+        "evidenceLevel": { "$ref": "#/$defs/evidenceLevel" },
+        "pipeline": { "$ref": "#/$defs/pipeline" },
+        "sourceReferences": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/sourceReference" }
+        },
+        "fields": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/field" }
+        },
+        "sessionPrerequisites": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "wireFixtures": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/wireFixture" }
+        },
+        "unresolved": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/unresolved" }
+        },
+        "validation": { "$ref": "#/$defs/validation" },
+        "noClaim": {
+          "type": "string",
+          "description": "Explicit statement of what this artifact does not establish."
+        }
+      },
+      "additionalProperties": true
+    },
+    "messageEntry": {
+      "type": "object",
+      "required": [
+        "name",
+        "build",
+        "direction",
+        "messageId",
+        "representation",
+        "evidenceLevel",
+        "artifact"
+      ],
+      "properties": {
+        "name": { "type": "string" },
+        "buildLabel": { "type": "string" },
+        "build": { "$ref": "#/$defs/build" },
+        "imageSha256": { "$ref": "#/$defs/sha256" },
+        "connectionRole": { "$ref": "#/$defs/connectionRole" },
+        "direction": { "$ref": "#/$defs/direction" },
+        "messageId": { "$ref": "#/$defs/hexId" },
+        "representation": { "$ref": "#/$defs/representation" },
+        "evidenceLevel": { "$ref": "#/$defs/evidenceLevel" },
+        "pipeline": { "$ref": "#/$defs/pipeline" },
+        "artifact": {
+          "type": ["string", "null"],
+          "description": "Repository-relative path of the message artifact, or null while the entry is a lead."
+        },
+        "wireVerified": { "type": "boolean" },
+        "supported": { "type": "boolean" },
+        "note": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "researchLead": {
+      "type": "object",
+      "required": [
+        "build",
+        "messageId",
+        "direction",
+        "representation",
+        "evidenceLevel",
+        "source",
+        "wireVerified"
+      ],
+      "properties": {
+        "build": { "$ref": "#/$defs/build" },
+        "buildLabel": { "type": "string" },
+        "messageId": { "$ref": "#/$defs/hexId" },
+        "direction": { "$ref": "#/$defs/direction" },
+        "representation": { "$ref": "#/$defs/representation" },
+        "evidenceLevel": { "$ref": "#/$defs/evidenceLevel" },
+        "source": { "type": "string" },
+        "wireVerified": { "type": "boolean" },
+        "note": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "catalog": {
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "template",
+        "supportedWireBuilds",
+        "buildStamps",
+        "messages",
+        "researchLeads"
+      ],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "template": { "type": "string" },
+        "supportedWireBuilds": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/build" },
+          "description": "Always empty until a build is registered after capture-backed codec validation. Registration is never automatic."
+        },
+        "buildStamps": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/buildStamp" }
+        },
+        "messages": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/messageEntry" }
+        },
+        "researchLeads": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/researchLead" }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "oneOf": [
+    { "$ref": "#/$defs/catalog" },
+    { "$ref": "#/$defs/messageArtifact" }
+  ]
+}

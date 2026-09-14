@@ -1,15 +1,19 @@
 {
   "name": "UnresolvedMessage",
-  "gameBuild": null,
+  "build": 0,
+  "buildLabel": null,
+  "imageSha256": null,
   "connectionRole": "unknown",
   "direction": "unknown",
-  "messageId": null,
+  "messageId": "0x0000",
   "representation": "unknown",
   "evidenceLevel": "unknown",
+  "pipeline": { "id": "unknown", "state": "unknown", "opcodeEncoding": "unknown", "stages": [] },
   "sourceReferences": [],
   "fields": [],
   "sessionPrerequisites": [],
   "wireFixtures": [],
-  "unknowns": [],
-  "validation": { "static": false, "synthetic": false, "capturedReplay": false, "unity": false, "liveInterop": false }
+  "unresolved": [],
+  "validation": { "static": false, "synthetic": false, "capturedReplay": false, "unity": false, "liveInterop": false },
+  "noClaim": "Template only. Replace every placeholder with evidence for one build; an unresolved value stays explicit rather than being guessed."
 }

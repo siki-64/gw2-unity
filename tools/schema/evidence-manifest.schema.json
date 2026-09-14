@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gw2-unity.local/tools/schema/evidence-manifest.schema.json",
+  "title": "Local evidence bundle manifest",
+  "description": "Written by 'gw2re.ps1 evidence import' into the ignored artifacts/manifests directory. It records hashes and provenance for private inputs; it is never a wire contract and it is never committed. Absolute paths stay out so no local layout leaks into tracked material.",
+  "type": "object",
+  "required": ["schemaVersion", "bundle", "build", "importedAtUtc", "tool", "representation", "classification", "entries"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "bundle": { "type": "string", "minLength": 1 },
+    "build": { "type": "integer", "minimum": 1 },
+    "buildLabel": { "type": "string" },
+    "imageSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "processName": { "type": "string" },
+    "runtimeBase": { "type": "string", "pattern": "^0x[0-9A-Fa-f]+$" },
+    "imageSize": { "type": ["integer", "string"] },
+    "capturedAtUtc": { "type": "string" },
+    "importedAtUtc": { "type": "string", "minLength": 1 },
+    "tool": { "type": "string", "minLength": 1 },
+    "representation": { "const": "local-private-input" },
+    "classification": { "type": "string" },
+    "bundleRoot": {
+      "type": "string",
+      "description": "Repository-relative directory the entries are relative to. Used by 'evidence verify' so it does not depend on where the manifest is stored."
+    },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "bytes", "sha256", "relative", "imported"],
+        "properties": {
+          "kind": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "enum": [
+                "unknown",
+                "wire-capture",
+                "inbound-payload",
+                "outbound-payload",
+                "module-snapshot",
+                "asset",
+                "session-key",
+                "record"
+              ]
+            }
+          },
+          "bytes": { "type": "integer", "minimum": 0 },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "relative": { "type": "string", "minLength": 1 },
+          "imported": { "type": "string", "minLength": 1 },
+          "wireEligible": {
+            "type": "boolean",
+            "description": "Only set for a captured payload. A module snapshot or asset is never wire-eligible."
+          },
+          "note": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

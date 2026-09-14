@@ -2,21 +2,37 @@
   "schemaVersion": 1,
   "template": "protocol/message-template.json",
   "supportedWireBuilds": [],
-  "messages": [],
+  "buildStamps": [
+    {
+      "build": 205780,
+      "buildLabel": "205.780",
+      "stampedAtUtc": "2026-09-14T00:00:00Z",
+      "tool": "gw2re/1",
+      "notes": "Historical findings scope. The source snapshot did not record an image hash, so no imageSha256 is claimed. A current-build stamp is required before any live work."
+    }
+  ],
+  "messages": [
+    {
+      "name": "ConfiguredSkillRecordLead",
+      "build": 205780,
+      "buildLabel": "205.780",
+      "connectionRole": "game",
+      "direction": "server-to-client",
+      "messageId": "0x264",
+      "representation": "decoded-handler-record",
+      "evidenceLevel": "observed",
+      "pipeline": { "id": "unknown", "state": "unknown", "opcodeEncoding": "unknown" },
+      "artifact": "protocol/messages/205780/0x264.json",
+      "wireVerified": false,
+      "supported": false,
+      "note": "Registered as a handler-level contract only. wireVerified stays false and build 205780 stays out of supportedWireBuilds."
+    }
+  ],
   "researchLeads": [
     {
       "build": 205780,
-      "id": "0x264",
-      "direction": "server-to-client",
-      "representation": "decoded-handler-record",
-      "evidenceLevel": "observed",
-      "source": "research/contracts/notes/UI/Widgets/remote-equipped-skills.md",
-      "wireVerified": false,
-      "note": "12-byte configured-skill handler record; wire packing not established"
-    },
-    {
-      "build": 205780,
-      "id": "0x27C",
+      "buildLabel": "205.780",
+      "messageId": "0x27C",
       "direction": "server-to-client",
       "representation": "decoded-handler-record",
       "evidenceLevel": "static",
@@ -26,7 +42,8 @@
     },
     {
       "build": 205780,
-      "id": "0x200..0x207",
+      "buildLabel": "205.780",
+      "messageId": "0x200..0x207",
       "direction": "server-to-client",
       "representation": "decoded-handler-record",
       "evidenceLevel": "observed",
@@ -36,7 +53,8 @@
     },
     {
       "build": 205780,
-      "id": "0x100",
+      "buildLabel": "205.780",
+      "messageId": "0x100",
       "direction": "server-to-client",
       "representation": "semantic-call-trace",
       "evidenceLevel": "observed",
@@ -46,7 +64,8 @@
     },
     {
       "build": 205780,
-      "id": "0x1A5",
+      "buildLabel": "205.780",
+      "messageId": "0x1A5",
       "direction": "client-to-server",
       "representation": "semantic-call-trace",
       "evidenceLevel": "observed",
