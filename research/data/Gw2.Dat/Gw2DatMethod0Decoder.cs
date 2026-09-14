@@ -1,6 +1,6 @@
 using System.Buffers.Binary;
 
-namespace Gw2.Core.Dat;
+namespace Gw2.Dat;
 
 /// <summary>
 /// Managed decoder for ArenaNet's CmpDecompress Method 0 and Method 1 streams.

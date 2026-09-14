@@ -1,7 +1,7 @@
 using System.Buffers.Binary;
 using System.Text;
 
-namespace Gw2.Core.Dat;
+namespace Gw2.Dat;
 
 public enum Gw2CntcArrayKind
 {

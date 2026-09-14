@@ -1,6 +1,6 @@
 using System.Buffers.Binary;
 
-namespace Gw2.Core.Dat;
+namespace Gw2.Dat;
 
 public readonly record struct Gw2DatHeader(
     byte Version,

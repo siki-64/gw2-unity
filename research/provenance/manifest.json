@@ -1,967 +1,1158 @@
 ﻿{
-    "schemaVersion":  2,
+    "schemaVersion":  3,
     "sourceRepository":  "reverse-engineering findings",
     "sourceCommit":  "16cf788207cc9c36f53876153abcce077c8f0356",
     "sourceWorkingTree":  "clean",
     "importedAtUtc":  "2026-09-14T07:19:16.1649434Z",
     "classification":  "reference-only; not registered wire contracts",
     "buildScope":  "Per source file; do not infer current server compatibility",
-    "note":  "Provenance record. Paths were regrouped into research/contracts and research/data; sha256 values are of the unmodified source files. This file is not an in-place integrity check for the current layout. One deliberate deviation: research/data/Gw2.Dat.Tests/Gw2.Dat.Tests.csproj has an amended ProjectReference to ../Gw2.Dat/Gw2.Dat.csproj after regrouping; every other sha256 matches the unmodified source file. Files excluded from this snapshot have been kept out deliberately.",
+    "note":  "Provenance record. Paths were regrouped into research/contracts and research/data; this file is not an in-place integrity check for the current layout. sha256 values are of the files as they exist in this repository. Two deliberate deviations from the unmodified source:   1. Files with namespaceRenamed=true had their declaration namespace normalized for this repository (Gw2.Native -\u003e Gw2.Contracts, Gw2.Core.Dat -\u003e Gw2.Dat). No other content was altered.   2. research/data/Gw2.Dat.Tests/Gw2.Dat.Tests.csproj has an amended ProjectReference to ../Gw2.Dat/Gw2.Dat.csproj. Files excluded from this snapshot have been kept out deliberately.",
     "files":  [
                   {
                       "originalPath":  "CREDITS.md",
                       "currentPath":  "research/provenance/CREDITS.md",
-                      "sha256":  "e6ce516261f358a0dca652b60505e943ebd6ec48d27b5df5ed63fbb61e9d6fb2"
+                      "sha256":  "e6ce516261f358a0dca652b60505e943ebd6ec48d27b5df5ed63fbb61e9d6fb2",
+                      "namespaceRenamed":  false
                   },
                   {
                       "originalPath":  "Directory.Packages.props",
                       "currentPath":  "research/data/Directory.Packages.props",
-                      "sha256":  "1c74de58a4295224d9bb88c922f67dfc8d6cb23752b4ea2436a7f42223b72714"
+                      "sha256":  "1c74de58a4295224d9bb88c922f67dfc8d6cb23752b4ea2436a7f42223b72714",
+                      "namespaceRenamed":  false
                   },
                   {
                       "originalPath":  "LICENSE.txt",
                       "currentPath":  "research/provenance/LICENSE.txt",
-                      "sha256":  "230184f60bae2feaf244f10a8bac053c8ff33a183bcc365b4d8b876d2b7f4809"
+                      "sha256":  "230184f60bae2feaf244f10a8bac053c8ff33a183bcc365b4d8b876d2b7f4809",
+                      "namespaceRenamed":  false
                   },
                   {
                       "originalPath":  "re/methodology/discovery.md",
                       "currentPath":  "research/contracts/methodology/discovery.md",
-                      "sha256":  "2810bb8529347ece3453b68ceb04f8bbbd6f576933b4dd0933b1f789be60b15c"
+                      "sha256":  "2810bb8529347ece3453b68ceb04f8bbbd6f576933b4dd0933b1f789be60b15c",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/methodology/ghidra.md",
                       "currentPath":  "research/contracts/methodology/ghidra.md",
-                      "sha256":  "e98b8f29938d33b2e4bd87a50a420dd9a054a5651c0e7a61598a8011cf36ac0d"
+                      "sha256":  "e98b8f29938d33b2e4bd87a50a420dd9a054a5651c0e7a61598a8011cf36ac0d",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/methodology/patch-resilience.md",
                       "currentPath":  "research/contracts/methodology/patch-resilience.md",
-                      "sha256":  "a1eb50bec0f3f1ecf5dc61e18eb9bfdbcd1584fd1b9af2dea542d28501ef52f5"
+                      "sha256":  "a1eb50bec0f3f1ecf5dc61e18eb9bfdbcd1584fd1b9af2dea542d28501ef52f5",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/methodology/reconstruction.md",
                       "currentPath":  "research/contracts/methodology/reconstruction.md",
-                      "sha256":  "d8fffb151f2d8b267a0febee2d9caa1e8c4b287f23e432ee15423174e713bf13"
+                      "sha256":  "d8fffb151f2d8b267a0febee2d9caa1e8c4b287f23e432ee15423174e713bf13",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/methodology/tooling.md",
                       "currentPath":  "research/contracts/methodology/tooling.md",
-                      "sha256":  "78749a55353173a3796d5ff13bff92ad8c040a0c9a53d8eb4be154f546e3d7c0"
+                      "sha256":  "78749a55353173a3796d5ff13bff92ad8c040a0c9a53d8eb4be154f546e3d7c0",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/methodology/validation.md",
                       "currentPath":  "research/contracts/methodology/validation.md",
-                      "sha256":  "f602ee846bb9b15552b3ca99afef7f7af02349780fef783e9fddb7302eff0736"
+                      "sha256":  "f602ee846bb9b15552b3ca99afef7f7af02349780fef783e9fddb7302eff0736",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/Character/chcli-character-layout.md",
                       "currentPath":  "research/contracts/notes/Character/chcli-character-layout.md",
-                      "sha256":  "d49fe84eb29f291539a49fce44b91408367f204aa8a9374993c0bb6085aafda1"
+                      "sha256":  "d49fe84eb29f291539a49fce44b91408367f204aa8a9374993c0bb6085aafda1",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/Character/health-runtime.md",
                       "currentPath":  "research/contracts/notes/Character/health-runtime.md",
-                      "sha256":  "3738662cc16b9233d6b526e65367abff960235047ef1a22dfa238a7a90d3f695"
+                      "sha256":  "3738662cc16b9233d6b526e65367abff960235047ef1a22dfa238a7a90d3f695",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/Character/player-name-resolution.md",
                       "currentPath":  "research/contracts/notes/Character/player-name-resolution.md",
-                      "sha256":  "024b8593be9620ab9c5ae6c4d288371e0a6c8ec6ec40766cf775ca05270015f3"
+                      "sha256":  "024b8593be9620ab9c5ae6c4d288371e0a6c8ec6ec40766cf775ca05270015f3",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/Character/profession-state.md",
                       "currentPath":  "research/contracts/notes/Character/profession-state.md",
-                      "sha256":  "14e234b0c2a7cc814b9f785181e7b8bd3a880abdea8fabdae7c93355a3c3bcc1"
+                      "sha256":  "14e234b0c2a7cc814b9f785181e7b8bd3a880abdea8fabdae7c93355a3c3bcc1",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/Character/skillbar-runtime.md",
                       "currentPath":  "research/contracts/notes/Character/skillbar-runtime.md",
-                      "sha256":  "43c02f9d2faa24395829e73946de0f9ba1d62fef47e0d4ae760f99733d4d7fa2"
+                      "sha256":  "43c02f9d2faa24395829e73946de0f9ba1d62fef47e0d4ae760f99733d4d7fa2",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/Character/vtable-inventory.md",
                       "currentPath":  "research/contracts/notes/Character/vtable-inventory.md",
-                      "sha256":  "0d864066ef708a28a0c8c991429fc14a4024d2bd964107b3452247251ccd0362"
+                      "sha256":  "0d864066ef708a28a0c8c991429fc14a4024d2bd964107b3452247251ccd0362",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/Context/Build/game-build.md",
                       "currentPath":  "research/contracts/notes/Context/Build/game-build.md",
-                      "sha256":  "e3889ffdfab0b72d513899e8eaf0b0d40819b84182f407e00c8ec9f5de995972"
+                      "sha256":  "e3889ffdfab0b72d513899e8eaf0b0d40819b84182f407e00c8ec9f5de995972",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/Context/context-and-health.md",
                       "currentPath":  "research/contracts/notes/Context/context-and-health.md",
-                      "sha256":  "2fd23850f517c7a8a8b562ebb9e8a040e48da71bbebc7b9611eee5176c044d53"
+                      "sha256":  "2fd23850f517c7a8a8b562ebb9e8a040e48da71bbebc7b9611eee5176c044d53",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/Context/context-collection.md",
                       "currentPath":  "research/contracts/notes/Context/context-collection.md",
-                      "sha256":  "29c8b515ed04682e53db8a729e4899f14582c0922c78d642a1b07586c5a9c695"
+                      "sha256":  "29c8b515ed04682e53db8a729e4899f14582c0922c78d642a1b07586c5a9c695",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/Context/item-client.md",
                       "currentPath":  "research/contracts/notes/Context/item-client.md",
-                      "sha256":  "66bc7529143611e43f66e4893fbf2ff2843148ac8949546c0427123350bce795"
+                      "sha256":  "66bc7529143611e43f66e4893fbf2ff2843148ac8949546c0427123350bce795",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/Context/pvp-queue-acceptance.md",
                       "currentPath":  "research/contracts/notes/Context/pvp-queue-acceptance.md",
-                      "sha256":  "c264aeb9422c25c39712318581914e9563db82b62d09dee0a0b6e0284c422ce6"
+                      "sha256":  "c264aeb9422c25c39712318581914e9563db82b62d09dee0a0b6e0284c422ce6",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/Context/selection-target.md",
                       "currentPath":  "research/contracts/notes/Context/selection-target.md",
-                      "sha256":  "2c4b3fad3f5b72c2947d060e785c89fc65bc5208543a85b51075e97d089ba5a0"
+                      "sha256":  "2c4b3fad3f5b72c2947d060e785c89fc65bc5208543a85b51075e97d089ba5a0",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/Context/world-view.md",
                       "currentPath":  "research/contracts/notes/Context/world-view.md",
-                      "sha256":  "3e3ef28dd719cb92a0583f5c7d552a59c38604072cc4daac14a04245b6f5a96f"
+                      "sha256":  "3e3ef28dd719cb92a0583f5c7d552a59c38604072cc4daac14a04245b6f5a96f",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Widgets/framework.md",
                       "currentPath":  "research/contracts/notes/UI/Widgets/framework.md",
-                      "sha256":  "e312f6116e9bed6b3936dcbc2828193f8c9f8488da4edc741f512fb28ad42d74"
+                      "sha256":  "e312f6116e9bed6b3936dcbc2828193f8c9f8488da4edc741f512fb28ad42d74",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Widgets/gear-inspect.md",
                       "currentPath":  "research/contracts/notes/UI/Widgets/gear-inspect.md",
-                      "sha256":  "affacf24926caf242d974cc31494013abfce35f031475aa464532335059be7d9"
+                      "sha256":  "affacf24926caf242d974cc31494013abfce35f031475aa464532335059be7d9",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Widgets/ranked-leaderboard.md",
                       "currentPath":  "research/contracts/notes/UI/Widgets/ranked-leaderboard.md",
-                      "sha256":  "dc0e57350e94a788a856a8e750b619315d1580bc9db6113716f321eee3bba350"
+                      "sha256":  "dc0e57350e94a788a856a8e750b619315d1580bc9db6113716f321eee3bba350",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Widgets/remote-pvp-equipped-skills.md",
                       "currentPath":  "research/contracts/notes/UI/Widgets/remote-pvp-equipped-skills.md",
-                      "sha256":  "1432ad1d396afa049be593b6cc6281943bcd6d98ea8719b531c1abee7996d0e2"
+                      "sha256":  "1432ad1d396afa049be593b6cc6281943bcd6d98ea8719b531c1abee7996d0e2",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Widgets/resolved-identities.md",
                       "currentPath":  "research/contracts/notes/UI/Widgets/resolved-identities.md",
-                      "sha256":  "8361aca209b0d35559b900e6d47e121a89b719fa7d86bb651de2c9c8b0fe7d7a"
+                      "sha256":  "8361aca209b0d35559b900e6d47e121a89b719fa7d86bb651de2c9c8b0fe7d7a",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Loading/map-loader.md",
                       "currentPath":  "research/contracts/notes/World/Loading/map-loader.md",
-                      "sha256":  "e13668a7cc5ff6b904a255bc6b4ec3b09f8594c499f4e2010703530e9d0b5376"
+                      "sha256":  "e13668a7cc5ff6b904a255bc6b4ec3b09f8594c499f4e2010703530e9d0b5376",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2.Dat.csproj",
                       "currentPath":  "research/data/Gw2.Dat/Gw2.Dat.csproj",
-                      "sha256":  "e3124ab7702f42a488948551e9f05e451c708f523718dcbb66cd45e7c4199545"
+                      "sha256":  "e3124ab7702f42a488948551e9f05e451c708f523718dcbb66cd45e7c4199545",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2AssetDocument.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2AssetDocument.cs",
-                      "sha256":  "647c7f7780a4b14870846a99bdb89ab2b0e937cc52f9905a8116d7654a979702"
+                      "sha256":  "7db9d9dca2df6d85ae3a638e847edef71eedc7f0b42826b3747d3f55de40f489",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2CntcPack.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2CntcPack.cs",
-                      "sha256":  "313916462cd0e12cbc36838d0ecb4d97bb2dde99d4e34d615c9dc986b762019b"
+                      "sha256":  "ecee946b240474bcd2ae4e173c8ab35e545d65c912d7457e4fd307942d542c09",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2DatArchive.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2DatArchive.cs",
-                      "sha256":  "6d8749943d89a34fcbbaa2a494dca95869bbc63c928eea44dea943490e8f391e"
+                      "sha256":  "4c3db9d166d1bd71f0597228fdca0ff3d7a9129137299c7d048c50375fc22f72",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2DatCrc.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2DatCrc.cs",
-                      "sha256":  "f7a77bc902c01f1cfcef2f50cc67ff1dacf5d2168cdb14baacbd79aa82c03fa6"
+                      "sha256":  "866eafa6720e77e908a7d91d192920ad70595a88dd293f5a42cb6cb1e6b471b5",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2DatMethod0Decoder.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2DatMethod0Decoder.cs",
-                      "sha256":  "2db8d0fd55c43c51bf040fe20e80fefe15c2a8378e25e26bfb619e88a9e90378"
+                      "sha256":  "5a3aeec51d7d53ee972b3ee4f5d07a0a22647c5da2af29110b18282c291e7558",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2DatScanner.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2DatScanner.cs",
-                      "sha256":  "f285f2524ab58b1d02750abb15044a491988bba4b39d6d15e77fbdccb820fa99"
+                      "sha256":  "44680bbc7a0263dfd3d09e2c7d6ac01d59f0c5b836a40b1f8fc2e4ee426cf52e",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2PackFile.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2PackFile.cs",
-                      "sha256":  "f90900350305f3f08f45a84378696acef75208a827af3bb8952508f8e347a543"
+                      "sha256":  "e379b1632bb01d32bf3e2461b64469ac3fb9ee628d273a2a1cc0db94e4d56bbf",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2PackReader.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2PackReader.cs",
-                      "sha256":  "674f49062d413e546d95e56400cba75605d34c1e3157cad10bc1dd810ec7f428"
+                      "sha256":  "d8fcb925a4b0a034a1f6f654e813f56e58c51a78a409acf8b9de353f5896fe29",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2PackSchemaCatalog.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2PackSchemaCatalog.cs",
-                      "sha256":  "2d4789b39d2f231eed81cc42cdb73e3f57a5977c60e032dd7632160749eebead"
+                      "sha256":  "af7606ffbd45cd0c350c20f69092cf4dcc1b5bd8aecd5dfe8d02cd06bdabfbe9",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2Texture.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2Texture.cs",
-                      "sha256":  "48eb7fa8bb6789c2cdd4dd46a8e2b290d7091ece423e7dba8577c7ffd695b5c9"
+                      "sha256":  "8397f7fafa871d30fac180436418e3aa9715e99a0226de8d9bf81604e6073a6b",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/Gw2VertexBuffer.cs",
                       "currentPath":  "research/data/Gw2.Dat/Gw2VertexBuffer.cs",
-                      "sha256":  "27a2bfeb2397e40d45cecd44f3e7f2e3ba7f78fc3508712ad32b45ac3ae55dc6"
+                      "sha256":  "6733783e99c3ee7af4c5f6e672752482e6e9ff02bbb6b4c9d9a2ff4bf6b129f6",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/pack-schemas.json",
                       "currentPath":  "research/data/Gw2.Dat/pack-schemas.json",
-                      "sha256":  "52dfec889f45a5325f04c461cebd42d3c3780f7a6f8dd95e27dc83f70beb6f5f"
+                      "sha256":  "52dfec889f45a5325f04c461cebd42d3c3780f7a6f8dd95e27dc83f70beb6f5f",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Dat/README.md",
                       "currentPath":  "research/data/Gw2.Dat/README.md",
-                      "sha256":  "40278b56ded61575df0977888e668946d1a6fb50c2c430b18494fd2230ee6dcc"
+                      "sha256":  "52c934e5f16696bbfd383792243360d557d8058b9b11a905ff18f4ac0fa5415a",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Agent/AgChar.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Agent/AgChar.cs",
-                      "sha256":  "7b7c1c9f051e6f64e5455b463f39c5e4ecaedd2e150957c2c87babd3933f5d6d"
+                      "sha256":  "6869a2377a2f5d3f66c98606a9933f7623ce75bc1b49d3470d6ebec698bc0ada",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Agent/Agent.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Agent/Agent.cs",
-                      "sha256":  "4ead5a6f8f63be3d4cc13517b9b2e37a7ad657cb5cd157bc69cce92309da742b"
+                      "sha256":  "897b03fd1b8f38e0dcee5e2fceefdb653f652be3ce35e9f1518665dd8e2b5bd6",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Agent/AgentEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Agent/AgentEnums.cs",
-                      "sha256":  "2676736085260f54bfe7e2f62972281d2b58c638841c7303f4cc8883ceae751b"
+                      "sha256":  "26038794e299224eeeac7ce25732e42e3ad1f0b47b51f0b36c42bca646fc31ed",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Agent/AgKeyFramed.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Agent/AgKeyFramed.cs",
-                      "sha256":  "5ac940dcad01f99277c4482c06dd878d8aebb21f0ad15705dca8d885e3c9e689"
+                      "sha256":  "055cdfa8f05fc49fcd3c84bd4a626216e8cb6f4e525fdef2bd291d476fea32fc",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Agent/CoChar.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Agent/CoChar.cs",
-                      "sha256":  "04fc3b3705b70b15ff388dc60e3702aa7c4bb9c1f412c0dd8ca3a5b7da908894"
+                      "sha256":  "77323ddcb3d8764adc60d786dd5f004add84b2f539f2bf9e253e00f2a40baee1",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Agent/CoCharSimpleCliWrapper.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Agent/CoCharSimpleCliWrapper.cs",
-                      "sha256":  "4faabba440d847adf04423316f81d0ce79bbd4c553f113157d3cb0f2e62f75c8"
+                      "sha256":  "18ae027f9fd0752dea4e27ce545f0d6dff2414e03a30584e6eb33bdb5354b2b6",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Agent/CoKeyFramed.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Agent/CoKeyFramed.cs",
-                      "sha256":  "9dc36f8b4692d21b2984fa333e732994fb4745f63c7a98bb93c2a222005f3122"
+                      "sha256":  "fa9f6b964f314f72e26e65fbea04c49a66411f40be504a8684fdebc34f16eab0",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Agent/ImportantUnitDefinitionId.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Agent/ImportantUnitDefinitionId.cs",
-                      "sha256":  "999604df882e4ddd4eca58106f1b7aec161496c4cd3ac7e4196af47d4580b9a4"
+                      "sha256":  "3af39c45ab437b9326270e2ebb117d19be7842c0d97623a7f549940ef8e4da73",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/CharacterEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/CharacterEnums.cs",
-                      "sha256":  "bb858ea740416de735c8c7e53d2ec687681866b82c35839cf2bc9a4f2c8098f5"
+                      "sha256":  "5125392d5cb6d689c538dcc7b8f537a66a123dc64e0029fca00a220f5e953bbb",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliAdventure.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliAdventure.cs",
-                      "sha256":  "ee7db0146f14a24f1dd4215c046bcfe298327c6c47f1e518cb8d55745f9f7626"
+                      "sha256":  "714ad362a2e3cb6f69421546462384fa6930474da1ef510730e1a25844a3ed97",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliCharacter.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliCharacter.cs",
-                      "sha256":  "35655354831008423f2c41124193625783eff00f9351cdccd59f74c4c7bcd23b"
+                      "sha256":  "f911d139b87d4cda8b22a27bfb14efd3d2488b5c8ebf2893525d90b483a2df5f",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliCharacterContext.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliCharacterContext.cs",
-                      "sha256":  "22c79572ff2f5023e1db5a79124b8ad335b9cf9c104cb314caa5e11b12a5ce4f"
+                      "sha256":  "979461f993c19b250a741bdd0c76fd977c5b14de939fc031608399e77d251ca7",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliChatter.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliChatter.cs",
-                      "sha256":  "b57cc6d469b7d7c6aa552a2faf0addb757b5964d3f3ab8ded0ee230061c5aca7"
+                      "sha256":  "777de3ff88263ae9b454500005c2b1164f6f2f505281b5e075442e83aa58c2db",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliCoreStats.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliCoreStats.cs",
-                      "sha256":  "0b8aea2d65a6f2538b56e4a420fa3cb2463203eccb4bd7ac8866c26e133a1d9c"
+                      "sha256":  "7b2ea3f1ea040b695637e052d66fbf546b710dcdcb8ed4aebba75f898965263c",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliEndurance.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliEndurance.cs",
-                      "sha256":  "425fc07eb712287fe39a9527b052a928a3cd9e7550290efd5d783f03cf4f710f"
+                      "sha256":  "0e0accaa3cd7846c37f3341b3a2e9bb234952c6de0c04610788de631c7230580",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliEnergies.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliEnergies.cs",
-                      "sha256":  "833c11fcc4b04db5bb147adcf32a92b8edd2aa93be5b573845521200366fd76b"
+                      "sha256":  "a69cec8d53d27f0d184b3ec2f3ef70173f99e9dd89799c063005582720f45d0e",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliHealth.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliHealth.cs",
-                      "sha256":  "50214dae6e542eb53c21a2bd0fcae2be249b35d7df861678c79e2431814aee9f"
+                      "sha256":  "5c2fcdb3a998c888fa84cba48dbb8eb24e1eb06749d72057a6d6576e5db1d01f",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliKennel.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliKennel.cs",
-                      "sha256":  "7de0ea16ab263baf420dfd483e97cea88401a251c49ba59acbd980ddd3b53275"
+                      "sha256":  "8b4d1898c626faf66239b236332e2054504a128918563ceac1ed3e8acd44cd25",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliMovement.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliMovement.cs",
-                      "sha256":  "5fcd884d6e3261b5ace026bfe08211dbe6cbf5879bc1e929698aad7c6895df3d"
+                      "sha256":  "61323846714402239e10c93cbc02f7b4cb624af4eef4f180b7eb8ccc2eafe53e",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliOrder.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliOrder.cs",
-                      "sha256":  "4516ac929d32ddc22d4c601142166759fc3fbbbf3560c41de809ade7a5175149"
+                      "sha256":  "b77fdcac63e240408d49f9057e68bb8d17c401f880e0970a7816a7564c07e556",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliPlayer.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliPlayer.cs",
-                      "sha256":  "d9607441b64a10a11907bc4f4a6d7ae80ffaa603add44d47a36b00365cf880c4"
+                      "sha256":  "d8a423bd89d4891a2be10c45d3a3a98b2a71edc3be185c04258c5874eb19eea0",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliProfession.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliProfession.cs",
-                      "sha256":  "a21f170eeb5d49732dccd333bb2003b1dd5fbf1f463a68fba8ed52e5efe182d5"
+                      "sha256":  "429489e0712c53515f2eeca7b639990d252cc419b69e67e7c18b8874f96c0d3c",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliProgress.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliProgress.cs",
-                      "sha256":  "1efca1c38882c2fecbd813fa0256ae4d43bc800c803fab8149c5ad080738c268"
+                      "sha256":  "8ba54da73e08f15dae1d5ec3dced28752fefc1b94a1162ab2c703ef106458f62",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliPvp.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliPvp.cs",
-                      "sha256":  "3393414a2ee5a9c6c3d304b3e0569673845b533122196aef8602d2424c9b3716"
+                      "sha256":  "0f19c2552da9e73acb62c238a624a17ff5ff3e5a46b739032fddf05c2a39ad26",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliPvpHeroCollection.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliPvpHeroCollection.cs",
-                      "sha256":  "cb169f286d1980ce035f773e4df275da80719e95f4c0521f651264006793f617"
+                      "sha256":  "db937c046f29349534f09eb1757d4442d86aab07fd7e78a1fd2dfaeb2f69aa28",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliSkill.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliSkill.cs",
-                      "sha256":  "89254cb6904e6beec97dd2c70ba0aa8ef5c0b9491b112b934fda95549201f969"
+                      "sha256":  "342ef0167391be6ea62080cf53148571c1750e6b46bfefa1925584e67363a7f2",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliSkillbar.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliSkillbar.cs",
-                      "sha256":  "699c548d4d5757f8d9a82b6fe352098922e20a433d497292396fbb6d0d79e196"
+                      "sha256":  "8c9f0ead43c362216de71acb37d450a8531fe99830ecc084f0fe49a0cf05f81d",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliSkillRecharge.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliSkillRecharge.cs",
-                      "sha256":  "992baf20ac03d6551a71697b2a95b14088176d642f0b4f9348e3fb75927b62bf"
+                      "sha256":  "98b1845461760db833277b83da9afc9866374d65dcad4121ff856a174dc9ebcf",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliSpecialization.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliSpecialization.cs",
-                      "sha256":  "e50fa75098128dffe1ef733affd9d4e545da7ab9f76bc060e1511df32470778e"
+                      "sha256":  "cee8f6aa8fca4c1a0ce0329928680e91682ddf2234657eb83347263bf8102e84",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliTransformation.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliTransformation.cs",
-                      "sha256":  "9467fd2448390857f406996a6e9c99e061100d8e397cc94aaec2b8e0c2b7ba79"
+                      "sha256":  "14585e3137ab138de5e66bf1a72afcaa0488f8f2ec6a64f3e5c1d5c9e8baae2f",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/ChCliWardrobe.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/ChCliWardrobe.cs",
-                      "sha256":  "652fa9b36a4b8d3cd636511d0f55f936dfe85057d0c4bab86f7ff986ab33301f"
+                      "sha256":  "6e536e3df030ff185e7d7a6aad3fd5a9ca5ade7b4d37120c7089643274bd3f7f",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/SkillDefinition.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/SkillDefinition.cs",
-                      "sha256":  "48491fc11dac76096cbfb4ebaff80f5491e690542d05a084a51043d59228348d"
+                      "sha256":  "046ce868170e2d865586ba3b87c261f270e3d4dd5c5420a58232c3c35a5d056a",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/SkillEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/SkillEnums.cs",
-                      "sha256":  "c17130c9d04e91514189fae1d069ee2a6f191afbf15517b6089d00381d3d3737"
+                      "sha256":  "b7673db050f6c60587c6455457df1bec44dbb6ee0680819e4f11e6be80063fdb",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/SkillId.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/SkillId.cs",
-                      "sha256":  "89b9ff5a7c1c675790835ce5422d7a3a6500beddd8e2809ad7966503e1c4b40a"
+                      "sha256":  "bf1f083e3fa17945b5f51616323ad141aea5cc9d7baf7707b80ef3067b82eb43",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/SpecializationDefinition.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/SpecializationDefinition.cs",
-                      "sha256":  "8221d6511ed9d0de5405a3010a8cc752cc07b01f9ee5ce1cfe0d8147e998d52c"
+                      "sha256":  "8ed832ac744d29ab943ec85bdaba8d4d66ef365a68aa75cd3338b82cca4a7da6",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/SpecializationEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/SpecializationEnums.cs",
-                      "sha256":  "abf75bf806e3ba84bc197cc9f0463939b1d8a52225e5584735b37a74b83a111b"
+                      "sha256":  "5276de5f6bba013710c9ff4c4ddde93a574374437acb1129c35c0c8b1e03d312",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/SpecializationProgressionDefinition.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/SpecializationProgressionDefinition.cs",
-                      "sha256":  "a4f1e4f631c9ed587374ad8a7bd34e114b0ecac5254a2e719b6bf2d4b5fbb9d3"
+                      "sha256":  "7d2714333ed64d705575ce1f6fcb62066e10f7575f1928ead28a377e461aca45",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/TraitDefinition.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/TraitDefinition.cs",
-                      "sha256":  "fcce4896c19265db02600a63836608ddfb17283566e4dabfb9439e8f44a1d3e7"
+                      "sha256":  "dd2ebdc32bf35a0c6f5283b0c8d702f4cd9d9379fdee84231c893da382caf42b",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Character/TraitEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Character/TraitEnums.cs",
-                      "sha256":  "f4da75cab1b8446de40a83b33427ef43b0797b96db53197937939570c9f35a06"
+                      "sha256":  "47b3014553d076345cffcb30d5eca178e74efaab19704aa6bec6bc5233604afa",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Context/AsContext.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Context/AsContext.cs",
-                      "sha256":  "909a6ea7660123c374ffa2b76739dabb0ae451ec982b5249c359fb6f127b909a"
+                      "sha256":  "f6d417108865709a1688d5061079e13b8f703de30a6ea5df9ce6746c8e3cd0ef",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Context/ChCliContext.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Context/ChCliContext.cs",
-                      "sha256":  "9398cd69c48e7880b0498182ef21c4f7d6de6d0faccd8c0741531fd7645223c7"
+                      "sha256":  "4f1f0ec15ed0e07b09ef4c68472445302610bbc172b11f1993d65fa6fd05544a",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Context/CnContext.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Context/CnContext.cs",
-                      "sha256":  "29df688815dd9b2fc3bb4c83d9c1792587c5c773839ae7772c7533a590b8d0d9"
+                      "sha256":  "9d961f3c564c6f0c3c5babf3af2974b03643dc2c27658a766eb274c449ed73a5",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Context/ContextCollection.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Context/ContextCollection.cs",
-                      "sha256":  "b71fe7cea8ea018d17f3fb4594a2a9415a69d302edaf0706f6c1d18688b61fb2"
+                      "sha256":  "c63c74fe5ed33665037b9f480dd128323a4612f23e29558b94b95004817e843d",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Context/GdCliContext.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Context/GdCliContext.cs",
-                      "sha256":  "6384aa72ddbfa17574b8581e4cf691aa246e98d73a4e9f079708921f45adacbe"
+                      "sha256":  "8657d9941f1433cf062a56c89dd08565db53f46acea5edd1a58b963a6b4fce76",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Context/ItCliContext.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Context/ItCliContext.cs",
-                      "sha256":  "ae9e3eb7275e2317045dce21a1c8b31e20241771ba99f54d31b14ef82d37e100"
+                      "sha256":  "45865bdaaddda52ccc3d016f6417c247047c6231c4c7fed725cd2ec29dc08d43",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Context/PexCliContext.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Context/PexCliContext.cs",
-                      "sha256":  "b4461a2399aa1a0f6a2653d0c9ad584afc69feed17a96d95a8295891468d6d7a"
+                      "sha256":  "5ec3874df15e799cc3927af9ebd6a641b333aa4e7ff05074f4542ee4995bf7d2",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Context/PlCliContext.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Context/PlCliContext.cs",
-                      "sha256":  "fd632e278cc83c4c983e9a00e48dcb3be86c030a39b8f94a64f07791ef9665eb"
+                      "sha256":  "71e3a4bfcf6d8053f02d291de0c965ae3975641761a0ad8541e621b322d1a410",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Context/PvpCliContext.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Context/PvpCliContext.cs",
-                      "sha256":  "166cee06d38b2266e43de1b30ca93a4bbdc9432a8c69133f29245a264ca955f1"
+                      "sha256":  "fb81c68f3dfa4e64225fda6e33fa85b1b467f8b611ddee2693d7c6affbe67a57",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/ChCliEquipmentEntry.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Item/ChCliEquipmentEntry.cs",
-                      "sha256":  "973ccca974a7fc48f2fb8eaa1dc90f099b345cc0cc07cafa2f99a756a2542b66"
+                      "sha256":  "3f6e63883aa2ac4cc67498c05d5641253ac8f003dcea17d17bb6edbf5bc199a8",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/ChCliInventory.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Item/ChCliInventory.cs",
-                      "sha256":  "4456b6bac9328124702a4c904ba0cd61ea24315fab98b82a2b100f2450387946"
+                      "sha256":  "47ab56652fa4f6ec2e8143a37c4062c3e7194e67773a4e0275ff94c1e1e8aee9",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/ChCliItemStorageEquipment.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Item/ChCliItemStorageEquipment.cs",
-                      "sha256":  "5d5773e31ebca6f57393c8b16318e3f8e798831890bf12b1b67725661d80918a"
+                      "sha256":  "830099be240d97adcf170d0e58b8199671f1fe4156188a3d17fae2c52119c002",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/ItemDefinition.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Item/ItemDefinition.cs",
-                      "sha256":  "e884fdc965f9dfa24cc2be97d52c32244f2c148900aa6b381816306a455473d7"
+                      "sha256":  "327b3122877f248e25deafbcd83e886bcd5e97fac73da2b3c2e7e5bcb63bc6e7",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/ItemEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Item/ItemEnums.cs",
-                      "sha256":  "d722b2774c9b70b7451749dce8e0adf5744352f6d5b5254ecb0a592bacef2b56"
+                      "sha256":  "602d0063b9ab06d4926b77af7b5c3a45de5ad55271d27be6b94e59ba44797be0",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/ItemStatDefinition.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Item/ItemStatDefinition.cs",
-                      "sha256":  "5e8ea3e5dcee21cb7ccdf4cf7f26eeeeab859983bd9e96763a91a0bc8030cdfc"
+                      "sha256":  "a9636689c1a20728c98ee4b92919597aef3de7d4ac279eaeaff2562cd611cc3a",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/NoveltyItemId.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Item/NoveltyItemId.cs",
-                      "sha256":  "3974a1df6f82943d751f13e7a5492037ff3b46ac737a5d71b1162a10dffd9b5c"
+                      "sha256":  "2be684063d9016fc031993a4f96fb228a708b6400d16e078fa88f1e3d930b41c",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/Pvp/PvpAmuletId.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Item/Pvp/PvpAmuletId.cs",
-                      "sha256":  "01914106b16c5335018c7bd493d70137c186f93b476d9a3cc39b644f815877cc"
+                      "sha256":  "3befbd8ae699692256787bd59d8946461e3ff682017cad2e01830918fdb79893",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/Pvp/PvpRelicItemId.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Item/Pvp/PvpRelicItemId.cs",
-                      "sha256":  "da82890033e93384e4e9195e8c3f80c221eb1657ac490e981672b66f65bd821c"
+                      "sha256":  "3ad8a38cc24e5d9b88df6c9610b0b9355f3a0b1ff9868bbc3fc924c6ae3093f5",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/Pvp/PvpRuneItemId.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Item/Pvp/PvpRuneItemId.cs",
-                      "sha256":  "81a29c4ba98be15e76cffdceea2d710eec34f4d09e2d76b9666597693473cfd1"
+                      "sha256":  "60b4efb0974b97cc4f812c4002ad96b244e6672e7d2a59230daeb8bd8cb2711c",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/Pvp/PvpSigilItemId.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Item/Pvp/PvpSigilItemId.cs",
-                      "sha256":  "cab9e2f5a7533553b0417585b55fcabf67ed9667458801a165441edb78f2818f"
+                      "sha256":  "4cd8c48401e83763803ee542dedef1aa3126bba9f7a5279bb38c9278fcebb8d9",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Item/ToyDefinition.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Item/ToyDefinition.cs",
-                      "sha256":  "152d4c7f42cf97b7a416d960016897cdae7b8a0e7688707146920ebb05534b48"
+                      "sha256":  "4b5a9cbde6b1ece9a878535d31e4bf1a1f39c841a4a90dda125d228690bb2d8f",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Runtime/GameBuild.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Runtime/GameBuild.cs",
-                      "sha256":  "48793a7990c3b74e68df6712230862627855c8edf00fe6f7e5795774adc99ea2"
+                      "sha256":  "2cac961bf518a2d65148209f6c5c03518968bd7e965e09b7127ef9a052d165e0",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/PvpGearProvider.cs",
                       "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/PvpGearProvider.cs",
-                      "sha256":  "63ecdb518e59599863ade39fbea5956b2c75606ad6cbb91aa5db63e0d3db543d"
+                      "sha256":  "8a38b1c6e5677f73b4714777cfddd634d52387f929a163e3ea92f6ab09c8a8f9",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "tests/Gw2.Dat.Tests/Gw2.Dat.Tests.csproj",
                       "currentPath":  "research/data/Gw2.Dat.Tests/Gw2.Dat.Tests.csproj",
-                      "sha256":  "f0a344cd20464a0e05c1daa5d5d7954cde61c84750fe36cc9fa6ea5da5d8d801"
+                      "sha256":  "8f0544a737c010fc7bf5840f9a4ca8c42af59f3e2605b8d3c8c775c580f0bc30",
+                      "namespaceRenamed":  false
                   },
                   {
                       "originalPath":  "tests/Gw2.Dat.Tests/Gw2CntcPackTests.cs",
                       "currentPath":  "research/data/Gw2.Dat.Tests/Gw2CntcPackTests.cs",
-                      "sha256":  "e6e78d9b605426361ed2d359985635b1716469f18458aeded6cf39da41b19692"
+                      "sha256":  "aa1ba2c0817371c4ebe45c7ddb3fb813a72f5e094d698a2bdb852d08c1a1d93a",
+                      "namespaceRenamed":  false
                   },
                   {
                       "originalPath":  "tests/Gw2.Dat.Tests/Gw2DatArchiveTests.cs",
                       "currentPath":  "research/data/Gw2.Dat.Tests/Gw2DatArchiveTests.cs",
-                      "sha256":  "3b9ef3a6d185b59d5937072d1e00945390e58e7726961fd015c9c5466b41ff6b"
+                      "sha256":  "6c3d2179cfc37dc2eb1c78a252e23e150fefc77fc1ffb96f070ab5a185e02fb8",
+                      "namespaceRenamed":  false
                   },
                   {
                       "originalPath":  "tests/Gw2.Dat.Tests/Gw2DatIntegrityTests.cs",
                       "currentPath":  "research/data/Gw2.Dat.Tests/Gw2DatIntegrityTests.cs",
-                      "sha256":  "801b6bd39564dc0a56ba8f2fbd742a674170f879e5130847facfa5c8aa08efbb"
+                      "sha256":  "cadf0de9f20b764e17d701baddbc4145aa77f604c47fd8e29fe2c1bc2596b2b9",
+                      "namespaceRenamed":  false
                   },
                   {
                       "originalPath":  "tests/Gw2.Dat.Tests/Gw2DatMethod0DecoderTests.cs",
                       "currentPath":  "research/data/Gw2.Dat.Tests/Gw2DatMethod0DecoderTests.cs",
-                      "sha256":  "244e6920aacce373f874736be7f92e943196bdcb1991c43f832fb97b5525bfd7"
+                      "sha256":  "91e8f71f3398bf8f012c4a9041f17fd0f30f8959bd89ed7060cabd529b9c07a7",
+                      "namespaceRenamed":  false
                   },
                   {
                       "originalPath":  "tests/Gw2.Dat.Tests/Gw2TextureTests.cs",
                       "currentPath":  "research/data/Gw2.Dat.Tests/Gw2TextureTests.cs",
-                      "sha256":  "008b9e9e55a4aed4946b8af5bdf4d8ad9872075e200d24eed4000f8e65970fe4"
+                      "sha256":  "fb35c0b69ca5ecd81521d0e018fff15e26dbe3c6370cacb791c8ac3f8af82ff0",
+                      "namespaceRenamed":  false
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Combat/ClientEffectContract.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Combat/ClientEffectContract.cs",
-                      "sha256":  "05df5a7bcde75c7ba5bb338f9e3240030810267ffec3f5b2034f8aad4ee344c4"
+                      "sha256":  "e2430c6b88fff6b01d79837f6326d7920208d16cf5baaf31ea5796f7c41bed2f",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Combat/CmbtCliBreakBar.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Combat/CmbtCliBreakBar.cs",
-                      "sha256":  "8896ae47536b5f6712fa37bc909c50591dff8b2227b07e88ea1b233cde65b6d6"
+                      "sha256":  "ba30a180b1fcec047300705ce21968e691204783b7d4c1ec90549de711a7e9b9",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Combat/CmbtCliBuff.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Combat/CmbtCliBuff.cs",
-                      "sha256":  "9420b9fb0ff45e6166ee4713cc54989151526fa757a5b213f6d2cdc9b2e3bc12"
+                      "sha256":  "f22e7a9b56cdc0ad5d9a6b760aa9b0ce020b9a6fff6f625531afb7362ba24da9",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Combat/CombatEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Combat/CombatEnums.cs",
-                      "sha256":  "ef14bb3bb2873501d6614c869eec3f87d427e63960686aa2a6a8529aef8c3ee9"
+                      "sha256":  "9363ae5339a2ed002370193b0dacf8cb1af57c1eaea34db23093a7e61d808cc5",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Combat/GroundTargeting.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Combat/GroundTargeting.cs",
-                      "sha256":  "b335891d0abc0b17aab7cb5685b99e2e831059dd9fe1e317bb068090341d19f6"
+                      "sha256":  "35506434ef746086370302e36e0ee04f647cc239800a731821c249b1a32d2255",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Combat/NoveltyPreviewEffectContract.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Combat/NoveltyPreviewEffectContract.cs",
-                      "sha256":  "a7c5a356b200203eee4b4bc8be571aed03bce91668c7da9d51075a2a5f18ba0e"
+                      "sha256":  "bb22fecf92d5c964cc89b7661bd38c4f28cf314fd27949ab64fbe3d5cfc2f8d3",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Combat/NoveltyWorldEffectContract.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Combat/NoveltyWorldEffectContract.cs",
-                      "sha256":  "2dd70fe89ab3239ff94e8dc4b93044050a1d3be65cdb62a98edab03dd4d8bc6e"
+                      "sha256":  "66a8dd53a0a1646130eb93a22ad00bd9766ddfcc43453bb8fcdc43d95e45b40f",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/AvCharEffect.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Effect/AvCharEffect.cs",
-                      "sha256":  "799fff95775a58d38fcf1738356c24c72601645469ab3a0eb067392329bc347e"
+                      "sha256":  "add04565a6dee05b110e0419b8789f4023725b49c5896397830a331d691a25b7",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/EfCliContext.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Effect/EfCliContext.cs",
-                      "sha256":  "aefa3b0c04e2edf915ce8ed90b34fc4c8927acc19ac2660f51f753e7aeb1a1cc"
+                      "sha256":  "b5c9627c149df5a3227c9dd9660285ceeb533c4b89b96471ed64688f3c4849ba",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/EfCliCreateArguments.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Effect/EfCliCreateArguments.cs",
-                      "sha256":  "683afff81a853231ca7052a5c74f3916c40845fd3d4dc2fed9daf95317a41829"
+                      "sha256":  "9b5ac3b08c93167ca88c92893418271f7766f671a34d5d71a0e8bf5248fe18a8",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/EfCliEffectDecal.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Effect/EfCliEffectDecal.cs",
-                      "sha256":  "9781e6fbf1bed9aba1b7f9c26289e43066b8b4ea2f1b23ae8aa4b88771c44fc9"
+                      "sha256":  "47b3e4aebcbb51da4fa12922a55eb7f98c31114172e89ad2874c8abb9c4f09e4",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/EfCliModelEffect.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Effect/EfCliModelEffect.cs",
-                      "sha256":  "6cc5eb419e95e4ec7881d275cccde33b45786c90dabc2603f18abf46241451c8"
+                      "sha256":  "8d03b78279b02111438d60ac86686b91109153afd921c98713e53154b4d37544",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/EfCliModelPlacement.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Effect/EfCliModelPlacement.cs",
-                      "sha256":  "808dcc5dc91ebbf1183e0b0b8bc230d9b1f711edf894382eb55ed68c56b75ab7"
+                      "sha256":  "220095bfabf0acb9ada0e2e7cb1f3a46b624efc530bf44e9b269c5857524d44d",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/EffectContentKey.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Effect/EffectContentKey.cs",
-                      "sha256":  "9542cf7933e1ce2d889d61072b1d6552e7925abbfd44b535049decc9ad89de1b"
+                      "sha256":  "1080a41e5fa3eb51e055217a8ec3532a75a2aa1bbbfc6c5246e4c973d971c00e",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/EffectDefinitionId.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Effect/EffectDefinitionId.cs",
-                      "sha256":  "f3d3dc6a0fbc92529552604088b38d50a39cef9af967eb26a8e32d15d3dac926"
+                      "sha256":  "3d838ed0eab6b309bdd74157a53a7916fdae5059069cc9dec574a82fc3c702f4",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/EffectEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Effect/EffectEnums.cs",
-                      "sha256":  "1728382449545e5f539d3fc7292640cf1fc72a99dcb35383b860cfeac502cd08"
+                      "sha256":  "314e0a84dfeae9e89b43fcd1e824805091e4ef486dd18818b12e83c3c0866d5d",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/IEffectDef.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Effect/IEffectDef.cs",
-                      "sha256":  "9c4e32b2468a5046f5bf9a8a31252fcde7bd9f4ead7beee0788eb13866a0daf1"
+                      "sha256":  "7c5af0fd4c839c36ed6fb5eaadcec03ae602ade7d00c114a2d226c42d5044404",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Effect/SkillEffectApplicationEntry.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Effect/SkillEffectApplicationEntry.cs",
-                      "sha256":  "374334be87947164ec5ee83d23a47bef6454c4bceb890c3a82128527305617b7"
+                      "sha256":  "80b984c3740206bf086fe224dddd153df3fafd9dc04853fe311f03f91fb6472e",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Gadget/GadgetAgentWrapper.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Gadget/GadgetAgentWrapper.cs",
-                      "sha256":  "e463e1de1bda3acd04c4800187dd82d2ef5e420318cbd384f9bc2a20bfba3cfc"
+                      "sha256":  "dfe182d2970c302dd0c5abc8af855eda9f476206e18ea1f5182f8e88696ceff5",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Gadget/GadgetEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Gadget/GadgetEnums.cs",
-                      "sha256":  "c39d512858ae991322ec7345712eec83f070dfa83af02565c9910fcd14b14d43"
+                      "sha256":  "7b7e42bb7fb34275d57145d6163b3d23a64e3f4150947290353e1f879b736976",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Gadget/GdCliGadget.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Gadget/GdCliGadget.cs",
-                      "sha256":  "11736a1e47268f8f2a6cb5e1f81340da347b0622773cf63bda95a078fc75c202"
+                      "sha256":  "3947bd7c85aed759b5ef807599b5c96f87a53c102496444f7c4ddb8db326793a",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Graphics/FontContext.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Graphics/FontContext.cs",
-                      "sha256":  "a9a76dfd58257b2fe99df2ceb381b493544ea9284b92d5085b6d43c7d5274a28"
+                      "sha256":  "a13cd1957bd2ea3e76af9b18b3aa2275752b0317f690401a560d96f9107cacac",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Graphics/GrFont.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Graphics/GrFont.cs",
-                      "sha256":  "545a99728fbeb47ee183a12af9ce82f4635b08ef614fe1f5660d13b30fa79af2"
+                      "sha256":  "18d9b274fe8f272b3be82c73a38c990b9535cfddab152dc6ac315bb3d2f85ce8",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Graphics/GrFontRle.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Graphics/GrFontRle.cs",
-                      "sha256":  "6d8eaca8f586d4aa3d1a17ef54cf99756602b77ca464244efe6d85febd6a0d7a"
+                      "sha256":  "76da9127cefc82bf7a20349065d6e9ce633a3fb8ff22e5de85531fad50e1244d",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Graphics/GrModel.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Graphics/GrModel.cs",
-                      "sha256":  "935a975db302e09d20fa3c6388a09fed36146e53ea29fea025afcffa0eec424c"
+                      "sha256":  "2ba810ed104fe3a1cf7e1b4777f20d5b50311becabb965c3407d7e40ecbe7326",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Graphics/GrTex.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Graphics/GrTex.cs",
-                      "sha256":  "7a9876b6b6bfb88d63c0d4b6fe0705dfeb966ddb55ef4729c47e3f59f55d6350"
+                      "sha256":  "1946e98c705d35bec0e986cb4ffc06fe8dd6770126ce98e57537b2fc8f5b2071",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Graphics/GrTex2d.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Graphics/GrTex2d.cs",
-                      "sha256":  "ca4ce35f507a32982d31f17e98d7b7c80ac0108854c38998978e01be14e48b33"
+                      "sha256":  "403e39e22328f90db1b5b5e7780969fe61c041a89d2a18521e867bcaa6dc7a91",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/AsHealthWidget.cs",
                       "currentPath":  "research/contracts/Gw2.Native/InfoBars/AsHealthWidget.cs",
-                      "sha256":  "d47c523554a3849c8d9d62588404d2a28f4df4318c92171bd0cde888f0123b7a"
+                      "sha256":  "382dd45c2570ac2051125481e57894e101d4a002dbf8af6e10b5a7efe3198a56",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/CtRecord.cs",
                       "currentPath":  "research/contracts/Gw2.Native/InfoBars/CtRecord.cs",
-                      "sha256":  "f0813be87511de41e90eb6ac88ca258b089acde3ac238133919fb1170f564ba7"
+                      "sha256":  "eb4936fcc26ce6bf674b6f9ac3e670ab9ed7cd78c2ab931871676e08a5dc5613",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/FrameContentParams.cs",
                       "currentPath":  "research/contracts/Gw2.Native/InfoBars/FrameContentParams.cs",
-                      "sha256":  "982ecf57380129f0832b33c228e575a2e117a11a9af9dc11f3f679695984efef"
+                      "sha256":  "1f1c3080279143981ac713f5fc20bdbaca6bd1e7dc7a403aecb328747e2d4c3a",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/InfoBar.cs",
                       "currentPath":  "research/contracts/Gw2.Native/InfoBars/InfoBar.cs",
-                      "sha256":  "6c37248a45916657e5fc009f305dc4604f34e3da12c6f74c09b4fefbd7924ca1"
+                      "sha256":  "e3aa2db902daed7d2ff0c7661166c35e64c55f148611f9bd5238b9c4a7e953c2",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/InfoBarConstants.cs",
                       "currentPath":  "research/contracts/Gw2.Native/InfoBars/InfoBarConstants.cs",
-                      "sha256":  "d8a26b0b3fc7b9c8a5cc062124521c04e1e7fe9c819e4a27f4939ac3d15ae587"
+                      "sha256":  "7c2ccd7a74a9898fc66539173195a7348eef392198ee77f0c688a8ce700200a2",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/InfoBarEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Native/InfoBars/InfoBarEnums.cs",
-                      "sha256":  "9ca30381095ab9ea4176783ea733fcbe78fb0f415c6010272548d641a8afffef"
+                      "sha256":  "7f8bc49272403bd1d7aa88de1db1042a92c943714aa7287460a9c979da82c3b2",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/InfoBarPresentationSmoother.cs",
                       "currentPath":  "research/contracts/Gw2.Native/InfoBars/InfoBarPresentationSmoother.cs",
-                      "sha256":  "d37acb5822436e59cc8889cede540bc74a29d402df3ec38ff576256da20929c9"
+                      "sha256":  "c3b9db1650dd3e4dd3eec066f0fdc4e8efd02f7f39cdddca425fc3ae32681d21",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/InfoBarSlot7Widget.cs",
                       "currentPath":  "research/contracts/Gw2.Native/InfoBars/InfoBarSlot7Widget.cs",
-                      "sha256":  "735f625021e1fe5b2fd844a0caf827d1f7e9e2cd545f5f6ed8e3bb80d030b208"
+                      "sha256":  "4a41932fbdf67a1187bbdfbbd7cb8098d040cbca79800eae34586acb2fea0050",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/NameCategory.cs",
                       "currentPath":  "research/contracts/Gw2.Native/InfoBars/NameCategory.cs",
-                      "sha256":  "c2536c3d48e8aecb79151ebdee5c78c3aeced75313f3dd0ffcf63115f695ac00"
+                      "sha256":  "d004d8bb75ae7aab7b426b56a4b485382c662349143f7636ff3ee24445776534",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/NameCategoryPresentationFlags.cs",
                       "currentPath":  "research/contracts/Gw2.Native/InfoBars/NameCategoryPresentationFlags.cs",
-                      "sha256":  "8ee1beca634d0afbc4f7ef1854c1d2e3495806c4761f861624dcce4081001b04"
+                      "sha256":  "7c7db4aa4d4961903400830b721192eeaf354e5c1ec5c826363a5a3fcc16ca0e",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/NameRenderCtx.cs",
                       "currentPath":  "research/contracts/Gw2.Native/InfoBars/NameRenderCtx.cs",
-                      "sha256":  "a90b8ec90485a3e4491cca6515b245128e6c48a2469000c406a527eae8a4c5fe"
+                      "sha256":  "e6f8ce8ee081dede26c604e2559e4c81ffc4533dc75be8401d0e12c885b6bd2d",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/InfoBars/NameRenderingConstants.cs",
                       "currentPath":  "research/contracts/Gw2.Native/InfoBars/NameRenderingConstants.cs",
-                      "sha256":  "78cb0313d9ecf60c185d4b4eeaea56bdae50de6d49b473e0ac05c7488a4d4c0a"
+                      "sha256":  "30bf1361c7054c929f67775de333eeade606ad43e4cf38448f7af70ee6354f02",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Physics/Havok/HavokEnums.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Physics/Havok/HavokEnums.cs",
-                      "sha256":  "f3b043dc97c066e32c0c1e4005f79769fd21b8843da8d347f448a82f5a9a563c"
+                      "sha256":  "efb2dbda007459f7b2ed041eb7d65bf85e20481b4b7380b94e265a5b9e6828e1",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Physics/Havok/HkpPhysicsObjects.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Physics/Havok/HkpPhysicsObjects.cs",
-                      "sha256":  "39935766d2186b24e2d00b62c71a7ad993e69aa4553ea6b8a5cfd10310c6f0dd"
+                      "sha256":  "b7b16673774c5bb6a741e84499fc72acd931a9e63f6bd9aa18202d7567851156",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/Physics/Havok/HkpShapes.cs",
                       "currentPath":  "research/contracts/Gw2.Native/Physics/Havok/HkpShapes.cs",
-                      "sha256":  "5093203a034651d9d4dd37f448817c5b03c3bb0983ae4bfd3a784da3210dbb7d"
+                      "sha256":  "6744350eefc81b3ec7fbc9bb9b2bb7038dd877aede16255d956e9cb019194bf3",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Frames/FrCache.cs",
                       "currentPath":  "research/contracts/Gw2.Native/UI/Frames/FrCache.cs",
-                      "sha256":  "d0de844b2f8e8edb9bb2c65c1764db51e7d4971613120be7c89fd34e8206e5f5"
+                      "sha256":  "bb4f71dc458dfe00523a3d1bd2864ee2178207f1e2f7628502a8bdbfb8f6d2ed",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Frames/FrFrame.cs",
                       "currentPath":  "research/contracts/Gw2.Native/UI/Frames/FrFrame.cs",
-                      "sha256":  "99dff022328eba8b227c1346b13524c215c4e39eb23508e1e5eac9721c121d38"
+                      "sha256":  "b222ef50dcd621a59ab865f8dc0ebdc25964ac018a7310e890f0b7c95a2e16ea",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Frames/FrFrameContentQueue.cs",
                       "currentPath":  "research/contracts/Gw2.Native/UI/Frames/FrFrameContentQueue.cs",
-                      "sha256":  "6b8f5ab411de2c9cd646eb7320daf3e5bde041038cbb4607b0a2d4995ea1aaf2"
+                      "sha256":  "17d937d1f949da0219dcea40262cc91046fcb8489035aa3ac8caa9296608f1cc",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Frames/FrTextParams.cs",
                       "currentPath":  "research/contracts/Gw2.Native/UI/Frames/FrTextParams.cs",
-                      "sha256":  "2706024185f4b6d114f2dedd0062342608623fa1751eacee22823a9054b5b23c"
+                      "sha256":  "cf2b7522ac766922d013543735ac9a4d08b38702939db3ad9b3fe5e5a2b549a6",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/AccountNameControl.cs",
                       "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/AccountNameControl.cs",
-                      "sha256":  "515e17b14a7bf6e055bfdec10116659db9943826147293a05c0277aa87fa0dd3"
+                      "sha256":  "df5a25394ddd0911448aae5cf187dcea1b988780ec622541b1d472c367b391a1",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/BtEqpSlot.cs",
                       "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/BtEqpSlot.cs",
-                      "sha256":  "d633106974e713ad6c0758c686cd76b53b4f203062d5cf25d6f33cfb937370b3"
+                      "sha256":  "a50413a077308edfb747bb48a3d3050eb5dcb75dc38f7a2cdf09e0bb73af8cdb",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/BtGear.cs",
                       "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/BtGear.cs",
-                      "sha256":  "4018adc2f43234eb30be463e8c3d4fe8323f7d64f0f2528b3b980125b71ba975"
+                      "sha256":  "c63415319c3d95ad219141dd9a4bb75fd7df361911defa64ad706e81792179b4",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/BtHero.cs",
                       "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/BtHero.cs",
-                      "sha256":  "316c5dbf9a1b5864aa8da537a7ea6c596e6281982a282a035ad6413a240d2f87"
+                      "sha256":  "3ad904bb60c28424d9c405250a655fba5ea8906b35171770fbdf6dc96582b8e2",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/BtHeroDisplay.cs",
                       "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/BtHeroDisplay.cs",
-                      "sha256":  "31174fe0caf29ba6115a07e59b3ca3cd5b20b383a824520d0217c490d5a909f5"
+                      "sha256":  "a7883fbe40f840289ee1560c6ed35bf787aaae40a4a93ab70149ae89794cbb9e",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/BtHeroInfoFrame.cs",
                       "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/BtHeroInfoFrame.cs",
-                      "sha256":  "75595fd3f97c44b217f78f9d406a9d9ca8178db7cfdb33bc82aa7f3ac6bb6fc3"
+                      "sha256":  "849a8f12dd1c3657f37a92e37449a532ddb5a31db3cc3f7a486784bacf9fbdfb",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/BtInventory.cs",
                       "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/BtInventory.cs",
-                      "sha256":  "75c0c911d93dfff2001f569b35018826a48e9454f6f0ecf3eb8d16323f9df086"
+                      "sha256":  "72a0ee698ca2aa3dd1ae4d7729e51d8985320de38068c77a2af0727d338fb950",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/BtTraits.cs",
                       "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/BtTraits.cs",
-                      "sha256":  "4e8b0898dbc705f6950df45136959b8d99bc426b6057b2bba6bd62bb83dcad1d"
+                      "sha256":  "ac83fed390b0d67189228c93ffddd3cd5b9cf7cb4e6989cba8cb0d503a94eb1f",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/CtlText.cs",
                       "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/CtlText.cs",
-                      "sha256":  "588f03e6967568374e7432f8fd320a8cc470a25916989fa201dda9c274267319"
+                      "sha256":  "d71459bcead5771d3c8af4bc6126240a08bae56ea89e89d031d34f103d7f79ca",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/LbEntry.cs",
                       "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/LbEntry.cs",
-                      "sha256":  "6e1332c8bc69921089fcea3ad1cc7ad5ec6f9e160a495764c95eee94bf066ebe"
+                      "sha256":  "87510ae850243c7fcf543521f476efc9ee7cc85a8c40c10a5d823f88db7c0d16",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/PvpRatingLeaderboard.cs",
                       "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/PvpRatingLeaderboard.cs",
-                      "sha256":  "bdf689a6ea374d6c9c38b6c28c0ce615d93c03e1e6b0ffcdca62936a70011729"
+                      "sha256":  "73fb9d6d826be74baf3908f099e68b78a5da3c0dfeb6d63d7ae75375bd988753",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/SkEquipSpecLine.cs",
                       "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/SkEquipSpecLine.cs",
-                      "sha256":  "390015dc09725337e0fd60bd22009ba5d914acb42252ee1c5d02cdaeb461f385"
+                      "sha256":  "1a72ba66fd49f0d155d54b6961d3f8e98cc40fb4579fd83aa9a0df1a6e77adab",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/UI/Widgets/WidgetStateFlag.cs",
                       "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/WidgetStateFlag.cs",
-                      "sha256":  "4bdd34ac7f37dc601a3b860f49c8e61ab6d1757230056eae290cda139fa02057"
+                      "sha256":  "668aa685abf21c717346ff96f1bee029b86b2168b64c8fdc5f961c56951ed078",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "src/Gw2.Native/World/MapLoader.cs",
                       "currentPath":  "research/contracts/Gw2.Native/World/MapLoader.cs",
-                      "sha256":  "32fb82126a5356d566fe2990443c3f50ce5c754f46f3364a740bd0eae577cc4a"
+                      "sha256":  "6601b7d701a810f765a7fcaee9a89bd7d1fad9da9083f1185c7b7dbfb5502019",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/InfoBars/healthbar-rendering.md",
                       "currentPath":  "research/contracts/notes/InfoBars/healthbar-rendering.md",
-                      "sha256":  "b2841e77e0f540792e21df1d3ff9152f345db6d7b9d61e810512117338b5a403"
+                      "sha256":  "b2841e77e0f540792e21df1d3ff9152f345db6d7b9d61e810512117338b5a403",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/InfoBars/name-rendering.md",
                       "currentPath":  "research/contracts/notes/InfoBars/name-rendering.md",
-                      "sha256":  "7244628c9423644776970b54c326c87b840f642b1ad5553736a9ec6fd727e827"
+                      "sha256":  "7244628c9423644776970b54c326c87b840f642b1ad5553736a9ec6fd727e827",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/InfoBars/native-layout.md",
                       "currentPath":  "research/contracts/notes/InfoBars/native-layout.md",
-                      "sha256":  "98dd26a7abc58026da9cff0a65ca9c42235a85529fd9c64cd9fc2950653778ce"
+                      "sha256":  "98dd26a7abc58026da9cff0a65ca9c42235a85529fd9c64cd9fc2950653778ce",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/InfoBars/occlusion.md",
                       "currentPath":  "research/contracts/notes/InfoBars/occlusion.md",
-                      "sha256":  "39450693d34e1d7c29bb35430de444965f08a7e6a8c2b0bf65381646a87bfa38"
+                      "sha256":  "39450693d34e1d7c29bb35430de444965f08a7e6a8c2b0bf65381646a87bfa38",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/InfoBars/pipeline.md",
                       "currentPath":  "research/contracts/notes/InfoBars/pipeline.md",
-                      "sha256":  "b6972590b59dc924202d822c8d7031fb965a391e3d8b92256f29f69d5187b726"
+                      "sha256":  "b6972590b59dc924202d822c8d7031fb965a391e3d8b92256f29f69d5187b726",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/Input/pipeline.md",
                       "currentPath":  "research/contracts/notes/Input/pipeline.md",
-                      "sha256":  "d9246cb0f93187a73f5473bb9d7e76321f03357aa3daee09b2624ba63ef16482"
+                      "sha256":  "d9246cb0f93187a73f5473bb9d7e76321f03357aa3daee09b2624ba63ef16482",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Frames/addon-content-lifetime.md",
                       "currentPath":  "research/contracts/notes/UI/Frames/addon-content-lifetime.md",
-                      "sha256":  "56d78c17f11d0b2a76f2c26294acf06f0384c574d44692db7a2c7749b314e44b"
+                      "sha256":  "56d78c17f11d0b2a76f2c26294acf06f0384c574d44692db7a2c7749b314e44b",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Frames/frapi.md",
                       "currentPath":  "research/contracts/notes/UI/Frames/frapi.md",
-                      "sha256":  "0d4b93aa0e8c1e240d7972b6d272fdd32062f166bab92a5a19528d0f7dadb96a"
+                      "sha256":  "0d4b93aa0e8c1e240d7972b6d272fdd32062f166bab92a5a19528d0f7dadb96a",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Frames/native-rendering.md",
                       "currentPath":  "research/contracts/notes/UI/Frames/native-rendering.md",
-                      "sha256":  "69fae6d7a960333b9d5c8147e82d08bfe638730dd5399ff54b85772a8d56926b"
+                      "sha256":  "69fae6d7a960333b9d5c8147e82d08bfe638730dd5399ff54b85772a8d56926b",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Frames/native-text-rendering.md",
                       "currentPath":  "research/contracts/notes/UI/Frames/native-text-rendering.md",
-                      "sha256":  "d340d70b757cd1da0270e29d43cec55334dbcc930bf26b1e9442f91e17317ad5"
+                      "sha256":  "d340d70b757cd1da0270e29d43cec55334dbcc930bf26b1e9442f91e17317ad5",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/UI/Text/native-localization.md",
                       "currentPath":  "research/contracts/notes/UI/Text/native-localization.md",
-                      "sha256":  "4cbb77db0c8ce309a5ce519b3e91e8f2fa40bb27e64a2db41aa751a061f6e84b"
+                      "sha256":  "4cbb77db0c8ce309a5ce519b3e91e8f2fa40bb27e64a2db41aa751a061f6e84b",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Collision/havok-objects.md",
                       "currentPath":  "research/contracts/notes/World/Collision/havok-objects.md",
-                      "sha256":  "52f31fc5cdef41d5423d4924ef02ef98a437f9880f9340be6173da71e910f307"
+                      "sha256":  "52f31fc5cdef41d5423d4924ef02ef98a437f9880f9340be6173da71e910f307",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Effects/client-novelty-cmbt-buff-path.md",
                       "currentPath":  "research/contracts/notes/World/Effects/client-novelty-cmbt-buff-path.md",
-                      "sha256":  "f03d89d1e27d55490fdd8499cfb85265e7a13abf61bd9702f7d2f2c38398f581"
+                      "sha256":  "f03d89d1e27d55490fdd8499cfb85265e7a13abf61bd9702f7d2f2c38398f581",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Effects/client-novelty-metadata-source.md",
                       "currentPath":  "research/contracts/notes/World/Effects/client-novelty-metadata-source.md",
-                      "sha256":  "ec4b0190ad1582e872ad86c7123bdd82f8fbabd644750f08c2af8738f922c599"
+                      "sha256":  "ec4b0190ad1582e872ad86c7123bdd82f8fbabd644750f08c2af8738f922c599",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Effects/client-novelty-preview-path.md",
                       "currentPath":  "research/contracts/notes/World/Effects/client-novelty-preview-path.md",
-                      "sha256":  "4f7d6836da2a3ecfdce721a1ddc1575e54efc928877de92bb47c8b3ed9dd8348"
+                      "sha256":  "4f7d6836da2a3ecfdce721a1ddc1575e54efc928877de92bb47c8b3ed9dd8348",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Effects/client-novelty-world-state.md",
                       "currentPath":  "research/contracts/notes/World/Effects/client-novelty-world-state.md",
-                      "sha256":  "08f68c8e8196c4f78ad4734bf39bbd0dac0d5a51a96a9fb519d0747dd185989b"
+                      "sha256":  "08f68c8e8196c4f78ad4734bf39bbd0dac0d5a51a96a9fb519d0747dd185989b",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Effects/client-novelty.md",
                       "currentPath":  "research/contracts/notes/World/Effects/client-novelty.md",
-                      "sha256":  "dbcb72e51316cc7165e7d906b6a4e0b26e4281001520d2a287ecd34d7172b01d"
+                      "sha256":  "dbcb72e51316cc7165e7d906b6a4e0b26e4281001520d2a287ecd34d7172b01d",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Effects/efcli-context.md",
                       "currentPath":  "research/contracts/notes/World/Effects/efcli-context.md",
-                      "sha256":  "fc8b5abad8b85f2ecd9d0ff74c827d421a93a92d9052eef6ce2e60752f01f72a"
+                      "sha256":  "fc8b5abad8b85f2ecd9d0ff74c827d421a93a92d9052eef6ce2e60752f01f72a",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Effects/model-drawing-layout.md",
                       "currentPath":  "research/contracts/notes/World/Effects/model-drawing-layout.md",
-                      "sha256":  "826991e912ba58c480725598db1e8d3d894c403974d9a9c8021e2d62a1476eef"
+                      "sha256":  "826991e912ba58c480725598db1e8d3d894c403974d9a9c8021e2d62a1476eef",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/World/Graphics/native-content.md",
                       "currentPath":  "research/contracts/notes/World/Graphics/native-content.md",
-                      "sha256":  "2bda568135ebdc25114d226e536622f16af79afbd3b570d9e332a48fbe328451"
+                      "sha256":  "2bda568135ebdc25114d226e536622f16af79afbd3b570d9e332a48fbe328451",
+                      "namespaceRenamed":  true
                   },
                   {
                       "originalPath":  "re/notes/RE_NOTES.md",
                       "currentPath":  "research/contracts/notes/RE_NOTES.md",
-                      "sha256":  "fcc258a71714cff0e8b4bb90fdbc22d0153104b6779848f158cd60500e3c9e21"
+                      "sha256":  "fcc258a71714cff0e8b4bb90fdbc22d0153104b6779848f158cd60500e3c9e21",
+                      "namespaceRenamed":  true
                   }
               ]
 }

@@ -1,7 +1,7 @@
 using System.Buffers.Binary;
 using System.Text;
 
-namespace Gw2.Core.Dat;
+namespace Gw2.Dat;
 
 public sealed record Gw2PackChunk(string Type, ushort Version, int Offset, int HeaderSize,
     ReadOnlyMemory<byte> Bytes, int RelocationTableOffset)

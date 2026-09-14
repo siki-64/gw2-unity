@@ -1,7 +1,7 @@
 using System.Buffers.Binary;
 using System.Numerics;
 
-namespace Gw2.Core.Dat;
+namespace Gw2.Dat;
 
 public sealed record Gw2VertexAttribute(string Name, int Offset, int Size);
 

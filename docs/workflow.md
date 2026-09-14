@@ -29,7 +29,7 @@ Keep transport, session, protocol, state, assets and Unity presentation as disti
 
 ## Scope of the findings
 
-The research spans build 205780 and is a historical evidence scope, not a declaration of current server support. Reuse `research/contracts/notes`, the `research/contracts/Gw2.Native` contracts (field semantics, enum values, handler records; not pointer offsets or ABI) and the `research/data/Gw2.Dat` archive/texture/schema tooling source. Do not reuse native UI, D3D11 proxy, injection or patching, which are tied to the official client's in-process execution, nor live captures, caches, dumped fonts or game assets.
+The research spans build 205780 and is a historical evidence scope, not a declaration of current server support. Reuse `research/contracts/notes`, the `research/contracts/Gw2.Native` contracts (field semantics, enum values, handler records; not pointer offsets or ABI; declaration namespace `Gw2.Contracts`) and the `research/data/Gw2.Dat` archive/texture/schema tooling source (namespace `Gw2.Dat`). Do not reuse native UI, D3D11 proxy, injection or patching, which are tied to the official client's in-process execution, nor live captures, caches, dumped fonts or game assets.
 
 No confirmed wire encoders, transport handshake or complete message schema catalog have been established, so the initial runtime registers no supported wire messages.
 

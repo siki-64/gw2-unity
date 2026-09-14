@@ -1,4 +1,4 @@
-namespace Gw2.Core.Dat;
+namespace Gw2.Dat;
 
 public sealed record Gw2ParsedChunk(Gw2PackChunk Chunk, Gw2PackObject? Root, string? UnsupportedReason);
 

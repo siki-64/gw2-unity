@@ -1,4 +1,4 @@
-namespace Gw2.Core.Dat;
+namespace Gw2.Dat;
 
 public enum Gw2DatRecordKind
 {

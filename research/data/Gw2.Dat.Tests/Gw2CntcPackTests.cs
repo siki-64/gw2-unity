@@ -1,6 +1,6 @@
 using System.Buffers.Binary;
 using System.Text;
-using Gw2.Core.Dat;
+using Gw2.Dat;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Gw2.Dat.Tests;

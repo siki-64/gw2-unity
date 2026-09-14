@@ -2,11 +2,12 @@
 
 Reference `Gw2.Dat.csproj` from a tool or future client. The library has no project
 dependencies, native calls, process attachment, renderer, or game-build gate.
-The `Gw2.Core.Dat` namespace is retained for existing source callers; its types
-now live in `Gw2.Dat.dll`, so consumers must rebuild after this extraction.
+The `Gw2.Dat` namespace matches the assembly name; the upstream source used
+`Gw2.Core.Dat`, which implied a parent assembly that is not part of this
+repository. Consumers must rebuild after this normalization.
 
 ```csharp
-using Gw2.Core.Dat;
+using Gw2.Dat;
 
 using var archive = Gw2DatArchive.Open(datPath);
 using var asset = new MemoryStream();
@@ -54,6 +55,6 @@ asset dependency loading, and renderer-ready resources remain separate work.
 Do not interpret an indexed root's estimated byte extent as a recovered class
 layout. No proprietary archive fixtures are included.
 
-Validation: `dotnet test tests/Gw2.Dat.Tests/Gw2.Dat.Tests.csproj` runs standalone
+Validation: `dotnet test data/Gw2.Dat.Tests/Gw2.Dat.Tests.csproj` runs standalone
 synthetic archive, compression, and content-store fixtures without the addon.
 These tests do not establish compatibility with every record in a real Gw2.dat.

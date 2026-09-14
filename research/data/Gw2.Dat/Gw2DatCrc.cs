@@ -1,4 +1,4 @@
-namespace Gw2.Core.Dat;
+namespace Gw2.Dat;
 
 /// <summary>Incremental reflected CRC-32 routines used by ArenaNet archive services.</summary>
 public static class Gw2DatCrc

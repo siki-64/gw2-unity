@@ -2,7 +2,7 @@ using System.Buffers.Binary;
 using System.Collections.ObjectModel;
 using System.Text;
 
-namespace Gw2.Core.Dat;
+namespace Gw2.Dat;
 
 public sealed class Gw2PackObject
 {

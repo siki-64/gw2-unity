@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace Gw2.Core.Dat;
+namespace Gw2.Dat;
 
 public sealed record Gw2PackFieldDefinition(string Name, int Kind, ulong Count, string? Type);
 public sealed record Gw2PackTypeDefinition(string Id, string Name, IReadOnlyList<Gw2PackFieldDefinition> Fields);
