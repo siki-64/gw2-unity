@@ -12,7 +12,7 @@ A native icon consumer resolves supported icons without installing a render hook
 
 The implementation independently tracks rediscovered addresses corresponding to `native_content_lookup_rva`, `native_store_global_rva`, and `native_texture_manager_rva`.
 
-This is useful evidence for the missing bridge between `ItemDefinition` / `SkillDefinition` and the `GrTex` / `GrTex2d` family already modeled in `Gw2.Native`.
+This is useful evidence for the missing bridge between `ItemDefinition` / `SkillDefinition` and the `GrTex` / `GrTex2d` family already modeled in `Gw2.Contracts`.
 
 Do not expose the final D3D11 SRV path as the native UI renderer abstraction. The more durable target is the ArenaNet content/texture/material layer above it.
 

@@ -101,7 +101,7 @@ A generic frame carries its laid-out absolute screen rectangle at:
 | `+0x38` | screen X1 |
 | `+0x3C` | screen Y1 |
 
-This partial view is modeled by `Gw2.Native.FrFrame`.
+This partial view is modeled by `Gw2.Contracts.FrFrame`.
 
 Build 205780 child creation allocates `0x2E0` bytes. Additional promoted fields are:
 
@@ -181,7 +181,7 @@ PostMessage
 
 These names are normalized documentation labels, not claims about original ArenaNet symbol names.
 
-Do not add callable contracts to `Gw2.Native` until each target has a current-image identity, recovered
+Do not add callable contracts to `Gw2.Contracts` until each target has a current-image identity, recovered
 Windows x64 ABI, pointer/lifetime rules, and a valid game/UI thread boundary.
 
 # Relationship to the widget table

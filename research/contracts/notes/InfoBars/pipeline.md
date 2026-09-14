@@ -24,8 +24,8 @@ healthbar rendering, occlusion, and character-side health storage are documented
 [`../Context/context-and-health.md`](../Context/context-and-health.md).
 
 Symbols such as `AgentShouldHaveInfoBar`, `TryCreateInfoBarForAgent`, and `InfoBarUpdate` are defined in
-the active Ghidra project; see [`re/methodology/ghidra.md`](../../methodology/ghidra.md). The authoritative native layout is
-[`InfoBar.cs`](../../../src/Gw2.Native/InfoBars/InfoBar.cs); unknown members should retain offset-derived names
+the active Ghidra project; see [`methodology/ghidra.md`](../../methodology/ghidra.md). The authoritative native layout is
+[`InfoBar.cs`](../../Gw2.Contracts/InfoBars/InfoBar.cs); unknown members should retain offset-derived names
 rather than speculative semantics.
 
 # Overview

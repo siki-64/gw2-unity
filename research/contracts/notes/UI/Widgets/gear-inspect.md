@@ -485,9 +485,9 @@ Native specialization ids and public `/v2/specializations` ids are different nam
 `TraitDefinition.Id` is likewise a client-native id and is not a public `/v2/traits` id.
 Build 205.780 was exhaustively captured through validated
 `SpecializationDefinition.TraitDefinitions` arrays: 81 specializations with nine major traits
-each. The 729 native trait ids live in `Gw2.Native.TraitContentId`, alongside the recovered native
+each. The 729 native trait ids live in `TraitDefinition`, alongside the recovered native
 layouts/access points only. Live ContextCollection pointers and ids remain authoritative. Any
-future correlation or presentation layer must remain outside `Gw2.Native` and must never replace
+future correlation or presentation layer must remain outside `Gw2.Contracts` and must never replace
 an observed native trait identity with an API-derived result.
 
 Trait lines are captured independently. A missing third/elite line no longer invalidates the first
@@ -496,7 +496,7 @@ falls back to the core profession when at least one trait line is present.
 
 The recovered native `TraitDefinition` currently has verified id/tier fields but no verified
 display-name/localization pointer. Build Inspector therefore keeps presentation correlation outside
-`Gw2.Native`: `TraitPresentationCatalog` is keyed by native `TraitDefinition.Id` and additionally
+`Gw2.Contracts`: `TraitPresentationCatalog` is keyed by native `TraitDefinition.Id` and additionally
 checks the observed native specialization/tier/choice before returning a label. Its public trait id is
 only an optional handle for icon/tooltip enrichment. Runtime API availability does not participate in
 trait or specialization identity/name selection.

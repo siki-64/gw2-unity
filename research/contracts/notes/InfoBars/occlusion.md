@@ -14,9 +14,9 @@ Name rendering is documented in [`name-rendering.md`](name-rendering.md). Health
 shared emitter are documented in [`healthbar-rendering.md`](healthbar-rendering.md). InfoBar lifecycle
 and Stage-3 policy are documented in [`pipeline.md`](pipeline.md).
 
-Symbols are maintained in the active Ghidra project; see [`re/methodology/ghidra.md`](../../methodology/ghidra.md). Authoritative
-layouts include [`AsHealthWidget.cs`](../../../src/Gw2.Native/InfoBars/AsHealthWidget.cs) and
-[`NameRenderCtx.cs`](../../../src/Gw2.Native/InfoBars/NameRenderCtx.cs).
+Symbols are maintained in the active Ghidra project; see [`methodology/ghidra.md`](../../methodology/ghidra.md). Authoritative
+layouts include [`AsHealthWidget.cs`](../../Gw2.Contracts/InfoBars/AsHealthWidget.cs) and
+[`NameRenderCtx.cs`](../../Gw2.Contracts/InfoBars/NameRenderCtx.cs).
 
 # Observed native behavior
 

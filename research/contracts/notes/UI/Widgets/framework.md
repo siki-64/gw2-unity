@@ -28,9 +28,9 @@ Healthbar-specific rendering is documented in
 [`../../InfoBars/healthbar-rendering.md`](../../InfoBars/healthbar-rendering.md).
 
 Symbols are defined in
-the active Ghidra project; see [`re/methodology/ghidra.md`](../../../methodology/ghidra.md).
+the active Ghidra project; see [`methodology/ghidra.md`](../../../methodology/ghidra.md).
 Widget flags and stable masks are canonical in
-[`WidgetStateFlag.cs`](../../../../src/Gw2.Native/UI/Widgets/WidgetStateFlag.cs).
+[`WidgetStateFlag.cs`](../../../Gw2.Contracts/UI/Widgets/WidgetStateFlag.cs).
 
 # Global widget table
 

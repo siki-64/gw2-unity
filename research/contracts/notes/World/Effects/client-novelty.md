@@ -34,7 +34,7 @@ or ownership step must be captured before another deployment.
 
 # 1. Preview-panel contract — separate by design
 
-Code: `Gw2.Native/Combat/ChampionNoveltyPreviewEffectContract.cs`
+Code: `Gw2.Contracts/Combat/NoveltyPreviewEffectContract.cs`
 
 A filtered **Laurels preview** capture recovered:
 
@@ -88,7 +88,7 @@ It contains no item id, `IEffectDef`, content key, position, target, or effect-m
 
 # 3. Confirmed in-world Chalice sample
 
-Code: `Gw2.Native/Combat/ChampionNoveltyWorldEffectContract.cs`
+Code: `Gw2.Contracts/Combat/NoveltyWorldEffectContract.cs`
 
 The controlled OFF-to-ON test on **2026-09-09 used Champion's Chalice** and reached the real `EfCliContext` creation implementation exactly once:
 

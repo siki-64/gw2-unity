@@ -51,6 +51,6 @@ The partial chain is `HkpRigidBody +0x10 -> HkpWorld +0x188 -> HkpBroadPhaseBord
 
 ## Scope
 
-These layouts stay internal to `Gw2.Native`; do not expose Havok pointers through the stable module API. Immediate RE uses are collision-dimension validation, visual-vs-physics position comparison, ground-state recovery, and connecting object-clipping research to concrete physics objects.
+These layouts stay internal to `Gw2.Contracts`; do not expose Havok pointers through the stable module API. Immediate RE uses are collision-dimension validation, visual-vs-physics position comparison, ground-state recovery, and connecting object-clipping research to concrete physics objects.
 
 Do not build mutation features on these layouts until ownership, synchronization, and physics-thread rules are understood.

@@ -142,7 +142,7 @@ only; it does not construct a native widget or retain any native object.
 ## `FrTextParams` layout
 
 `FrTextParams` is a transient copied parameter block, not an owning object. The promoted managed view is
-`src/Gw2.Native/UI/Frames/FrTextParams.cs`.
+`Gw2.Contracts/UI/Frames/FrTextParams.cs`.
 
 | Offset | Type | Evidence-backed role |
 |---:|---|---|
@@ -261,7 +261,7 @@ tick/frame-like counter whenever the range is touched.
 `sub_140C04030` resolves a `0x34`-byte `GrFontGlyphRecord`. `DataOffset` is at `+0x00`,
 `RangeIndex` at `+0x28`, the exact UTF-16 `CodeUnit` at `+0x2C`, and the hash-chain
 `NextIndex` at `+0x30`. These views are recorded in
-`src/Gw2.Native/Graphics/GrFont.cs`; `src/Gw2.Native/Graphics/FontContext.cs` also promotes the
+`Gw2.Contracts/Graphics/GrFont.cs`; `Gw2.Contracts/Graphics/FontContext.cs` also promotes the
 fixed registration-range descriptor shape and slot names. All pointers remain native-owned.
 
 `sub_140AD7AA0` (`RVA 0xAD7AA0`) lazy-loads a selected range through the native asset service, parses its
@@ -330,7 +330,7 @@ header byte, `width - 1`, `height - 1`, and an RLE type. The decoder then emits 
 `GrFontEnsureRangeLoaded` uses the stream boundaries to create records, while
 `GrFontBuildGlyphMetrics` (`RVA 0xC039E0`) decodes the same coverage to rebuild ink bounds and
 derived metric fields. The managed offline model and round-trip/live-prefix tests are in
-`src/Gw2.Native/Graphics/GrFontRle.cs` and `tests/Gw2.Native.Tests/GrFontRleTests.cs`.
+`Gw2.Contracts/Graphics/GrFontRle.cs` and `tests/Gw2.Contracts.Tests/GrFontRleTests.cs`.
 
 ### Direct UTF-16 span preservation
 
@@ -458,7 +458,7 @@ hooks use them yet.
 | `0x00AD7680` | `GrFontRasterizeText` | Rendering-side UTF-16 walker; uses the same glyph lookup, resolves `RangeIndex`, and passes the owning range's encoded glyph data to the glyph coverage rasterizer. |
 | `0x00C03AB0` | `GrFontRasterizeGlyphCoverage` | Decodes one glyph's coverage and composites 8-bit values into the destination surface with a per-pixel max operation. |
 
-The corresponding passive views remain in `src/Gw2.Native/Graphics/GrFont.cs`. In addition to the
+The corresponding passive views remain in `Gw2.Contracts/Graphics/GrFont.cs`. In addition to the
 previously promoted range/cache fields, the current build directly supports:
 
 - `GrFont +0x2C -> Height`;

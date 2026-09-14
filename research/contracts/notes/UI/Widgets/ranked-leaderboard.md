@@ -44,7 +44,7 @@ a partial layout:
 | `+0xB0` | owned allocation pointer released during event `0x0E` |
 | `+0xB8` | associated length/capacity state |
 
-The code-level [LbEntry](../../../../src/Gw2.Native/UI/Widgets/LbEntry.cs) is deliberately partial:
+The code-level [LbEntry](../../../Gw2.Contracts/UI/Widgets/LbEntry.cs) is deliberately partial:
 allocation size and accessed fields are modeled, while unknown base storage and buffer metadata
 remain gaps. It is a borrowed native view, not an allocation or ownership contract.
 
@@ -213,10 +213,10 @@ previously sampled `FrText` allocation. The meaningful storage is the account-na
 
 ## Code-level partial views
 
-- [LbEntry](../../../../src/Gw2.Native/UI/Widgets/LbEntry.cs): `0xD0`, grid, rank, entry and board key.
-- [PvpRatingLeaderboard](../../../../src/Gw2.Native/UI/Widgets/PvpRatingLeaderboard.cs): `0x88`, page mode/index and interfaces.
-- [AccountNameControl](../../../../src/Gw2.Native/UI/Widgets/AccountNameControl.cs): `0x78`, observer and account key.
-- [CtlText](../../../../src/Gw2.Native/UI/Widgets/CtlText.cs): `0xF0`, color override `+0x98` and style `+0xE0`.
+- [LbEntry](../../../Gw2.Contracts/UI/Widgets/LbEntry.cs): `0xD0`, grid, rank, entry and board key.
+- [PvpRatingLeaderboard](../../../Gw2.Contracts/UI/Widgets/PvpRatingLeaderboard.cs): `0x88`, page mode/index and interfaces.
+- [AccountNameControl](../../../Gw2.Contracts/UI/Widgets/AccountNameControl.cs): `0x78`, observer and account key.
+- [CtlText](../../../Gw2.Contracts/UI/Widgets/CtlText.cs): `0xF0`, color override `+0x98` and style `+0xE0`.
 
 These are build-specific inspection layouts. Unknown base fields remain omitted, and the views add
 no hooks or runtime writes. GUID fields preserve the native 16 bytes; do not confuse formatted GUID

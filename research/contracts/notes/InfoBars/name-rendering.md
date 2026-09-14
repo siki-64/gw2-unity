@@ -21,10 +21,10 @@ name was disproven. Treat these as separate paths.
 
 Occlusion is documented in [`occlusion.md`](occlusion.md). The shared native emitter is reconstructed in
 [`healthbar-rendering.md`](healthbar-rendering.md). Symbols are defined in
-the active Ghidra project; see [`re/methodology/ghidra.md`](../../methodology/ghidra.md); layouts and stable constants live in
-[`NameRenderCtx.cs`](../../../src/Gw2.Native/InfoBars/NameRenderCtx.cs),
-[`NameCategory.cs`](../../../src/Gw2.Native/InfoBars/NameCategory.cs), and
-[`InfoBarConstants.cs`](../../../src/Gw2.Native/InfoBars/InfoBarConstants.cs).
+the active Ghidra project; see [`methodology/ghidra.md`](../../methodology/ghidra.md); layouts and stable constants live in
+[`NameRenderCtx.cs`](../../Gw2.Contracts/InfoBars/NameRenderCtx.cs),
+[`NameCategory.cs`](../../Gw2.Contracts/InfoBars/NameCategory.cs), and
+[`InfoBarConstants.cs`](../../Gw2.Contracts/InfoBars/InfoBarConstants.cs).
 
 # Overview
 

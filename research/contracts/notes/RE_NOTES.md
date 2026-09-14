@@ -10,9 +10,9 @@ It is not a chronological work log and it is not the canonical home for confirme
 
 Use the repository layers as follows:
 
-- `re/scratch/SCRATCH.md` — provisional observations, hypotheses, and incomplete leads;
-- `re/notes/<area>/...` — current confirmed behavior and subsystem-specific reconstruction;
-- `re/notes/RE_NOTES.md` — durable negative findings whose absence would make a future incorrect interpretation likely to recur.
+- provisional observations, hypotheses, and incomplete leads are kept as scratch work outside this snapshot;
+- `research/contracts/notes/<area>/...` — current confirmed behavior and subsystem-specific reconstruction;
+- this file — durable negative findings whose absence would make a future incorrect interpretation likely to recur.
 
 ## What belongs here
 

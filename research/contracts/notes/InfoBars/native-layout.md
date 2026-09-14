@@ -64,7 +64,7 @@ Only `+58` is promoted to `CharacterTrackedClient` in this audit.
 
 ### Presentation smoothers
 
-[`InfoBarPresentationSmoother.cs`](../../../src/Gw2.Native/InfoBars/InfoBarPresentationSmoother.cs)
+[`InfoBarPresentationSmoother.cs`](../../Gw2.Contracts/InfoBars/InfoBarPresentationSmoother.cs)
 models the repeated `0x14`-byte state consumed by `0x140312660`:
 
 | Relative offset | Field | Evidence |
@@ -137,7 +137,7 @@ order and manager slot-generation/reuse semantics remain open.
 
 ### Slot 7
 
-[`InfoBarSlot7Widget.cs`](../../../src/Gw2.Native/InfoBars/InfoBarSlot7Widget.cs)
+[`InfoBarSlot7Widget.cs`](../../Gw2.Contracts/InfoBars/InfoBarSlot7Widget.cs)
 is distinct from AsHealth despite their equal allocation sizes. `0x1403B16A0` uses
 callback `0x1403BDC60`, tag `630`, slot 7, layer 3, and parent as creation context.
 The wrapper forwards to `0x1403BDD00`; message `35` can replace context at `+50`.

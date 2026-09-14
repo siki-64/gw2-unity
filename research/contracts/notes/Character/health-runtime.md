@@ -44,7 +44,7 @@ Barrier uses the same pattern with an independent clock and rate:
 | `+0x2C` | maximum/interpolation cap |
 | `+0x30` | barrier change rate |
 
-These names are now promoted in `Gw2.Native.ChCliHealth` because the arithmetic is directly observed.
+These names are now promoted in `Gw2.Contracts.ChCliHealth` because the arithmetic is directly observed.
 
 ## Breakbar
 

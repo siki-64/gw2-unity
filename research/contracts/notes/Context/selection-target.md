@@ -9,8 +9,8 @@
 it to keep those units' names from fading — see
 [`../InfoBars/name-rendering.md`](../InfoBars/name-rendering.md)), but it is a general selection
 subsystem, not nameplate-specific. Symbols (`g_AsContext`, `AsContext_GetMouseover`, …) are defined in
-the active Ghidra project; see [`re/methodology/ghidra.md`](../../methodology/ghidra.md); the authoritative field layout is
-[`AsContext.cs`](../../../src/Gw2.Native/Context/AsContext.cs).
+the active Ghidra project; see [`methodology/ghidra.md`](../../methodology/ghidra.md); the authoritative field layout is
+[`AsContext.cs`](../../Gw2.Contracts/Context/AsContext.cs).
 
 # The manager and its accessor
 

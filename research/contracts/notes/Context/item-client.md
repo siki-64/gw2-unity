@@ -7,7 +7,7 @@
 The dump contains a recoverable `Game/Item/Cli/ItCliContext.cpp` region. The object reached from
 `ContextCollection +0x178` is allocated with `0xA0` bytes by `sub_1413c4e50` and initialized by
 `sub_1413c4a60`. The native layout is represented conservatively in
-[`ItCliContext.cs`](../../../src/Gw2.Native/Context/ItCliContext.cs).
+[`ItCliContext.cs`](../../Gw2.Contracts/Context/ItCliContext.cs).
 
 ## Context access and lifetime
 

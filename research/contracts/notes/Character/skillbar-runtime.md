@@ -39,7 +39,7 @@ The stable fields remain `+0x28` content/native key, `+0x38` flags, and `+0x60` 
 
 ### Correction to the secondary data interpretation
 
-`SkillDefinition +0x60` leads to a substantial secondary native object. Runtime consumers read pointer/container state from it, including a qword at `+0x90`. Therefore the earlier interpretation of `+0x90` as base recharge milliseconds is not supported and has been removed from `Gw2.Native`.
+`SkillDefinition +0x60` leads to a substantial secondary native object. Runtime consumers read pointer/container state from it, including a qword at `+0x90`. Therefore the earlier interpretation of `+0x90` as base recharge milliseconds is not supported and has been removed from `Gw2.Contracts`.
 
 Observed secondary-object anchors include `+0x58`, `+0x60`, `+0x68`, `+0x70`, `+0x71`, `+0x90`, `+0xA0`, `+0xF0`, `+0x150`, `+0x158`, `+0x160`, `+0x168`, `+0x190`, and `+0x198`. These are search anchors, not yet a canonical layout.
 

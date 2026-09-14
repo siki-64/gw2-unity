@@ -29,7 +29,7 @@ The player-list entry is the full native `ChCliPlayer`, not a small name-record 
 `205.780`, the allocator passes `0xA178` as the object size, calls the constructor that installs
 the `ChCliPlayer` vtable, and the matching deleting path passes the same size. The player object
 also owns the recovered progress, reward-track, and specialization regions represented by the
-overlay in `src/Gw2.Native/Character/ChCliPlayer.cs`. Its PvP loadout region is a separate
+overlay in `Gw2.Contracts/Character/ChCliPlayer.cs`. Its PvP loadout region is a separate
 `ChCliCharacterContext` subobject at `ChCliPlayer +0x4F18`.
 
 The native vtable exposes two adjacent character-link getters: slot `+0x78` reads `this+0x18`, and

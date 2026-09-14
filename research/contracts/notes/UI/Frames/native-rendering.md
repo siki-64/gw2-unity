@@ -75,7 +75,7 @@ that a frame is visible, alive for the next frame, or safe for addon ownership.
 
 ## `FrFrame` renderer-facing layout
 
-The partial current-build layout is modeled by `Gw2.Native.FrFrame`:
+The partial current-build layout is modeled by `Gw2.Contracts.FrFrame`:
 
 | offset | type | role |
 |---:|---|---|
@@ -90,7 +90,7 @@ The partial current-build layout is modeled by `Gw2.Native.FrFrame`:
 | `+0x2A0` | `uint` | creation flags; opacity walk tests low-byte mask `0x44` |
 
 The inline queue occupies `0x68` bytes, ending before frame `+0x170`; opacity is queue `+0x50`.
-Build 205780 child creation allocates `0x2E0` bytes, now reflected in `Gw2.Native.FrFrame`.
+Build 205780 child creation allocates `0x2E0` bytes, now reflected in `Gw2.Contracts.FrFrame`.
 The former queue-size interpretation included unrelated frame state. See [FrApi](frapi.md) for
 constructor evidence, frame ID, pending-list links, and recovered lifecycle operations.
 
@@ -180,7 +180,7 @@ the direct shared-handle path, with a separate material-resolution path for othe
 is why a native GUI adapter must use a live game-owned material handle and must not treat the
 rectangle geoset pointer as a substitute material.
 
-The promoted partial `Gw2.Native.GrModel` view records the fields directly used by the frame path:
+The promoted partial `Gw2.Contracts.GrModel` view records the fields directly used by the frame path:
 
 | offset | role |
 |---:|---|

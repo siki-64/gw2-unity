@@ -24,8 +24,8 @@ InfoBar architecture is documented in
 are documented in
 [`../InfoBars/healthbar-rendering.md`](../InfoBars/healthbar-rendering.md).
 
-Symbols are maintained in the active Ghidra project; see [`re/methodology/ghidra.md`](../../methodology/ghidra.md). Reconstructed
-layouts live under `src/Gw2.Native/Context/` and `src/Gw2.Native/Character/`.
+Symbols are maintained in the active Ghidra project; see [`methodology/ghidra.md`](../../methodology/ghidra.md). Reconstructed
+layouts live under `Gw2.Contracts/Context/` and `Gw2.Contracts/Character/`.
 
 # Overview
 
@@ -346,7 +346,7 @@ indexed by:
 agentId = [agent+0x0C]
 ```
 
-Its canonical layout is [`CtRecord.cs`](../../../src/Gw2.Native/InfoBars/CtRecord.cs). Field evidence and
+Its canonical layout is [`CtRecord.cs`](../../Gw2.Contracts/InfoBars/CtRecord.cs). Field evidence and
 rendering semantics belong in
 [`../InfoBars/healthbar-rendering.md`](../InfoBars/healthbar-rendering.md).
 

@@ -4,8 +4,8 @@
 **Status:** build-local state-machine and timeout-field reconstruction.<br>
 **Unresolved:** behavior and field contracts in other game builds.
 
-The authoritative field layout is [`MapLoader.cs`](../../../../src/Gw2.Native/World/MapLoader.cs); function
-identities and build-specific analysis state remain in the active Ghidra project; see [`re/methodology/ghidra.md`](../../../methodology/ghidra.md).
+The authoritative field layout is [`MapLoader.cs`](../../../Gw2.Contracts/World/MapLoader.cs); function
+identities and build-specific analysis state remain in the active Ghidra project; see [`methodology/ghidra.md`](../../../methodology/ghidra.md).
 
 Build `204.489` contains a state machine in `MapLoaderAdvance`. Its `MapLoader.state` switch moves
 through the map, model, map-asset, agent, and ready-wait phases identified by the target's own state

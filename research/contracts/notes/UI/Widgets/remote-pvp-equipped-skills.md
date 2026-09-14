@@ -26,7 +26,7 @@ pointer arrays:
 The native setter validates the slot with `ConstCharSkillSlotIsStandard`.
 The implementation is an unsigned `slot <= 4` check, proving five standard
 configured positions. These positions are the configured-skill class used for
-heal, utility, and elite selections. `Gw2.Native` records these positions as
+heal, utility, and elite selections. `Gw2.Contracts` records these positions as
 `HealSkill`, `UtilitySkill1`, `UtilitySkill2`, `UtilitySkill3`, and
 `EliteSkill`. The separately accepted native `0x15` slot is the F1 profession-
 mechanic slot (`ProfessionMechanic`), covering replaceable mechanics such as

@@ -18,7 +18,7 @@ for the external-content boundary.
 
 ## Created model, host, listener, and attachment
 
-[`EfCliModelEffect.cs`](../../../../src/Gw2.Native/Effect/EfCliModelEffect.cs) remains
+[`EfCliModelEffect.cs`](../../../Gw2.Contracts/Effect/EfCliModelEffect.cs) remains
 0x210 bytes. Constructor `0x14134FD40`, setup `0x141352840`, model creation
 `0x1413512C0`, and host cleanup `0x1413515B0` distinguish these fields:
 
@@ -57,7 +57,7 @@ that is a different protocol from host retention.
 
 ## Setup descriptor includes rotation
 
-[`EfCliModelPlacement.cs`](../../../../src/Gw2.Native/Effect/EfCliModelPlacement.cs)
+[`EfCliModelPlacement.cs`](../../../Gw2.Contracts/Effect/EfCliModelPlacement.cs)
 is a partial descriptor overlay with an aligned covered span of 0x50. This is not a
 proven native allocation size or sufficient initialization recipe.
 

@@ -18,10 +18,10 @@ selection, and the shared native emitter boundary. Healthbar occlusion policy is
 [`occlusion.md`](occlusion.md). Character-side authoritative health is documented in
 [`../Context/context-and-health.md`](../Context/context-and-health.md).
 
-Symbols are maintained in the active Ghidra project; see [`re/methodology/ghidra.md`](../../methodology/ghidra.md). Authoritative
-reconstructed layouts live in [`AsHealthWidget.cs`](../../../src/Gw2.Native/InfoBars/AsHealthWidget.cs),
-[`CtRecord.cs`](../../../src/Gw2.Native/InfoBars/CtRecord.cs), and
-[`InfoBarConstants.cs`](../../../src/Gw2.Native/InfoBars/InfoBarConstants.cs).
+Symbols are maintained in the active Ghidra project; see [`methodology/ghidra.md`](../../methodology/ghidra.md). Authoritative
+reconstructed layouts live in [`AsHealthWidget.cs`](../../Gw2.Contracts/InfoBars/AsHealthWidget.cs),
+[`CtRecord.cs`](../../Gw2.Contracts/InfoBars/CtRecord.cs), and
+[`InfoBarConstants.cs`](../../Gw2.Contracts/InfoBars/InfoBarConstants.cs).
 
 # Overview
 

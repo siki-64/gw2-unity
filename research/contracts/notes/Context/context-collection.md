@@ -175,7 +175,7 @@ Consumers should not infer permanent pointer identity merely because the slot nu
 ## Known payload destinations
 
 The exhaustive slot/offset layout is owned by
-[`ContextCollection.cs`](../../../src/Gw2.Native/Context/ContextCollection.cs). This note records only
+[`ContextCollection.cs`](../../Gw2.Contracts/Context/ContextCollection.cs). This note records only
 relationships needed to explain behavior.
 
 `Gw2.Core` resolves the TLS-scoped `ContextCollection` anchor once during process initialization. It

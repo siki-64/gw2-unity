@@ -67,7 +67,7 @@ until their contracts are independently established.
 ```
 
 Constructor/destructor evidence proves these boundaries and ownership, but not every
-container key/value type. Unresolved regions remain opaque in `Gw2.Native`.
+container key/value type. Unresolved regions remain opaque in `Gw2.Contracts`.
 
 ## Authored and runtime object fields
 
