@@ -54,8 +54,8 @@ Fixed, already-validated encodings may use direct byte emission when no general 
 6. record the confirmed identity, comments, and types in the active Ghidra project;
 7. update durable notes or the reconstructed contract layer only when the evidence is strong enough.
 
-Agents can run the same normal shell commands as human operators. Use `--format json` when structured
-output is convenient; do not scrape prose or infer live addresses from analysis VAs.
+Agents can run the same normal shell commands as human operators. Prefer a structured output mode when
+one is available rather than scraping prose, and do not infer live addresses from analysis VAs.
 
 An unresolved result remains unresolved. A Ghidra address may speed investigation and comparison, but
 runtime patch safety still depends on locator and precondition validation.

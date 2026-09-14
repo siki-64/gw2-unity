@@ -5,7 +5,7 @@
 **Unresolved:** uninspected slots, remaining overlay tables, and cross-build validity.<br>
 **Address scope:** listed analysis VAs are evidence coordinates, not durable addresses; Ghidra is authoritative.
 
-Build `205.780` live captures were taken with `debug vtable` while the game was
+Build `205.780` live captures were taken by reading live vtable pointers while the game was
 running. The addresses below are analysis VAs (`0x140000000 + module RVA`),
 not process VAs, and are retained as build-local evidence rather than an active
 address cache. A table is recorded only when its object header or embedded

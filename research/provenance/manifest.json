@@ -33,7 +33,7 @@
                   {
                       "originalPath":  "re/methodology/discovery.md",
                       "currentPath":  "research/contracts/methodology/discovery.md",
-                      "sha256":  "42d51f81c3a3e0df74c947e8d0ff5a3cf3168b59b9333ae640840c0c0fe5ed67",
+                      "sha256":  "1d3b929bcce70f0fc5b9a16c4dc0cc7f4d13f85c36a53ee258557b56cbc7d2fd",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
@@ -47,14 +47,14 @@
                   {
                       "originalPath":  "re/methodology/reconstruction.md",
                       "currentPath":  "research/contracts/methodology/reconstruction.md",
-                      "sha256":  "01fcf76dbbf77ab4752d925a0f233d4e4ad5539bbebbc0523df16979f3378a55",
+                      "sha256":  "1527109b76220952c5ac943a63c631a3cb9497e713a97599e210c8d199dec8a5",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
                   {
                       "originalPath":  "re/methodology/tooling.md",
                       "currentPath":  "research/contracts/methodology/tooling.md",
-                      "sha256":  "75fc2f6e2d4e4924d62f272e08d80259c9c33373829b8a00306a2e455af09bbf",
+                      "sha256":  "87b862c235de24360c1320500683242fdc230dd4c004ba8efc97c6b6a6d54546",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
@@ -103,7 +103,7 @@
                   {
                       "originalPath":  "re/notes/Character/vtable-inventory.md",
                       "currentPath":  "research/contracts/notes/Character/vtable-inventory.md",
-                      "sha256":  "0d864066ef708a28a0c8c991429fc14a4024d2bd964107b3452247251ccd0362",
+                      "sha256":  "009c2bcd25bac1954c4d7055ec8d62ebbf788259a9a8d514531c1131fbb83ea2",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
@@ -166,7 +166,7 @@
                   {
                       "originalPath":  "re/notes/UI/Widgets/gear-inspect.md",
                       "currentPath":  "research/contracts/notes/UI/Widgets/gear-inspect.md",
-                      "sha256":  "979ec411ba79727fb3a49c4308dda21db19e6a5e9e1d2f2bffb5b409225191aa",
+                      "sha256":  "e46a0e23433b2a2add437cdedf5c96db7f7bb8fdabea34719547b119bca64f58",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },
@@ -1223,7 +1223,7 @@
                   {
                       "originalPath":  "re/notes/InfoBars/pipeline.md",
                       "currentPath":  "research/contracts/notes/InfoBars/pipeline.md",
-                      "sha256":  "dacec771f0f2f09f5ba67d85e0cf3006e7a019a740815ae3299258eea9f159d2",
+                      "sha256":  "f08de4935a70747407bb3c3bae64ced540e69356200c2b7f61c2177e3fe9e1cb",
                       "namespaceRenamed":  true,
                       "refsNormalized":  true
                   },

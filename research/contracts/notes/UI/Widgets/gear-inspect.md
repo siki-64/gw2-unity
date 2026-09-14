@@ -230,32 +230,23 @@ provider resend request. Replaying the mission-ready message would enter an
 unproven world-state protocol transition and must not be treated as a safe
 refresh operation.
 
-The reusable correlator is:
+The reusable correlator logs low-volume outbound records with their raw payload
+and caller RVA, logs only inbound `0x200..0x207` ids, and restores both
+temporary tracepoints on normal completion. It was run for a bounded window
+(180 seconds, 100000 records) against build `205.780`.
 
-```text
-<operator-tool> --build 205.780 --pid <pid> gw2 pvp world-entry-correlation 180 100000
-```
-
-It logs low-volume outbound records with their raw payload and caller RVA, logs
-only inbound `0x200..0x207` ids, and restores both temporary tracepoints on
-normal completion.
-
-For payload-level inspection, the tooling-only payload tracer reads the decoded
-`HandlerInfo` and payload immediately before dispatch. It arms the ordinary and
+For payload-level inspection, a payload tracer reads the decoded `HandlerInfo`
+and payload immediately before dispatch. It arms the ordinary and
 ring-buffer-wrap decode paths together with the raw outbound send entry, so one
-transition is sufficient and both directions share one monotonic timeline:
-
-```text
-<operator-tool> --build 205.780 --pid <pid> gw2 pvp message-payloads 60 4096
-```
+transition is sufficient and both directions share one monotonic timeline. It
+was run with a 60-record limit and a 4096-byte payload cap.
 
 Each matching record includes the message id, dispatch type, handler and schema
 RVAs, schema-declared size, up to 4096 payload bytes, and the decoder path that
 handled it. The tracer suspends peer threads while single-stepping and restores
 all temporary breakpoints on completion. Outbound records include their message
-id, raw bytes, and caller RVA. The lower-level
-`inbound-pvp-message` tracepoint mode remains available for isolated site
-testing. This functionality is intentionally part of the operator tooling.
+id, raw bytes, and caller RVA. A lower-level `inbound-pvp-message` tracepoint
+mode remains available for isolated site testing.
 
 For build `205.780`, the four pre-dispatch sites are RVAs `0xFE9339`,
 `0xFE9348`, `0xFE94F4`, and `0xFE9503`: two handler-call forms on each decode
@@ -385,45 +376,31 @@ already-populated world payload.
 ## Read-only live resolution
 
 The PvP Hero, rank, and equipment fields can be resolved without attaching a
-debugger or writing to the game. First enumerate the live providers; the
-scanner prints the PvP Hero definition id, provider flags, rank-definition
-ids, all seven PvP gear definitions, and physical inventory weapons when the
-player's character/inventory exists:
+debugger or writing to the game. First enumerate the live providers (up to 20
+providers for this build); the scan reports the PvP Hero definition id, provider
+flags, rank-definition ids, all seven PvP gear definitions, and physical
+inventory weapons when the player's character/inventory exists.
 
-```text
-<operator-tool> --build 205.780 --pid <pid> gw2 pvp provider-scan 20
-<operator-tool> --build 205.780 --pid <pid> gw2 pvp spectator-graph 256
-```
+The spectator graph starts at the same `ContextCollection` anchor as the
+provider scan, walks up to 256 entries through `ChCliContext.Players` to each
+`ChCliPlayer`, and reports the provider relationship and resolved state. It
+performs only process memory reads; the spectator UI is not the source of the
+payload.
 
-The spectator graph command starts at the same `ContextCollection` anchor as
-the provider scan, walks `ChCliContext.Players` to each `ChCliPlayer`, and
-prints the provider relationship and resolved state. It performs only process
-memory reads; the spectator UI is not the source of the payload.
-
-The provider scan prints `ownerPlayer`, `playerListIndex`, and `agentId` for
+The provider scan reports `ownerPlayer`, `playerListIndex`, and `agentId` for
 each provider whose `ChCliPlayer +0x97B0` backlink still points to that provider.
 Use those fields to correlate the provider with the player, then read the
-provider and its non-null payload objects directly:
-
-```text
-<operator-tool> --build 205.780 --pid <pid> debug qwords <provider-va> 28
-<operator-tool> --build 205.780 --pid <pid> debug qwords <payload-va> 8
-```
+provider and its non-null payload objects directly. A 28-qword read covers the
+provider; eight qwords cover the payload object.
 
 `provider +0x60` is a `PvpHeroDefinition*`. Its live objects carry content
 request type `0x71` at `+0x10` and the PvP Hero definition id at `+0x14`.
 The rank definitions at `+0x68`, `+0x78`, and `+0xB0` expose their separate
 definition ids at `+0x28`.
 
-For change correlation, snapshot the provider before and after a controlled
-rank or equipment update:
-
-```text
-<operator-tool> --build 205.780 --pid <pid> debug memory-diff <provider-va> 0xD8 30
-<operator-tool> --build 205.780 --pid <pid> debug snapshot <provider-va> 0xD8 before.snap
-<operator-tool> --build 205.780 --pid <pid> debug snapshot <provider-va> 0xD8 after.snap
-<operator-tool> --build 205.780 debug snapshot-diff before.snap after.snap
-```
+For change correlation, the `0xD8`-byte provider region was diffed live across
+30 polls and separately snapshotted before and after a controlled rank or
+equipment update:
 
 The four sigils are independently verified by reading
 `provider +0xB8 + index * 8` and their definition `+0x28` ids; they are
@@ -457,9 +434,9 @@ offhand. A null remote character or inventory still makes those physical item
 ids unavailable for that particular roster entry.
 
 
-## Inspector presentation target
+## Presentation target
 
-The standalone Build Inspector intentionally follows the legacy spectator PvP build-panel
+The presentation layer intentionally follows the legacy spectator PvP build-panel
 information architecture rather than a generic property table:
 
 ```text
@@ -495,7 +472,7 @@ two core lines; the roster label shows the elite specialization when one is equi
 falls back to the core profession when at least one trait line is present.
 
 The recovered native `TraitDefinition` currently has verified id/tier fields but no verified
-display-name/localization pointer. Build Inspector therefore keeps presentation correlation outside
+display-name/localization pointer. Presentation correlation is therefore kept outside
 `Gw2.Contracts`: `TraitPresentationCatalog` is keyed by native `TraitDefinition.Id` and additionally
 checks the observed native specialization/tier/choice before returning a label. Its public trait id is
 only an optional handle for icon/tooltip enrichment. Runtime API availability does not participate in

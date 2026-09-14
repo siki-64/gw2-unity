@@ -358,11 +358,8 @@ Common locator forms include:
 
 Use the existing tooling described in [`tooling.md`](tooling.md).
 
-All build-sensitive tool runs should identify the game build:
-
-```text
-<operator-tool> --build <game-build> ...
-```
+All build-sensitive tool runs should record the game build they were performed against, so captured
+output stays tied to the binary it describes.
 
 # Build updates
 

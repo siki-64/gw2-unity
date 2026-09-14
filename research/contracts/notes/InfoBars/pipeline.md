@@ -418,7 +418,7 @@ if !(B[byteIndex] & mask): return false
 return !(C[byteIndex] & mask)
 ```
 
-Runtime `debug memory-diff` tests on build `205.655` mapped these ids directly to UI settings:
+Runtime memory-diff tests on build `205.655` mapped these ids directly to UI settings:
 
 | policy id | setting |
 |---:|---|

@@ -29,25 +29,19 @@ For normal decomp work, start in Ghidra/MCP to find the relevant surface, then v
 
 # Command convention
 
-Build-sensitive commands should identify the game build:
+Build-sensitive operations must identify the game build they were performed against, so that captured
+output stays tied to the binary it describes. Where an operation reads a running process it must also
+name the target process, and where structured output is useful it should emit a single JSON object
+containing the build, optional process id, normalized command, exit code, stdout lines, and stderr
+lines. Text remains the human default.
 
-```text
-<operator-tool> --build <game-build> [--pid <pid>] [--format text|json] <group> <command> ...
-```
+Operations separate by risk and semantics:
 
-This keeps captured output tied to the binary it describes. The public command surface is grouped by risk and semantics:
+- read-only live-process and debugger inspection;
+- game-specific interpretation and readers;
+- mutation and validation operations, kept visibly separate from the read-only surface.
 
-- `debug`: read-only live-process and debugger inspection;
-- `gw2`: Guild Wars 2-specific interpretation and readers;
-- `patch`: explicit mutation/patch-validation operations.
-
-Offline PE/disassembly inspection belongs in Ghidra/MCP. The former `static` CLI group is removed.
-
-Use `--format json` for agent-driven runs. It emits one JSON object containing the build, optional PID,
-normalized command string, exit code, stdout lines, and stderr lines. Text remains the human default.
-
-Legacy flat command names are accepted for compatibility but are intentionally hidden from help and must
-not be used in new automation or documentation.
+Offline PE/disassembly inspection belongs in Ghidra/MCP rather than in a live-instrumentation surface.
 
 The command surface is an operator-facing shell, not the canonical home of reusable native knowledge:
 
@@ -72,11 +66,11 @@ Ghidra project; reusable locators remain code in the discovery layer.
 Runtime/offline locators must validate the image they operate on rather than trusting a Ghidra VA.
 Ghidra addresses are analysis coordinates for one build, not runtime ASLR-adjusted addresses.
 
-Mapped-module binaries are local evidence and are ignored by Git. The `dump-module` command writes the
-image atomically, records the supplied build in an adjacent `.build.txt` sidecar, and writes a JSON
-manifest containing the build, runtime base, image size, SHA-256, and capture time. Generated dump
-sidecars, manifests, temporary files, and `.snap` captures are local artifacts and are ignored as well.
-Do not use a dump when its provenance is absent, unknown, or inconsistent with the task.
+Mapped-module dumps are local evidence and are ignored by Git. A module dump is written atomically, with
+the supplied build recorded in an adjacent `.build.txt` sidecar and a JSON manifest giving the build,
+runtime base, image size, SHA-256, and capture time. Generated dump sidecars, manifests, temporary files,
+and memory snapshots are local artifacts and are ignored as well. Do not use a dump when its provenance
+is absent, unknown, or inconsistent with the task.
 
 # Rules of thumb for live instrumentation
 
@@ -91,15 +85,11 @@ Do not use a dump when its provenance is absent, unknown, or inconsistent with t
 
 PvP gear changes are observed by polling the same live object graph used by the
 runtime accessors. The runtime resolves and publishes the `ContextCollection`
-anchor once during initialization. A standalone inspection command resolves an
+anchor once during initialization. A standalone inspection resolves an
 equivalent anchor because it runs outside that process, then walks
 `ChCliContext.Players` and compares each player's `ChCliPlayer.PvpGearManager`
 payload. It does not install a breakpoint or depend on a build-local code
-address:
-
-```text
-<operator-tool> --build <game-build> --pid <pid> gw2 pvp gear-trace [seconds] [max-events]
-```
+address.
 
 The output distinguishes provider creation, field changes, and provider removal.
 An absent provider is preserved as “not populated”; the inspector must not call
@@ -117,26 +107,17 @@ The durable identity of a symbol is its evidence-backed semantic/structural iden
 
 # Module snapshot
 
-Capture the main module in mapped-memory layout with:
-
-```text
-<operator-tool> --build <game-build> --pid <pid> debug dump-module <output-path>
-```
-
-The command replaces the dump atomically and records the associated build.
+Capture the main module in mapped-memory layout with a module-dump operation, which replaces the dump
+atomically and records the associated build.
 
 # Native font capture
 
-For the build-205.780 font investigation, `debug font-dump` captures a live operation-scoped `GrFont`
-using the absolute `font=0x...` value recorded by the native text probe:
+For the build-205.780 font investigation, a read-only font capture takes a live operation-scoped
+`GrFont` using the absolute `font=0x...` value recorded by the native text probe.
 
-```text
-<operator-tool> --build 205780 --pid <pid> debug font-dump <GrFont-VA> <output-directory>
-```
-
-The read-only capture writes a timestamped directory with a top-level `font.json`, per-range metadata,
+The capture writes a timestamped directory with a top-level `font.json`, per-range metadata,
 glyph-record fields, and the decoded-length-bounded encoded stream for each loaded range. The pointer is
-not durable: the command must run against the same process that produced the probe address. The dump is
+not durable: the capture must run against the same process that produced the probe address. The dump is
 used to validate the native range format and metric payload before any runtime code is written.
 
 Offline image commands should operate against either an installed PE image or the mapped-memory dump, depending on what the specific resolver requires.
@@ -183,7 +164,7 @@ All instruction-layer changes must continue to work in a `win-x64` NativeAOT bui
 
 # Xref scanning
 
-A generic `XrefScanner` can use decoded instructions to identify:
+A generic cross-reference scanner can use decoded instructions to identify:
 
 - RIP-relative data references;
 - direct `CALL` targets;
@@ -197,7 +178,7 @@ Prefer decoded instruction semantics over ad-hoc opcode parsing.
 Keep repository tooling focused on capabilities that Ghidra does not replace or that independently verify
 Ghidra-derived conclusions:
 
-- mapped-module capture and provenance (`debug dump-module`);
+- mapped-module capture and provenance;
 - exact decoded opcode/image inspection in Ghidra, plus reusable discovery-layer locators for
   verification;
 - reusable GW2 locator/scanner execution;
