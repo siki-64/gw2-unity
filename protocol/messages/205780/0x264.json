@@ -8,8 +8,8 @@
   "representation": "decoded-handler-record",
   "evidenceLevel": "observed",
   "pipeline": {
-    "id": "unknown",
-    "state": "unknown",
+    "id": "msgpack-schema",
+    "state": "hypothesized",
     "opcodeEncoding": "unknown",
     "stages": []
   },
@@ -18,6 +18,11 @@
       "kind": "note",
       "path": "research/contracts/notes/UI/Widgets/remote-equipped-skills.md",
       "label": "remote-equipped-skills"
+    },
+    {
+      "kind": "note",
+      "path": "research/contracts/notes/Protocol/msg-dispatch.md",
+      "label": "msg-dispatch"
     }
   ],
   "fields": [
@@ -55,13 +60,19 @@
   "wireFixtures": [],
   "unresolved": [
     {
-      "question": "What are the wire bytes, framing, opcode encoding and transforms for this message?",
+      "question": "What are the wire bytes, opcode encoding and transforms for this message?",
       "kind": "framing",
-      "note": "The 12-byte handler record is a decoded native structure. It is not a wire fixture."
+      "note": "The 12-byte handler record is a decoded native structure. It is not a wire fixture. The transport mechanism is now recovered (see msg-dispatch): the payload leading u32 selects a 32-byte-stride registry record, whose defArray drives a type-directed decode. What remains open is this message's concrete wire bytes -- no capture decodes end to end, and the registry instance is runtime-populated, so id 0x264 is not yet tied to a registry slot."
     },
     {
       "question": "Which build-specific schema variant selects this record's shape?",
-      "kind": "schema-variant"
+      "kind": "schema-variant",
+      "note": "The mechanism is established: MsgPackFieldDef descriptor chains with a lazy size cache, keyed by the registry lookup. Not established: this message's own defArray, and whether the registry id space is the same id space this messageId belongs to."
+    },
+    {
+      "question": "Is the registry id space the same namespace as this messageId, and what is its bound?",
+      "kind": "identity-mapping",
+      "note": "Registry lookup is a direct index in 0..count-1 over a runtime-populated table. count, the table base and every defArray are not yet read, so the two id spaces are not reconciled. Per the working rules these are separate namespaces until shown otherwise."
     }
   ],
   "validation": {

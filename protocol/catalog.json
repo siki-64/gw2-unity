@@ -22,11 +22,11 @@
       "messageId": "0x264",
       "representation": "decoded-handler-record",
       "evidenceLevel": "observed",
-      "pipeline": { "id": "unknown", "state": "unknown", "opcodeEncoding": "unknown" },
+      "pipeline": { "id": "msgpack-schema", "state": "hypothesized", "opcodeEncoding": "unknown" },
       "artifact": "protocol/messages/205780/0x264.json",
       "wireVerified": false,
       "supported": false,
-      "note": "Registered as a handler-level contract only. wireVerified stays false and build 205780 stays out of supportedWireBuilds."
+      "note": "Registered as a handler-level contract only. wireVerified stays false and build 205780 stays out of supportedWireBuilds. Pipeline id records the variant the client's decoder belongs to; state stays hypothesized because the registry instance is runtime-populated and no capture ties 0x264 to a registry slot."
     }
   ],
   "researchLeads": [
