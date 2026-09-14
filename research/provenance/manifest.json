@@ -1,4 +1,4 @@
-{
+﻿{
     "schemaVersion":  2,
     "sourceRepository":  "reverse-engineering findings",
     "sourceCommit":  "16cf788207cc9c36f53876153abcce077c8f0356",
@@ -6,7 +6,7 @@
     "importedAtUtc":  "2026-09-14T07:19:16.1649434Z",
     "classification":  "reference-only; not registered wire contracts",
     "buildScope":  "Per source file; do not infer current server compatibility",
-    "note":  "Provenance record. Paths were regrouped into research/contracts and research/data; sha256 values are of the unmodified source files. This file is not an in-place integrity check for the current layout. One deliberate deviation: research/data/Gw2.Dat.Tests/Gw2.Dat.Tests.csproj has an amended ProjectReference to ../Gw2.Dat/Gw2.Dat.csproj after regrouping; every other sha256 matches the unmodified source file.",
+    "note":  "Provenance record. Paths were regrouped into research/contracts and research/data; sha256 values are of the unmodified source files. This file is not an in-place integrity check for the current layout. One deliberate deviation: research/data/Gw2.Dat.Tests/Gw2.Dat.Tests.csproj has an amended ProjectReference to ../Gw2.Dat/Gw2.Dat.csproj after regrouping; every other sha256 matches the unmodified source file. Files excluded from this snapshot have been kept out deliberately.",
     "files":  [
                   {
                       "originalPath":  "CREDITS.md",
@@ -557,6 +557,411 @@
                       "originalPath":  "tests/Gw2.Dat.Tests/Gw2TextureTests.cs",
                       "currentPath":  "research/data/Gw2.Dat.Tests/Gw2TextureTests.cs",
                       "sha256":  "008b9e9e55a4aed4946b8af5bdf4d8ad9872075e200d24eed4000f8e65970fe4"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Combat/ClientEffectContract.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Combat/ClientEffectContract.cs",
+                      "sha256":  "05df5a7bcde75c7ba5bb338f9e3240030810267ffec3f5b2034f8aad4ee344c4"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Combat/CmbtCliBreakBar.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Combat/CmbtCliBreakBar.cs",
+                      "sha256":  "8896ae47536b5f6712fa37bc909c50591dff8b2227b07e88ea1b233cde65b6d6"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Combat/CmbtCliBuff.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Combat/CmbtCliBuff.cs",
+                      "sha256":  "9420b9fb0ff45e6166ee4713cc54989151526fa757a5b213f6d2cdc9b2e3bc12"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Combat/CombatEnums.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Combat/CombatEnums.cs",
+                      "sha256":  "ef14bb3bb2873501d6614c869eec3f87d427e63960686aa2a6a8529aef8c3ee9"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Combat/GroundTargeting.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Combat/GroundTargeting.cs",
+                      "sha256":  "b335891d0abc0b17aab7cb5685b99e2e831059dd9fe1e317bb068090341d19f6"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Combat/NoveltyPreviewEffectContract.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Combat/NoveltyPreviewEffectContract.cs",
+                      "sha256":  "a7c5a356b200203eee4b4bc8be571aed03bce91668c7da9d51075a2a5f18ba0e"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Combat/NoveltyWorldEffectContract.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Combat/NoveltyWorldEffectContract.cs",
+                      "sha256":  "2dd70fe89ab3239ff94e8dc4b93044050a1d3be65cdb62a98edab03dd4d8bc6e"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Effect/AvCharEffect.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Effect/AvCharEffect.cs",
+                      "sha256":  "799fff95775a58d38fcf1738356c24c72601645469ab3a0eb067392329bc347e"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Effect/EfCliContext.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Effect/EfCliContext.cs",
+                      "sha256":  "aefa3b0c04e2edf915ce8ed90b34fc4c8927acc19ac2660f51f753e7aeb1a1cc"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Effect/EfCliCreateArguments.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Effect/EfCliCreateArguments.cs",
+                      "sha256":  "683afff81a853231ca7052a5c74f3916c40845fd3d4dc2fed9daf95317a41829"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Effect/EfCliEffectDecal.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Effect/EfCliEffectDecal.cs",
+                      "sha256":  "9781e6fbf1bed9aba1b7f9c26289e43066b8b4ea2f1b23ae8aa4b88771c44fc9"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Effect/EfCliModelEffect.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Effect/EfCliModelEffect.cs",
+                      "sha256":  "6cc5eb419e95e4ec7881d275cccde33b45786c90dabc2603f18abf46241451c8"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Effect/EfCliModelPlacement.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Effect/EfCliModelPlacement.cs",
+                      "sha256":  "808dcc5dc91ebbf1183e0b0b8bc230d9b1f711edf894382eb55ed68c56b75ab7"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Effect/EffectContentKey.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Effect/EffectContentKey.cs",
+                      "sha256":  "9542cf7933e1ce2d889d61072b1d6552e7925abbfd44b535049decc9ad89de1b"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Effect/EffectDefinitionId.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Effect/EffectDefinitionId.cs",
+                      "sha256":  "f3d3dc6a0fbc92529552604088b38d50a39cef9af967eb26a8e32d15d3dac926"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Effect/EffectEnums.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Effect/EffectEnums.cs",
+                      "sha256":  "1728382449545e5f539d3fc7292640cf1fc72a99dcb35383b860cfeac502cd08"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Effect/IEffectDef.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Effect/IEffectDef.cs",
+                      "sha256":  "9c4e32b2468a5046f5bf9a8a31252fcde7bd9f4ead7beee0788eb13866a0daf1"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Effect/SkillEffectApplicationEntry.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Effect/SkillEffectApplicationEntry.cs",
+                      "sha256":  "374334be87947164ec5ee83d23a47bef6454c4bceb890c3a82128527305617b7"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Gadget/GadgetAgentWrapper.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Gadget/GadgetAgentWrapper.cs",
+                      "sha256":  "e463e1de1bda3acd04c4800187dd82d2ef5e420318cbd384f9bc2a20bfba3cfc"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Gadget/GadgetEnums.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Gadget/GadgetEnums.cs",
+                      "sha256":  "c39d512858ae991322ec7345712eec83f070dfa83af02565c9910fcd14b14d43"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Gadget/GdCliGadget.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Gadget/GdCliGadget.cs",
+                      "sha256":  "11736a1e47268f8f2a6cb5e1f81340da347b0622773cf63bda95a078fc75c202"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Graphics/FontContext.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Graphics/FontContext.cs",
+                      "sha256":  "a9a76dfd58257b2fe99df2ceb381b493544ea9284b92d5085b6d43c7d5274a28"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Graphics/GrFont.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Graphics/GrFont.cs",
+                      "sha256":  "545a99728fbeb47ee183a12af9ce82f4635b08ef614fe1f5660d13b30fa79af2"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Graphics/GrFontRle.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Graphics/GrFontRle.cs",
+                      "sha256":  "6d8eaca8f586d4aa3d1a17ef54cf99756602b77ca464244efe6d85febd6a0d7a"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Graphics/GrModel.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Graphics/GrModel.cs",
+                      "sha256":  "935a975db302e09d20fa3c6388a09fed36146e53ea29fea025afcffa0eec424c"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Graphics/GrTex.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Graphics/GrTex.cs",
+                      "sha256":  "7a9876b6b6bfb88d63c0d4b6fe0705dfeb966ddb55ef4729c47e3f59f55d6350"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Graphics/GrTex2d.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Graphics/GrTex2d.cs",
+                      "sha256":  "ca4ce35f507a32982d31f17e98d7b7c80ac0108854c38998978e01be14e48b33"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/InfoBars/AsHealthWidget.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/InfoBars/AsHealthWidget.cs",
+                      "sha256":  "d47c523554a3849c8d9d62588404d2a28f4df4318c92171bd0cde888f0123b7a"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/InfoBars/CtRecord.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/InfoBars/CtRecord.cs",
+                      "sha256":  "f0813be87511de41e90eb6ac88ca258b089acde3ac238133919fb1170f564ba7"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/InfoBars/FrameContentParams.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/InfoBars/FrameContentParams.cs",
+                      "sha256":  "982ecf57380129f0832b33c228e575a2e117a11a9af9dc11f3f679695984efef"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/InfoBars/InfoBar.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/InfoBars/InfoBar.cs",
+                      "sha256":  "6c37248a45916657e5fc009f305dc4604f34e3da12c6f74c09b4fefbd7924ca1"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/InfoBars/InfoBarConstants.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/InfoBars/InfoBarConstants.cs",
+                      "sha256":  "d8a26b0b3fc7b9c8a5cc062124521c04e1e7fe9c819e4a27f4939ac3d15ae587"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/InfoBars/InfoBarEnums.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/InfoBars/InfoBarEnums.cs",
+                      "sha256":  "9ca30381095ab9ea4176783ea733fcbe78fb0f415c6010272548d641a8afffef"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/InfoBars/InfoBarPresentationSmoother.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/InfoBars/InfoBarPresentationSmoother.cs",
+                      "sha256":  "d37acb5822436e59cc8889cede540bc74a29d402df3ec38ff576256da20929c9"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/InfoBars/InfoBarSlot7Widget.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/InfoBars/InfoBarSlot7Widget.cs",
+                      "sha256":  "735f625021e1fe5b2fd844a0caf827d1f7e9e2cd545f5f6ed8e3bb80d030b208"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/InfoBars/NameCategory.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/InfoBars/NameCategory.cs",
+                      "sha256":  "c2536c3d48e8aecb79151ebdee5c78c3aeced75313f3dd0ffcf63115f695ac00"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/InfoBars/NameCategoryPresentationFlags.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/InfoBars/NameCategoryPresentationFlags.cs",
+                      "sha256":  "8ee1beca634d0afbc4f7ef1854c1d2e3495806c4761f861624dcce4081001b04"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/InfoBars/NameRenderCtx.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/InfoBars/NameRenderCtx.cs",
+                      "sha256":  "a90b8ec90485a3e4491cca6515b245128e6c48a2469000c406a527eae8a4c5fe"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/InfoBars/NameRenderingConstants.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/InfoBars/NameRenderingConstants.cs",
+                      "sha256":  "78cb0313d9ecf60c185d4b4eeaea56bdae50de6d49b473e0ac05c7488a4d4c0a"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Physics/Havok/HavokEnums.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Physics/Havok/HavokEnums.cs",
+                      "sha256":  "f3b043dc97c066e32c0c1e4005f79769fd21b8843da8d347f448a82f5a9a563c"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Physics/Havok/HkpPhysicsObjects.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Physics/Havok/HkpPhysicsObjects.cs",
+                      "sha256":  "39935766d2186b24e2d00b62c71a7ad993e69aa4553ea6b8a5cfd10310c6f0dd"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/Physics/Havok/HkpShapes.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/Physics/Havok/HkpShapes.cs",
+                      "sha256":  "5093203a034651d9d4dd37f448817c5b03c3bb0983ae4bfd3a784da3210dbb7d"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/UI/Frames/FrCache.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/UI/Frames/FrCache.cs",
+                      "sha256":  "d0de844b2f8e8edb9bb2c65c1764db51e7d4971613120be7c89fd34e8206e5f5"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/UI/Frames/FrFrame.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/UI/Frames/FrFrame.cs",
+                      "sha256":  "99dff022328eba8b227c1346b13524c215c4e39eb23508e1e5eac9721c121d38"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/UI/Frames/FrFrameContentQueue.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/UI/Frames/FrFrameContentQueue.cs",
+                      "sha256":  "6b8f5ab411de2c9cd646eb7320daf3e5bde041038cbb4607b0a2d4995ea1aaf2"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/UI/Frames/FrTextParams.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/UI/Frames/FrTextParams.cs",
+                      "sha256":  "2706024185f4b6d114f2dedd0062342608623fa1751eacee22823a9054b5b23c"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/UI/Widgets/AccountNameControl.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/AccountNameControl.cs",
+                      "sha256":  "515e17b14a7bf6e055bfdec10116659db9943826147293a05c0277aa87fa0dd3"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/UI/Widgets/BtEqpSlot.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/BtEqpSlot.cs",
+                      "sha256":  "d633106974e713ad6c0758c686cd76b53b4f203062d5cf25d6f33cfb937370b3"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/UI/Widgets/BtGear.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/BtGear.cs",
+                      "sha256":  "4018adc2f43234eb30be463e8c3d4fe8323f7d64f0f2528b3b980125b71ba975"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/UI/Widgets/BtHero.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/BtHero.cs",
+                      "sha256":  "316c5dbf9a1b5864aa8da537a7ea6c596e6281982a282a035ad6413a240d2f87"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/UI/Widgets/BtHeroDisplay.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/BtHeroDisplay.cs",
+                      "sha256":  "31174fe0caf29ba6115a07e59b3ca3cd5b20b383a824520d0217c490d5a909f5"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/UI/Widgets/BtHeroInfoFrame.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/BtHeroInfoFrame.cs",
+                      "sha256":  "75595fd3f97c44b217f78f9d406a9d9ca8178db7cfdb33bc82aa7f3ac6bb6fc3"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/UI/Widgets/BtInventory.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/BtInventory.cs",
+                      "sha256":  "75c0c911d93dfff2001f569b35018826a48e9454f6f0ecf3eb8d16323f9df086"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/UI/Widgets/BtTraits.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/BtTraits.cs",
+                      "sha256":  "4e8b0898dbc705f6950df45136959b8d99bc426b6057b2bba6bd62bb83dcad1d"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/UI/Widgets/CtlText.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/CtlText.cs",
+                      "sha256":  "588f03e6967568374e7432f8fd320a8cc470a25916989fa201dda9c274267319"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/UI/Widgets/LbEntry.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/LbEntry.cs",
+                      "sha256":  "6e1332c8bc69921089fcea3ad1cc7ad5ec6f9e160a495764c95eee94bf066ebe"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/UI/Widgets/PvpRatingLeaderboard.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/PvpRatingLeaderboard.cs",
+                      "sha256":  "bdf689a6ea374d6c9c38b6c28c0ce615d93c03e1e6b0ffcdca62936a70011729"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/UI/Widgets/SkEquipSpecLine.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/SkEquipSpecLine.cs",
+                      "sha256":  "390015dc09725337e0fd60bd22009ba5d914acb42252ee1c5d02cdaeb461f385"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/UI/Widgets/WidgetStateFlag.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/UI/Widgets/WidgetStateFlag.cs",
+                      "sha256":  "4bdd34ac7f37dc601a3b860f49c8e61ab6d1757230056eae290cda139fa02057"
+                  },
+                  {
+                      "originalPath":  "src/Gw2.Native/World/MapLoader.cs",
+                      "currentPath":  "research/contracts/Gw2.Native/World/MapLoader.cs",
+                      "sha256":  "32fb82126a5356d566fe2990443c3f50ce5c754f46f3364a740bd0eae577cc4a"
+                  },
+                  {
+                      "originalPath":  "re/notes/InfoBars/healthbar-rendering.md",
+                      "currentPath":  "research/contracts/notes/InfoBars/healthbar-rendering.md",
+                      "sha256":  "b2841e77e0f540792e21df1d3ff9152f345db6d7b9d61e810512117338b5a403"
+                  },
+                  {
+                      "originalPath":  "re/notes/InfoBars/name-rendering.md",
+                      "currentPath":  "research/contracts/notes/InfoBars/name-rendering.md",
+                      "sha256":  "7244628c9423644776970b54c326c87b840f642b1ad5553736a9ec6fd727e827"
+                  },
+                  {
+                      "originalPath":  "re/notes/InfoBars/native-layout.md",
+                      "currentPath":  "research/contracts/notes/InfoBars/native-layout.md",
+                      "sha256":  "98dd26a7abc58026da9cff0a65ca9c42235a85529fd9c64cd9fc2950653778ce"
+                  },
+                  {
+                      "originalPath":  "re/notes/InfoBars/occlusion.md",
+                      "currentPath":  "research/contracts/notes/InfoBars/occlusion.md",
+                      "sha256":  "39450693d34e1d7c29bb35430de444965f08a7e6a8c2b0bf65381646a87bfa38"
+                  },
+                  {
+                      "originalPath":  "re/notes/InfoBars/pipeline.md",
+                      "currentPath":  "research/contracts/notes/InfoBars/pipeline.md",
+                      "sha256":  "b6972590b59dc924202d822c8d7031fb965a391e3d8b92256f29f69d5187b726"
+                  },
+                  {
+                      "originalPath":  "re/notes/Input/pipeline.md",
+                      "currentPath":  "research/contracts/notes/Input/pipeline.md",
+                      "sha256":  "d9246cb0f93187a73f5473bb9d7e76321f03357aa3daee09b2624ba63ef16482"
+                  },
+                  {
+                      "originalPath":  "re/notes/UI/Frames/addon-content-lifetime.md",
+                      "currentPath":  "research/contracts/notes/UI/Frames/addon-content-lifetime.md",
+                      "sha256":  "56d78c17f11d0b2a76f2c26294acf06f0384c574d44692db7a2c7749b314e44b"
+                  },
+                  {
+                      "originalPath":  "re/notes/UI/Frames/frapi.md",
+                      "currentPath":  "research/contracts/notes/UI/Frames/frapi.md",
+                      "sha256":  "0d4b93aa0e8c1e240d7972b6d272fdd32062f166bab92a5a19528d0f7dadb96a"
+                  },
+                  {
+                      "originalPath":  "re/notes/UI/Frames/native-rendering.md",
+                      "currentPath":  "research/contracts/notes/UI/Frames/native-rendering.md",
+                      "sha256":  "69fae6d7a960333b9d5c8147e82d08bfe638730dd5399ff54b85772a8d56926b"
+                  },
+                  {
+                      "originalPath":  "re/notes/UI/Frames/native-text-rendering.md",
+                      "currentPath":  "research/contracts/notes/UI/Frames/native-text-rendering.md",
+                      "sha256":  "d340d70b757cd1da0270e29d43cec55334dbcc930bf26b1e9442f91e17317ad5"
+                  },
+                  {
+                      "originalPath":  "re/notes/UI/Text/native-localization.md",
+                      "currentPath":  "research/contracts/notes/UI/Text/native-localization.md",
+                      "sha256":  "4cbb77db0c8ce309a5ce519b3e91e8f2fa40bb27e64a2db41aa751a061f6e84b"
+                  },
+                  {
+                      "originalPath":  "re/notes/World/Collision/havok-objects.md",
+                      "currentPath":  "research/contracts/notes/World/Collision/havok-objects.md",
+                      "sha256":  "52f31fc5cdef41d5423d4924ef02ef98a437f9880f9340be6173da71e910f307"
+                  },
+                  {
+                      "originalPath":  "re/notes/World/Effects/client-novelty-cmbt-buff-path.md",
+                      "currentPath":  "research/contracts/notes/World/Effects/client-novelty-cmbt-buff-path.md",
+                      "sha256":  "f03d89d1e27d55490fdd8499cfb85265e7a13abf61bd9702f7d2f2c38398f581"
+                  },
+                  {
+                      "originalPath":  "re/notes/World/Effects/client-novelty-metadata-source.md",
+                      "currentPath":  "research/contracts/notes/World/Effects/client-novelty-metadata-source.md",
+                      "sha256":  "ec4b0190ad1582e872ad86c7123bdd82f8fbabd644750f08c2af8738f922c599"
+                  },
+                  {
+                      "originalPath":  "re/notes/World/Effects/client-novelty-preview-path.md",
+                      "currentPath":  "research/contracts/notes/World/Effects/client-novelty-preview-path.md",
+                      "sha256":  "4f7d6836da2a3ecfdce721a1ddc1575e54efc928877de92bb47c8b3ed9dd8348"
+                  },
+                  {
+                      "originalPath":  "re/notes/World/Effects/client-novelty-world-state.md",
+                      "currentPath":  "research/contracts/notes/World/Effects/client-novelty-world-state.md",
+                      "sha256":  "08f68c8e8196c4f78ad4734bf39bbd0dac0d5a51a96a9fb519d0747dd185989b"
+                  },
+                  {
+                      "originalPath":  "re/notes/World/Effects/client-novelty.md",
+                      "currentPath":  "research/contracts/notes/World/Effects/client-novelty.md",
+                      "sha256":  "dbcb72e51316cc7165e7d906b6a4e0b26e4281001520d2a287ecd34d7172b01d"
+                  },
+                  {
+                      "originalPath":  "re/notes/World/Effects/efcli-context.md",
+                      "currentPath":  "research/contracts/notes/World/Effects/efcli-context.md",
+                      "sha256":  "fc8b5abad8b85f2ecd9d0ff74c827d421a93a92d9052eef6ce2e60752f01f72a"
+                  },
+                  {
+                      "originalPath":  "re/notes/World/Effects/model-drawing-layout.md",
+                      "currentPath":  "research/contracts/notes/World/Effects/model-drawing-layout.md",
+                      "sha256":  "826991e912ba58c480725598db1e8d3d894c403974d9a9c8021e2d62a1476eef"
+                  },
+                  {
+                      "originalPath":  "re/notes/World/Graphics/native-content.md",
+                      "currentPath":  "research/contracts/notes/World/Graphics/native-content.md",
+                      "sha256":  "2bda568135ebdc25114d226e536622f16af79afbd3b570d9e332a48fbe328451"
+                  },
+                  {
+                      "originalPath":  "re/notes/RE_NOTES.md",
+                      "currentPath":  "research/contracts/notes/RE_NOTES.md",
+                      "sha256":  "fcc258a71714cff0e8b4bb90fdbc22d0153104b6779848f158cd60500e3c9e21"
                   }
               ]
 }
