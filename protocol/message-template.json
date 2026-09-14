@@ -1,0 +1,15 @@
+{
+  "name": "UnresolvedMessage",
+  "gameBuild": null,
+  "connectionRole": "unknown",
+  "direction": "unknown",
+  "messageId": null,
+  "representation": "unknown",
+  "evidenceLevel": "unknown",
+  "sourceReferences": [],
+  "fields": [],
+  "sessionPrerequisites": [],
+  "wireFixtures": [],
+  "unknowns": [],
+  "validation": { "static": false, "synthetic": false, "capturedReplay": false, "unity": false, "liveInterop": false }
+}

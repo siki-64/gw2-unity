@@ -1,0 +1,7 @@
+{
+  "name": "com.siki.gw2.protocol",
+  "version": "0.1.0",
+  "displayName": "GW2 Protocol",
+  "description": "Engine-independent GW2 protocol research contracts. No wire codecs registered.",
+  "unity": "6000.6"
+}

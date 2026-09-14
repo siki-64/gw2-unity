@@ -112,3 +112,13 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# Local research and build outputs
+/artifacts/
+/captures/local/
+/local-assets/
+**/bin/
+**/obj/
+*.pcap
+*.pcapng
+Gw2.dat

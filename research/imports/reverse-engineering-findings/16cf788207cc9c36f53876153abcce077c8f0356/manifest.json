@@ -1,0 +1,451 @@
+{
+    "schemaVersion":  1,
+    "sourceRepository":  "reverse-engineering findings",
+    "sourceCommit":  "16cf788207cc9c36f53876153abcce077c8f0356",
+    "sourceWorkingTree":  "clean",
+    "importedAtUtc":  "2026-09-14T07:19:16.1649434Z",
+    "classification":  "reference-only; not registered wire contracts",
+    "buildScope":  "Per source file; do not infer current server compatibility",
+    "files":  [
+                  {
+                      "path":  "CREDITS.md",
+                      "sha256":  "e6ce516261f358a0dca652b60505e943ebd6ec48d27b5df5ed63fbb61e9d6fb2"
+                  },
+                  {
+                      "path":  "Directory.Packages.props",
+                      "sha256":  "1c74de58a4295224d9bb88c922f67dfc8d6cb23752b4ea2436a7f42223b72714"
+                  },
+                  {
+                      "path":  "LICENSE.txt",
+                      "sha256":  "230184f60bae2feaf244f10a8bac053c8ff33a183bcc365b4d8b876d2b7f4809"
+                  },
+                  {
+                      "path":  "re/methodology/discovery.md",
+                      "sha256":  "2810bb8529347ece3453b68ceb04f8bbbd6f576933b4dd0933b1f789be60b15c"
+                  },
+                  {
+                      "path":  "re/methodology/ghidra.md",
+                      "sha256":  "e98b8f29938d33b2e4bd87a50a420dd9a054a5651c0e7a61598a8011cf36ac0d"
+                  },
+                  {
+                      "path":  "re/methodology/patch-resilience.md",
+                      "sha256":  "a1eb50bec0f3f1ecf5dc61e18eb9bfdbcd1584fd1b9af2dea542d28501ef52f5"
+                  },
+                  {
+                      "path":  "re/methodology/reconstruction.md",
+                      "sha256":  "d8fffb151f2d8b267a0febee2d9caa1e8c4b287f23e432ee15423174e713bf13"
+                  },
+                  {
+                      "path":  "re/methodology/tooling.md",
+                      "sha256":  "78749a55353173a3796d5ff13bff92ad8c040a0c9a53d8eb4be154f546e3d7c0"
+                  },
+                  {
+                      "path":  "re/methodology/validation.md",
+                      "sha256":  "f602ee846bb9b15552b3ca99afef7f7af02349780fef783e9fddb7302eff0736"
+                  },
+                  {
+                      "path":  "re/notes/Character/chcli-character-layout.md",
+                      "sha256":  "d49fe84eb29f291539a49fce44b91408367f204aa8a9374993c0bb6085aafda1"
+                  },
+                  {
+                      "path":  "re/notes/Character/health-runtime.md",
+                      "sha256":  "3738662cc16b9233d6b526e65367abff960235047ef1a22dfa238a7a90d3f695"
+                  },
+                  {
+                      "path":  "re/notes/Character/player-name-resolution.md",
+                      "sha256":  "024b8593be9620ab9c5ae6c4d288371e0a6c8ec6ec40766cf775ca05270015f3"
+                  },
+                  {
+                      "path":  "re/notes/Character/profession-state.md",
+                      "sha256":  "14e234b0c2a7cc814b9f785181e7b8bd3a880abdea8fabdae7c93355a3c3bcc1"
+                  },
+                  {
+                      "path":  "re/notes/Character/skillbar-runtime.md",
+                      "sha256":  "43c02f9d2faa24395829e73946de0f9ba1d62fef47e0d4ae760f99733d4d7fa2"
+                  },
+                  {
+                      "path":  "re/notes/Character/vtable-inventory.md",
+                      "sha256":  "0d864066ef708a28a0c8c991429fc14a4024d2bd964107b3452247251ccd0362"
+                  },
+                  {
+                      "path":  "re/notes/Context/Build/game-build.md",
+                      "sha256":  "e3889ffdfab0b72d513899e8eaf0b0d40819b84182f407e00c8ec9f5de995972"
+                  },
+                  {
+                      "path":  "re/notes/Context/context-and-health.md",
+                      "sha256":  "2fd23850f517c7a8a8b562ebb9e8a040e48da71bbebc7b9611eee5176c044d53"
+                  },
+                  {
+                      "path":  "re/notes/Context/context-collection.md",
+                      "sha256":  "29c8b515ed04682e53db8a729e4899f14582c0922c78d642a1b07586c5a9c695"
+                  },
+                  {
+                      "path":  "re/notes/Context/item-client.md",
+                      "sha256":  "66bc7529143611e43f66e4893fbf2ff2843148ac8949546c0427123350bce795"
+                  },
+                  {
+                      "path":  "re/notes/Context/pvp-queue-acceptance.md",
+                      "sha256":  "c264aeb9422c25c39712318581914e9563db82b62d09dee0a0b6e0284c422ce6"
+                  },
+                  {
+                      "path":  "re/notes/Context/selection-target.md",
+                      "sha256":  "2c4b3fad3f5b72c2947d060e785c89fc65bc5208543a85b51075e97d089ba5a0"
+                  },
+                  {
+                      "path":  "re/notes/Context/world-view.md",
+                      "sha256":  "3e3ef28dd719cb92a0583f5c7d552a59c38604072cc4daac14a04245b6f5a96f"
+                  },
+                  {
+                      "path":  "re/notes/UI/Widgets/framework.md",
+                      "sha256":  "e312f6116e9bed6b3936dcbc2828193f8c9f8488da4edc741f512fb28ad42d74"
+                  },
+                  {
+                      "path":  "re/notes/UI/Widgets/gear-inspect.md",
+                      "sha256":  "affacf24926caf242d974cc31494013abfce35f031475aa464532335059be7d9"
+                  },
+                  {
+                      "path":  "re/notes/UI/Widgets/ranked-leaderboard.md",
+                      "sha256":  "dc0e57350e94a788a856a8e750b619315d1580bc9db6113716f321eee3bba350"
+                  },
+                  {
+                      "path":  "re/notes/UI/Widgets/remote-pvp-equipped-skills.md",
+                      "sha256":  "1432ad1d396afa049be593b6cc6281943bcd6d98ea8719b531c1abee7996d0e2"
+                  },
+                  {
+                      "path":  "re/notes/UI/Widgets/resolved-identities.md",
+                      "sha256":  "8361aca209b0d35559b900e6d47e121a89b719fa7d86bb651de2c9c8b0fe7d7a"
+                  },
+                  {
+                      "path":  "re/notes/World/Loading/map-loader.md",
+                      "sha256":  "e13668a7cc5ff6b904a255bc6b4ec3b09f8594c499f4e2010703530e9d0b5376"
+                  },
+                  {
+                      "path":  "src/Gw2.Dat/Gw2.Dat.csproj",
+                      "sha256":  "e3124ab7702f42a488948551e9f05e451c708f523718dcbb66cd45e7c4199545"
+                  },
+                  {
+                      "path":  "src/Gw2.Dat/Gw2AssetDocument.cs",
+                      "sha256":  "647c7f7780a4b14870846a99bdb89ab2b0e937cc52f9905a8116d7654a979702"
+                  },
+                  {
+                      "path":  "src/Gw2.Dat/Gw2CntcPack.cs",
+                      "sha256":  "313916462cd0e12cbc36838d0ecb4d97bb2dde99d4e34d615c9dc986b762019b"
+                  },
+                  {
+                      "path":  "src/Gw2.Dat/Gw2DatArchive.cs",
+                      "sha256":  "6d8749943d89a34fcbbaa2a494dca95869bbc63c928eea44dea943490e8f391e"
+                  },
+                  {
+                      "path":  "src/Gw2.Dat/Gw2DatCrc.cs",
+                      "sha256":  "f7a77bc902c01f1cfcef2f50cc67ff1dacf5d2168cdb14baacbd79aa82c03fa6"
+                  },
+                  {
+                      "path":  "src/Gw2.Dat/Gw2DatMethod0Decoder.cs",
+                      "sha256":  "2db8d0fd55c43c51bf040fe20e80fefe15c2a8378e25e26bfb619e88a9e90378"
+                  },
+                  {
+                      "path":  "src/Gw2.Dat/Gw2DatScanner.cs",
+                      "sha256":  "f285f2524ab58b1d02750abb15044a491988bba4b39d6d15e77fbdccb820fa99"
+                  },
+                  {
+                      "path":  "src/Gw2.Dat/Gw2PackFile.cs",
+                      "sha256":  "f90900350305f3f08f45a84378696acef75208a827af3bb8952508f8e347a543"
+                  },
+                  {
+                      "path":  "src/Gw2.Dat/Gw2PackReader.cs",
+                      "sha256":  "674f49062d413e546d95e56400cba75605d34c1e3157cad10bc1dd810ec7f428"
+                  },
+                  {
+                      "path":  "src/Gw2.Dat/Gw2PackSchemaCatalog.cs",
+                      "sha256":  "2d4789b39d2f231eed81cc42cdb73e3f57a5977c60e032dd7632160749eebead"
+                  },
+                  {
+                      "path":  "src/Gw2.Dat/Gw2Texture.cs",
+                      "sha256":  "48eb7fa8bb6789c2cdd4dd46a8e2b290d7091ece423e7dba8577c7ffd695b5c9"
+                  },
+                  {
+                      "path":  "src/Gw2.Dat/Gw2VertexBuffer.cs",
+                      "sha256":  "27a2bfeb2397e40d45cecd44f3e7f2e3ba7f78fc3508712ad32b45ac3ae55dc6"
+                  },
+                  {
+                      "path":  "src/Gw2.Dat/pack-schemas.json",
+                      "sha256":  "52dfec889f45a5325f04c461cebd42d3c3780f7a6f8dd95e27dc83f70beb6f5f"
+                  },
+                  {
+                      "path":  "src/Gw2.Dat/README.md",
+                      "sha256":  "40278b56ded61575df0977888e668946d1a6fb50c2c430b18494fd2230ee6dcc"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Agent/AgChar.cs",
+                      "sha256":  "7b7c1c9f051e6f64e5455b463f39c5e4ecaedd2e150957c2c87babd3933f5d6d"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Agent/Agent.cs",
+                      "sha256":  "4ead5a6f8f63be3d4cc13517b9b2e37a7ad657cb5cd157bc69cce92309da742b"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Agent/AgentEnums.cs",
+                      "sha256":  "2676736085260f54bfe7e2f62972281d2b58c638841c7303f4cc8883ceae751b"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Agent/AgKeyFramed.cs",
+                      "sha256":  "5ac940dcad01f99277c4482c06dd878d8aebb21f0ad15705dca8d885e3c9e689"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Agent/CoChar.cs",
+                      "sha256":  "04fc3b3705b70b15ff388dc60e3702aa7c4bb9c1f412c0dd8ca3a5b7da908894"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Agent/CoCharSimpleCliWrapper.cs",
+                      "sha256":  "4faabba440d847adf04423316f81d0ce79bbd4c553f113157d3cb0f2e62f75c8"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Agent/CoKeyFramed.cs",
+                      "sha256":  "9dc36f8b4692d21b2984fa333e732994fb4745f63c7a98bb93c2a222005f3122"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Agent/ImportantUnitDefinitionId.cs",
+                      "sha256":  "999604df882e4ddd4eca58106f1b7aec161496c4cd3ac7e4196af47d4580b9a4"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/CharacterEnums.cs",
+                      "sha256":  "bb858ea740416de735c8c7e53d2ec687681866b82c35839cf2bc9a4f2c8098f5"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliAdventure.cs",
+                      "sha256":  "ee7db0146f14a24f1dd4215c046bcfe298327c6c47f1e518cb8d55745f9f7626"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliCharacter.cs",
+                      "sha256":  "35655354831008423f2c41124193625783eff00f9351cdccd59f74c4c7bcd23b"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliCharacterContext.cs",
+                      "sha256":  "22c79572ff2f5023e1db5a79124b8ad335b9cf9c104cb314caa5e11b12a5ce4f"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliChatter.cs",
+                      "sha256":  "b57cc6d469b7d7c6aa552a2faf0addb757b5964d3f3ab8ded0ee230061c5aca7"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliCoreStats.cs",
+                      "sha256":  "0b8aea2d65a6f2538b56e4a420fa3cb2463203eccb4bd7ac8866c26e133a1d9c"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliEndurance.cs",
+                      "sha256":  "425fc07eb712287fe39a9527b052a928a3cd9e7550290efd5d783f03cf4f710f"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliEnergies.cs",
+                      "sha256":  "833c11fcc4b04db5bb147adcf32a92b8edd2aa93be5b573845521200366fd76b"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliHealth.cs",
+                      "sha256":  "50214dae6e542eb53c21a2bd0fcae2be249b35d7df861678c79e2431814aee9f"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliKennel.cs",
+                      "sha256":  "7de0ea16ab263baf420dfd483e97cea88401a251c49ba59acbd980ddd3b53275"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliMovement.cs",
+                      "sha256":  "5fcd884d6e3261b5ace026bfe08211dbe6cbf5879bc1e929698aad7c6895df3d"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliOrder.cs",
+                      "sha256":  "4516ac929d32ddc22d4c601142166759fc3fbbbf3560c41de809ade7a5175149"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliPlayer.cs",
+                      "sha256":  "d9607441b64a10a11907bc4f4a6d7ae80ffaa603add44d47a36b00365cf880c4"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliProfession.cs",
+                      "sha256":  "a21f170eeb5d49732dccd333bb2003b1dd5fbf1f463a68fba8ed52e5efe182d5"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliProgress.cs",
+                      "sha256":  "1efca1c38882c2fecbd813fa0256ae4d43bc800c803fab8149c5ad080738c268"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliPvp.cs",
+                      "sha256":  "3393414a2ee5a9c6c3d304b3e0569673845b533122196aef8602d2424c9b3716"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliPvpHeroCollection.cs",
+                      "sha256":  "cb169f286d1980ce035f773e4df275da80719e95f4c0521f651264006793f617"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliSkill.cs",
+                      "sha256":  "89254cb6904e6beec97dd2c70ba0aa8ef5c0b9491b112b934fda95549201f969"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliSkillbar.cs",
+                      "sha256":  "699c548d4d5757f8d9a82b6fe352098922e20a433d497292396fbb6d0d79e196"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliSkillRecharge.cs",
+                      "sha256":  "992baf20ac03d6551a71697b2a95b14088176d642f0b4f9348e3fb75927b62bf"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliSpecialization.cs",
+                      "sha256":  "e50fa75098128dffe1ef733affd9d4e545da7ab9f76bc060e1511df32470778e"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliTransformation.cs",
+                      "sha256":  "9467fd2448390857f406996a6e9c99e061100d8e397cc94aaec2b8e0c2b7ba79"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/ChCliWardrobe.cs",
+                      "sha256":  "652fa9b36a4b8d3cd636511d0f55f936dfe85057d0c4bab86f7ff986ab33301f"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/SkillDefinition.cs",
+                      "sha256":  "48491fc11dac76096cbfb4ebaff80f5491e690542d05a084a51043d59228348d"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/SkillEnums.cs",
+                      "sha256":  "c17130c9d04e91514189fae1d069ee2a6f191afbf15517b6089d00381d3d3737"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/SkillId.cs",
+                      "sha256":  "89b9ff5a7c1c675790835ce5422d7a3a6500beddd8e2809ad7966503e1c4b40a"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/SpecializationDefinition.cs",
+                      "sha256":  "8221d6511ed9d0de5405a3010a8cc752cc07b01f9ee5ce1cfe0d8147e998d52c"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/SpecializationEnums.cs",
+                      "sha256":  "abf75bf806e3ba84bc197cc9f0463939b1d8a52225e5584735b37a74b83a111b"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/SpecializationProgressionDefinition.cs",
+                      "sha256":  "a4f1e4f631c9ed587374ad8a7bd34e114b0ecac5254a2e719b6bf2d4b5fbb9d3"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/TraitDefinition.cs",
+                      "sha256":  "fcce4896c19265db02600a63836608ddfb17283566e4dabfb9439e8f44a1d3e7"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Character/TraitEnums.cs",
+                      "sha256":  "f4da75cab1b8446de40a83b33427ef43b0797b96db53197937939570c9f35a06"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Context/AsContext.cs",
+                      "sha256":  "909a6ea7660123c374ffa2b76739dabb0ae451ec982b5249c359fb6f127b909a"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Context/ChCliContext.cs",
+                      "sha256":  "9398cd69c48e7880b0498182ef21c4f7d6de6d0faccd8c0741531fd7645223c7"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Context/CnContext.cs",
+                      "sha256":  "29df688815dd9b2fc3bb4c83d9c1792587c5c773839ae7772c7533a590b8d0d9"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Context/ContextCollection.cs",
+                      "sha256":  "b71fe7cea8ea018d17f3fb4594a2a9415a69d302edaf0706f6c1d18688b61fb2"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Context/GdCliContext.cs",
+                      "sha256":  "6384aa72ddbfa17574b8581e4cf691aa246e98d73a4e9f079708921f45adacbe"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Context/ItCliContext.cs",
+                      "sha256":  "ae9e3eb7275e2317045dce21a1c8b31e20241771ba99f54d31b14ef82d37e100"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Context/PexCliContext.cs",
+                      "sha256":  "b4461a2399aa1a0f6a2653d0c9ad584afc69feed17a96d95a8295891468d6d7a"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Context/PlCliContext.cs",
+                      "sha256":  "fd632e278cc83c4c983e9a00e48dcb3be86c030a39b8f94a64f07791ef9665eb"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Context/PvpCliContext.cs",
+                      "sha256":  "166cee06d38b2266e43de1b30ca93a4bbdc9432a8c69133f29245a264ca955f1"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Item/ChCliEquipmentEntry.cs",
+                      "sha256":  "973ccca974a7fc48f2fb8eaa1dc90f099b345cc0cc07cafa2f99a756a2542b66"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Item/ChCliInventory.cs",
+                      "sha256":  "4456b6bac9328124702a4c904ba0cd61ea24315fab98b82a2b100f2450387946"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Item/ChCliItemStorageEquipment.cs",
+                      "sha256":  "5d5773e31ebca6f57393c8b16318e3f8e798831890bf12b1b67725661d80918a"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Item/ItemDefinition.cs",
+                      "sha256":  "e884fdc965f9dfa24cc2be97d52c32244f2c148900aa6b381816306a455473d7"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Item/ItemEnums.cs",
+                      "sha256":  "d722b2774c9b70b7451749dce8e0adf5744352f6d5b5254ecb0a592bacef2b56"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Item/ItemStatDefinition.cs",
+                      "sha256":  "5e8ea3e5dcee21cb7ccdf4cf7f26eeeeab859983bd9e96763a91a0bc8030cdfc"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Item/NoveltyItemId.cs",
+                      "sha256":  "3974a1df6f82943d751f13e7a5492037ff3b46ac737a5d71b1162a10dffd9b5c"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Item/Pvp/PvpAmuletId.cs",
+                      "sha256":  "01914106b16c5335018c7bd493d70137c186f93b476d9a3cc39b644f815877cc"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Item/Pvp/PvpRelicItemId.cs",
+                      "sha256":  "da82890033e93384e4e9195e8c3f80c221eb1657ac490e981672b66f65bd821c"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Item/Pvp/PvpRuneItemId.cs",
+                      "sha256":  "81a29c4ba98be15e76cffdceea2d710eec34f4d09e2d76b9666597693473cfd1"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Item/Pvp/PvpSigilItemId.cs",
+                      "sha256":  "cab9e2f5a7533553b0417585b55fcabf67ed9667458801a165441edb78f2818f"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Item/ToyDefinition.cs",
+                      "sha256":  "152d4c7f42cf97b7a416d960016897cdae7b8a0e7688707146920ebb05534b48"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/Runtime/GameBuild.cs",
+                      "sha256":  "48793a7990c3b74e68df6712230862627855c8edf00fe6f7e5795774adc99ea2"
+                  },
+                  {
+                      "path":  "src/Gw2.Native/UI/Widgets/PvpGearProvider.cs",
+                      "sha256":  "63ecdb518e59599863ade39fbea5956b2c75606ad6cbb91aa5db63e0d3db543d"
+                  },
+                  {
+                      "path":  "tests/Gw2.Dat.Tests/Gw2.Dat.Tests.csproj",
+                      "sha256":  "f0a344cd20464a0e05c1daa5d5d7954cde61c84750fe36cc9fa6ea5da5d8d801"
+                  },
+                  {
+                      "path":  "tests/Gw2.Dat.Tests/Gw2CntcPackTests.cs",
+                      "sha256":  "e6e78d9b605426361ed2d359985635b1716469f18458aeded6cf39da41b19692"
+                  },
+                  {
+                      "path":  "tests/Gw2.Dat.Tests/Gw2DatArchiveTests.cs",
+                      "sha256":  "3b9ef3a6d185b59d5937072d1e00945390e58e7726961fd015c9c5466b41ff6b"
+                  },
+                  {
+                      "path":  "tests/Gw2.Dat.Tests/Gw2DatIntegrityTests.cs",
+                      "sha256":  "801b6bd39564dc0a56ba8f2fbd742a674170f879e5130847facfa5c8aa08efbb"
+                  },
+                  {
+                      "path":  "tests/Gw2.Dat.Tests/Gw2DatMethod0DecoderTests.cs",
+                      "sha256":  "244e6920aacce373f874736be7f92e943196bdcb1991c43f832fb97b5525bfd7"
+                  },
+                  {
+                      "path":  "tests/Gw2.Dat.Tests/Gw2TextureTests.cs",
+                      "sha256":  "008b9e9e55a4aed4946b8af5bdf4d8ad9872075e200d24eed4000f8e65970fe4"
+                  }
+              ]
+}
