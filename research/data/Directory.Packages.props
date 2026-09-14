@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageVersion Include="Iced" Version="1.21.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.4.0" />
     <PackageVersion Include="MSTest.TestAdapter" Version="4.2.1" />
     <PackageVersion Include="MSTest.TestFramework" Version="4.2.1" />

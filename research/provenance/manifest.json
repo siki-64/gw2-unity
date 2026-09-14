@@ -6,7 +6,7 @@
     "importedAtUtc":  "2026-09-14T07:19:16.1649434Z",
     "classification":  "reference-only; not registered wire contracts",
     "buildScope":  "Per source file; do not infer current server compatibility",
-    "note":  "Provenance record. Paths were regrouped into research/contracts and research/data; this file is not an in-place integrity check for the current layout. sha256 values are of the files as they exist in this repository. Deliberate deviations from the unmodified source:   1. Files with namespaceRenamed=true had their declaration namespace normalized (Gw2.Native -\u003e Gw2.Contracts, Gw2.Core.Dat -\u003e Gw2.Dat).   2. Files with refsNormalized=true had internal cross-references normalized to this repository layout: relative links now resolve here, and references to the upstream project layout or to projects not included in these findings were rewritten. Evidence content and findings are unchanged.   3. research/data/Gw2.Dat.Tests/Gw2.Dat.Tests.csproj has an amended ProjectReference to ../Gw2.Dat/Gw2.Dat.csproj. Files excluded from these findings have been kept out deliberately.",
+    "note":  "Provenance record. Paths were regrouped into research/contracts and research/data; this file is not an in-place integrity check for the current layout. sha256 values are of the files as they exist in this repository. Deliberate deviations from the unmodified source:   1. Files with namespaceRenamed=true had their declaration namespace normalized (Gw2.Native -\u003e Gw2.Contracts, Gw2.Core.Dat -\u003e Gw2.Dat).   2. Files with refsNormalized=true had internal cross-references normalized to this repository layout: relative links now resolve here, and references to the upstream project layout or to projects not included in these findings were rewritten. Evidence content and findings are unchanged.   3. research/data/Gw2.Dat.Tests/Gw2.Dat.Tests.csproj has an amended ProjectReference to ../Gw2.Dat/Gw2.Dat.csproj. Files excluded from these findings have been kept out deliberately. 4. research/data/Directory.Packages.props had an unused Iced version pin removed; no project referenced it.",
     "files":  [
                   {
                       "originalPath":  "CREDITS.md",
@@ -18,9 +18,10 @@
                   {
                       "originalPath":  "Directory.Packages.props",
                       "currentPath":  "research/data/Directory.Packages.props",
-                      "sha256":  "1c74de58a4295224d9bb88c922f67dfc8d6cb23752b4ea2436a7f42223b72714",
+                      "sha256":  "4dad2c8e18742a48d929dc1ddcc54270213bdbad024405df763da1e07287b1d0",
                       "namespaceRenamed":  false,
-                      "refsNormalized":  false
+                      "refsNormalized":  false,
+                      "unusedPackagePinRemoved":  true
                   },
                   {
                       "originalPath":  "LICENSE.txt",
