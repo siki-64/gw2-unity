@@ -997,4 +997,178 @@ interpretation as a heterogeneous table was wrong.
 5. Compute `maxSize` per descriptor and assert `<= 0x2000` across the corpus.
 
 
+---
+
+# Addendum 7: stride-corrected sweep, `0x264` located, recv/send proven
+
+**Status:** the corrected 59-site sweep is complete; `0x264` is found in a recv table;
+recv/send attribution is proven from the installers; **still no wire fixture**
+
+This addendum closes the "Next steps" list of Addendum 6. All addresses below are build-local
+coordinates inside build 205.780.
+
+## 1. The stride-corrected sweep is complete
+
+`tools/re/Sweep2.java` re-walks all 59 registration sites with the stride the validator for each
+table actually uses (flat = 8 bytes, pairs = 16 bytes), keyed by registrar:
+
+| Registrar | Table A | Table B |
+| --- | --- | --- |
+| `RegisterRecvOnly` (`140fed7f0`) | pairs (16) | — |
+| `RegisterTablePair` (`140fed730`) | flat (8) | pairs (16) |
+| `RegisterBidirectional` (`140fed670`) | flat (8) | pairs (16) |
+
+Output: `protocol/schema/205780/sweep2.csv` (3118 rows). Corpus totals, clean subset:
+
+| Tag | Rows | Meaning |
+| --- | --- | --- |
+| `OK` | 1813 | valid `MP_MSGID` descriptor, id read at `+0x10` |
+| `CODE` | 1305 | pointer into `.text` — the recv table's dispatch handler |
+| `NULL` | 3 | zero column in table B of two `RecvOnly` sites |
+| `NOARGS` | 2 | argument setup on the stack (resolved below, not left as `NOARGS`) |
+
+**1256 distinct ids, range `0x01`..`0x516`.** The previous negative result for `0x264` is void:
+the Addendum-4/5 search used a 16-byte stride on a flat table.
+
+## 2. `0x264` is found — and it is a recv message
+
+Searching the corrected corpus for `0x264`:
+
+```
+TablePair 14020a031  col0 OK  264  defArray 1425cd320  (.data)
+                           col1 CODE         141257a20  (.text)   <-- dispatch handler
+```
+
+Site `14020a031` is channel `0x14` (`FUN_14020a000`). In the site's output, table A occupies rows
+0..219 (220 flat entries) and table B rows 220..1467 (624 pairs). Row 1246 is table B entry
+`(1246 - 220) / 2 = 513`, column 0. So:
+
+- **`0x264` lives in table B of channel `0x14`**, and table B is the recv table (section 3).
+- Its defArray chain begins at `1425cd320`; its dispatch handler is `FUN_141257a20`.
+
+Handler `FUN_141257a20` (decompiled) is a `ChCliMsg.cpp` message handler:
+
+```
+assert "player"  ChCliMsg.cpp:0x2460
+player = LookupPlayerById(*(u32*)(decoded + 8))
+skill  = (*(decoded + 2) != 0) ? LookupSkillById(*(u32*)(decoded + 2)) : 0
+SetPlayerSkillbarEntry(player + 0x9bd8, skill, *(byte*)(decoded+6), *(byte*)(decoded+7))
+```
+
+This is the `ChCliMsg.cpp` handler family the catalog's `0x264` / `0x27C` research leads point to
+(configured skill record lead). The id `0x264` in the catalog is therefore **the same id space as
+the recv registry** — the "identity-mapping" open question is answered for this message: the
+registry id space is the catalog message-id space, and `0x264` maps to a recv handler.
+
+Also located in the same recv table B of channel `0x14` (all `col0 OK`, handler in the following
+`col1`):
+
+| Id | Recv entry | Handler |
+| --- | --- | --- |
+| `0x100` | 181 | `14124bc70` |
+| `0x1A5` | 327 | `141250e70` |
+| `0x200` | 413 | `141253c10` |
+| `0x264` | 513 | `141257a20` |
+| `0x27C` | 549 | `1412588a0` |
+
+`0x100` additionally appears in table A (send), entry 219, which is consistent with it being a
+message the client also sends (world-entry request) rather than a pure inbound one.
+
+## 3. Recv/send attribution is proven from the installers
+
+Addendum 6 left "which table is recv and which is send" as an open check. The two table-B
+installers settle it:
+
+| Installer | Records | Record layout | Asserted |
+| --- | --- | --- | --- |
+| `FUN_140fecf00` (table A) | 16-byte, base `+0x50`, count `+0x5c` | `{+0x00 flags, +0x08 defArray}` | `!target->defArray` only |
+| `FUN_140fecd10` (table B) | 32-byte, base `+0x70`, count `+0x7c` | `{+0x00 flags, +0x08 defArray, +0x10 dispatchType, +0x18 handlerFn}` | `ptr->dispatch` non-null |
+
+`FUN_140fecd10` writes `dispatchType = 1` at `+0x10` and copies the second column of each table-B
+pair into the record's `+0x18` handler slot. That is exactly the `MsgRegistryRecord` layout that
+`Msg_RegistryLookupById` (Addendum 2) indexes at `registry + 0x70`, count `+0x7c`, stride `0x20`,
+and which `Msg_DispatchStream` dispatches on. **Table B is therefore the recv (dispatch) table,
+and table A is the send (schema-only) table.**
+
+`FUN_140fecb20` (Bidirectional's table-B installer) is the same shape but sets `dispatchType = 0`.
+`RegisterRecvOnly` installs its single pairs table through `FUN_140fecd10`, so a `RecvOnly` site is
+entirely recv-side — consistent with its name and with the sweep's `col1` being `.text` handlers.
+
+## 4. The four remaining problem sites are resolved
+
+Two sites walk past their real table into UTF-16 string data; two pass arguments on the stack.
+Each is now read from its call-site instructions, not guessed:
+
+| Site | Registrar | Resolved args | Verified ids |
+| --- | --- | --- | --- |
+| `14021cf4d` | `RecvOnly` | table `14224d368`, count 1, flags `0x19` | `0x10F` |
+| `14021fc5d` | `RecvOnly` | table `1422e46e0`, count 5, flags `0x37` | `0x4CD..0x4D1` |
+| `14021fc0a` | `TablePair` | stack: `[RSP+0x20]=2`, `[RSP+0x28]=table 1422e4568` | `0x4C3`, `0x4C4` |
+| `140222bfa` | `TablePair` | stack: `[RSP+0x20]=1`, `[RSP+0x28]=table 1422f6530` | `0x505` |
+
+Examples of the recovered argument setup:
+
+```
+14021cf45  MOV R8D,0x1          ; RecvOnly count = 1        (14021cf4d)
+14021cf44  LEA R9,[0x1422e46e0] ; RecvOnly table             (14021fc5d)
+14021fbf3  MOV [RSP+0x28],RAX   ; TablePair table B on stack (14021fc0a)
+14021fbfe  MOV [RSP+0x20],0x2   ; TablePair count B          (14021fc0a)
+```
+
+The two `RecvOnly` sites' earlier over-walk was a **count mis-read**, not a table problem: the
+sweep's register-window heuristic picked the wrong `MOV R8D` immediate. Their tables contain
+exactly 1 and 5 pairs respectively, confirmed by the byte extents of the raw tables and by the
+descriptor pointers inside them.
+
+`sweep2.csv` was regenerated with these four sites' rows corrected. There are no remaining
+`PTR_UNMAPPED`, `BADFT` or `NOARGS` rows.
+
+## 5. Descriptor layout note (corrected understanding)
+
+The sweep reads the msgId at `defArray + 0x10` and `fieldType` at `+0x00`. Confirmed against the
+raw chain at `1425cd320`:
+
+```
+fieldType=1 (MP_MSGID)  id=0x264   ... chain continues at +0x28 stride
+```
+
+Chain walk for `0x264` (`1425cd320`): `1 (MSGID, id 0x264) -> 4 (MP_OPTIONAL) -> 2 -> 2 -> 4 ->
+0 (terminal)`. This matches the handler's field usage (`decoded+2` skill id, `decoded+6/+7` byte
+flags, `decoded+8` player id) as a type-directed decode; it does **not** by itself pin the wire
+byte layout, which still requires a capture.
+
+## 6. What this establishes
+
+- `0x264` is present in channel `0x14` table B, entry 513, with a `.data` defArray and a `.text`
+  dispatch handler, closing the Addendum-4/5 negative search.
+- Table B is the recv table and table A the send table, proven from `FUN_140fecd10` /
+  `FUN_140fecf00` record layouts matching `MsgRegistryRecord` / a schema-only 16-byte record.
+- `0x27C`, `0x200..0x207`, `0x100`, `0x1A5` are all present in channel `0x14` recv table B, and
+  `0x100` also in its send table A.
+- The four previously unresolvable sites are resolved from their call-site instructions.
+- `maxSize <= 0x2000` is verified as a validator assertion; the corpus-wide per-descriptor check
+  is still not run (next step 5 of Addendum 6 remains open).
+
+## 7. What this does not establish
+
+- **Still no wire fixture.** No frame has been decoded against a capture; `wireVerified` stays
+  false. The `MsgPack` field types above are build-local inferred names, not wire encoding proof.
+- The runtime record array is still not read from a live instance; the static tables show what is
+  registered, and the installers show how it is translated, but `count` at `registry+0x7c` is not
+  read from memory.
+- The `maxSize <= 0x2000` corpus-wide check (Addendum 6 next step 5) is not yet computed across
+  `sweep2.csv`.
+- Outbound serialization and the KSA at `140feea50` remain unrecovered.
+
+## Next steps (revised)
+
+1. Compute `maxSize` per descriptor chain across the `sweep2.csv` corpus and assert `<= 0x2000`;
+   treat a violation as a decode bug, not a game bug.
+2. Recover the KSA at `140feea50` (unchanged).
+3. Take one captured frame and decode it end to end against a dumped schema for `0x264` /
+   `0x27C` / `0x200`.
+4. Read the runtime registry's `count` at `+0x7c` in a debugger session to confirm the static
+   corpus matches the live install.
+
+
 

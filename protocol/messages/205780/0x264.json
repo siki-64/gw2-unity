@@ -2,6 +2,7 @@
   "name": "ConfiguredSkillRecordLead",
   "build": 205780,
   "buildLabel": "205.780",
+  "imageSha256": "D2AE84876A0B93277FCCB368969046B848BB0403FD09DB420389C813D2459B23",
   "connectionRole": "game",
   "direction": "server-to-client",
   "messageId": "0x264",
@@ -9,9 +10,20 @@
   "evidenceLevel": "observed",
   "pipeline": {
     "id": "msgpack-schema",
-    "state": "hypothesized",
+    "state": "static-located",
     "opcodeEncoding": "unknown",
-    "stages": []
+    "stages": [
+      {
+        "name": "recv-registry-slot",
+        "state": "static",
+        "note": "Channel 0x14 table B (recv) entry 513. Table B is proven recv from FUN_140fecd10 installing 32-byte MsgRegistryRecord slots with dispatchType=1 and handlerFn at +0x18 (see msg-dispatch Addendum 7). defArray at 1425cd320, handler FUN_141257a20 in ChCliMsg.cpp."
+      },
+      {
+        "name": "defarray-chain",
+        "state": "static",
+        "note": "Descriptor chain at 1425cd320: fieldType 1 (MP_MSGID, id 0x264) -> 4 (MP_OPTIONAL) -> 2 -> 2 -> 4 -> terminal. Field types are build-local inferred names, not wire encoding proof."
+      }
+    ]
   },
   "sourceReferences": [
     {
@@ -43,7 +55,8 @@
       "id": "field_0x08",
       "offset": 8,
       "kind": "u32",
-      "confidence": "unknown"
+      "confidence": "unknown",
+      "note": "Handler FUN_141257a20 reads this slot as the player id lookup key (ChCliMsg.cpp:0x2460)."
     },
     {
       "id": "field_0x0C",
@@ -62,17 +75,12 @@
     {
       "question": "What are the wire bytes, opcode encoding and transforms for this message?",
       "kind": "framing",
-      "note": "The 12-byte handler record is a decoded native structure. It is not a wire fixture. The transport mechanism is now recovered (see msg-dispatch): the payload leading u32 selects a 32-byte-stride registry record, whose defArray drives a type-directed decode. What remains open is this message's concrete wire bytes -- no capture decodes end to end, and the registry instance is runtime-populated, so id 0x264 is not yet tied to a registry slot."
+      "note": "The recv registry slot, defArray chain and handler are now statically located (msg-dispatch Addendum 7), but no capture decodes end to end. The MsgPack schema names field types only; the concrete wire byte layout for id 0x264 is still unverified."
     },
     {
       "question": "Which build-specific schema variant selects this record's shape?",
       "kind": "schema-variant",
-      "note": "The mechanism is established: MsgPackFieldDef descriptor chains with a lazy size cache, keyed by the registry lookup. Not established: this message's own defArray, and whether the registry id space is the same id space this messageId belongs to."
-    },
-    {
-      "question": "Is the registry id space the same namespace as this messageId, and what is its bound?",
-      "kind": "identity-mapping",
-      "note": "Registry lookup is a direct index in 0..count-1 over a runtime-populated table. count, the table base and every defArray are not yet read, so the two id spaces are not reconciled. Per the working rules these are separate namespaces until shown otherwise."
+      "note": "The defArray chain at 1425cd320 is located statically (fieldType 1 MSGID -> 4 -> 2 -> 2 -> 4). Its lazy defSize/maxSize caches are computed at registration by MsgPack_ComputeDefSize/ComputeMaxSize; the wire layout still requires a capture."
     }
   ],
   "validation": {
@@ -82,5 +90,5 @@
     "unity": false,
     "liveInterop": false
   },
-  "noClaim": "Records handler-level evidence for one build only. It does not establish wire compatibility, an encoder, or current server support."
+  "noClaim": "Records static registry-location and handler evidence for one build only. It does not establish wire compatibility, an encoder, or current server support."
 }

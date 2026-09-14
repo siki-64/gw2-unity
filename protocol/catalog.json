@@ -22,11 +22,11 @@
       "messageId": "0x264",
       "representation": "decoded-handler-record",
       "evidenceLevel": "observed",
-      "pipeline": { "id": "msgpack-schema", "state": "hypothesized", "opcodeEncoding": "unknown" },
+      "pipeline": { "id": "msgpack-schema", "state": "static-located", "opcodeEncoding": "unknown" },
       "artifact": "protocol/messages/205780/0x264.json",
       "wireVerified": false,
       "supported": false,
-      "note": "Registered as a handler-level contract only. wireVerified stays false and build 205780 stays out of supportedWireBuilds. Pipeline id records the variant the client's decoder belongs to; state stays hypothesized because the registry instance is runtime-populated and no capture ties 0x264 to a registry slot."
+      "note": "Static registry location resolved (msg-dispatch Addendum 7): channel 0x14 recv table B entry 513, defArray 1425cd320, handler FUN_141257a20 (ChCliMsg.cpp). Table B is proven recv from the FUN_140fecd10 installer. wireVerified stays false and build 205780 stays out of supportedWireBuilds; pipeline state advanced from hypothesized to static-located but the concrete wire layout is still unverified."
     }
   ],
   "researchLeads": [
