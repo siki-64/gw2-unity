@@ -628,3 +628,109 @@ is not a message identity — one handler can serve several ids.
 6. Reconcile ids with catalog entries, then take a captured frame end to end.
 
 
+---
+
+# Addendum 4: bulk extraction, and two corrections it forced
+
+**Status:** channel `0x14` recv table fully extracted (220 elements); **still no wire fixture**
+
+## Correction 1: a table element is TWO schema pointers, not schema+handler
+
+Addendum 2 recorded `MsgChannelEntry` as `{void* defArray; void* handlerFn}`. **The second
+column is not a handler.** It is a second `defArray` pointer.
+
+The bulk walk exposed it. Column B of element 0 at `142167030` emitted `1425b6420`, which the
+hand-verified cross-check flagged as not matching the expected handler `1410f1830`. Peeking the
+pointer settled it:
+
+| Address | Block | Function | fieldType | id |
+| --- | --- | --- | --- | --- |
+| `1425b6420` | `.data` | none | 1 (`MP_MSGID`) | `0x1e` |
+| `1425b6300` | `.data` | none | 1 (`MP_MSGID`) | `0x1c` |
+| `141246040` | `.text` | `FUN_141246040` | — | — |
+
+`1425b6420` is a valid descriptor with an id, in `.data`, belonging to no function. It is a
+**schema pointer**, not a code address. So `MsgChannelEntry` is `{defArrayA, defArrayB}`.
+
+Raw bytes at `142167030`, confirmed byte-for-byte:
+
+```
+entry0 = 00635b4201000000 | 20645b4201000000   -> 1425B6300, 1425B6420
+entry1 = 40655b4201000000 | b0665b4201000000   -> 1425B6540, 1425B66B0
+entry2 = 40685b4201000000 | 80695b4201000000   -> 1425B6840, 1425B6980
+```
+
+Decoded: element 0 = ids `0x1c` + `0x1e`; element 1 = `0x1f` + `0x20`; element 2 = `0x21` + `0x22`.
+That matches the hand-verified sequence `0x1c, 0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23, 0x24` exactly.
+
+## Correction 2: a `String.format` column shift, caught by the cross-check
+
+The first scripted run produced 220 rows that *looked* plausible and were wrong:
+
+| Symptom | Cause |
+| --- | --- |
+| "handler" column held `1425b6420` | a defArray pointer, per Correction 1 |
+| ids `1c, 1f, 21, 23, 25` (every other) | every id was a real id, but read from the wrong column |
+| 220 rows, 176 distinct ids | duplicates from the same shift |
+
+The hand-verified 8 entries from `ch14-recv.json` — committed *before* the script existed — are
+what caught it. Two rows of "plausible" output would have entered the corpus silently otherwise.
+**This is the entire argument for keeping a small hand-verified sample as ground truth.** The
+mismatch was visible on the first row.
+
+Two mechanical defects followed from it and were fixed: `String.format("%d", long)` mixing that
+shifted arguments, and `ConvertTo-Json` serializing a PowerShell `FileInfo` object instead of
+the file's text.
+
+## The table is heterogeneous
+
+Column B is not uniform across the 220 elements. There is **exactly one transition, at index 110**:
+
+| Index range | Column A | Column B |
+| --- | --- | --- |
+| 0–109 | `MP_MSGID` schema (220/220 in col A overall) | `MP_MSGID` schema |
+| 110–219 | `MP_MSGID` schema | pointer into `.text`, inside a function |
+
+So the table mixes two kinds of entry: schema-paired messages, and messages with a code handler.
+Column A is `OK` for all 220; column B is `OK` for 110 and points into code for the other 110.
+A consumer that assumes one uniform shape will mis-read half the table.
+
+## Channel 0x14 recv ids
+
+- 220 elements, column A all valid `MP_MSGID`
+- ids range `0x18` to `0x1D5`
+- **176 distinct ids across 220 elements** — so ids repeat; the element index is not the id
+
+`0x264` **is absent** from channel `0x14`'s recv table.
+
+## What this establishes
+
+- `MsgChannelEntry` is `{defArrayA, defArrayB}`, both schema pointers, corrected from `{defArray, handlerFn}`;
+- the table form is heterogeneous with one clean boundary at index 110;
+- channel `0x14` recv is fully enumerated: 220 elements, 176 distinct ids, `0x18`–`0x1D5`;
+- `0x264` is not in channel `0x14` recv;
+- a scripted walk can be validated against a hand-verified sample, and was.
+
+## What this does not establish
+
+- **`0x264` was only searched in channel `0x14` recv.** Its absence there says nothing about the
+  other 58 registration sites. This does not close the `identity-mapping` question.
+- **The two CSVs from the first, incorrect run were deleted** rather than committed:
+  `ch14-recv-full.csv` and `ch14-send-full.csv`. What remains is `ch14-recv-pairs.csv`, which is
+  the corrected output for the recv table only.
+- **The send table (`142167710`, 624 entries) has not been extracted with the corrected script.**
+  Its earlier "624 ok" result used the flawed column reading and must be re-run, not trusted.
+- Ids are still not reconciled with the runtime record array or any catalog entry.
+- `maxSize <= 0x2000` is still unchecked against the corpus — the extractor does not yet compute it.
+- **Still no wire fixture.**
+
+## Next steps
+
+1. Re-run the corrected extractor over the send table `142167710` (624 elements).
+2. Characterize the `.text` pointers in column B, indices 110–219: resolve them to functions.
+3. Walk the remaining 58 sites with the corrected script.
+4. Assert `maxSize <= 0x2000` across the extracted corpus.
+5. Search all sites for `0x264` to settle the `identity-mapping` question.
+6. Recover the KSA at `140feea50`.
+
+
