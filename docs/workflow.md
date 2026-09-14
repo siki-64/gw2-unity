@@ -35,6 +35,6 @@ No confirmed wire encoders, transport handshake or complete message schema catal
 
 ## Updating findings
 
-Snapshots of findings are reference material under `research/contracts/` and `research/data/`, kept separate from runtime code. When a later source commit changes something, review the manifest difference in `research/provenance/` and add or update the affected files rather than silently editing them in place. Do not add dumps, generated atlases or private traces by globbing a whole repository.
+Findings are reference material under `research/contracts/` and `research/data/`, kept separate from runtime code. When a later source commit changes something, review the manifest difference in `research/provenance/` and add or update the affected files rather than silently editing them in place. Do not add dumps, generated atlases or private traces by globbing a whole repository.
 
 Unity reference: https://discussions.unity.com/t/unity-6-6-is-now-available/1735357. The local editor version is authoritative for this checkout; validate compatibility in the editor rather than infer it from a .NET SDK build.

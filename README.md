@@ -2,7 +2,7 @@
 
 Unity 6.6 custom-client research foundation. The goal is to consume inbound GW2 traffic, maintain client state and encode correct outbound traffic from recovered contracts.
 
-Initial state: Unity project and engine-independent protocol package; curated reverse-engineering findings and archive-tooling source snapshot. No transport, authentication, wire codec or live-server compatibility is implemented yet.
+Initial state: Unity project and engine-independent protocol package; curated reverse-engineering findings and archive-tooling source. No transport, authentication, wire codec or live-server compatibility is implemented yet.
 
 Open this repository root with Unity **6000.6.0f1**. The protocol package is referenced locally from `Packages/com.siki.gw2.protocol`. Editor validation uses:
 

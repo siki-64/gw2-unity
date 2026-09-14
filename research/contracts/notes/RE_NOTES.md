@@ -10,7 +10,7 @@ It is not a chronological work log and it is not the canonical home for confirme
 
 Use the repository layers as follows:
 
-- provisional observations, hypotheses, and incomplete leads are kept as scratch work outside this snapshot;
+- provisional observations, hypotheses, and incomplete leads are kept as scratch work and are not part of these findings;
 - `research/contracts/notes/<area>/...` — current confirmed behavior and subsystem-specific reconstruction;
 - this file — durable negative findings whose absence would make a future incorrect interpretation likely to recur.
 
