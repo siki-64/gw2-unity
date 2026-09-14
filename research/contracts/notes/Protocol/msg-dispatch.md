@@ -514,3 +514,117 @@ contiguously across the corpus, not per channel.
 4. Recover the KSA at `140feea50` (unchanged).
 5. Reconcile ids with catalog entries, then take a captured frame end to end.
 
+---
+
+# Addendum 3: extraction tooling and corrected registration counts
+
+**Status:** extractor implemented and validated; counts corrected; **still no wire fixture**
+
+## Correction: there are 59 registration sites, not 23
+
+Addendum 2 reported 21 registrars and "18 channels remaining". Both numbers were wrong. That
+count came from `get_function_callers` on one registrar, which was an incomplete list. An
+instruction-level search for the call itself gives the real figures:
+
+| Registrar | Ghidra | Call sites | Table shape |
+| --- | --- | --- | --- |
+| `MsgChannel_RegisterRecvOnly` | `140fed7f0` | **21** | one flat table |
+| `MsgChannel_RegisterTablePair` | `140fed730` | **36** | recv table + send table |
+| `MsgChannel_RegisterBidirectional` | `140fed670` | **2** | recv table + send table, both validated as pairs |
+
+**Total 59 registration sites.** `MsgChannel_RegisterTablePair` was previously unknown — it is
+the most common form and it carries a **send-side table**, which means the outbound schema corpus
+exists in the same static form as the inbound one and had simply not been looked at.
+
+Lesson recorded because it cost a rework: `get_function_callers` under-reported. Any figure that
+matters should come from an instruction search on the call target, not a caller query.
+
+## Scale of the corpus
+
+The largest site is channel `0x14` (`FUN_14020a000`):
+
+```c
+MsgChannel_RegisterTablePair(0, 0, 0xdc, recvTbl, 0x270, sendTbl, 8);
+```
+
+`0xdc` = **220 recv entries**, `0x270` = **624 send entries**. So the recv schema corpus is on
+the order of several hundred messages, and the send corpus is roughly 3x larger. The outbound
+side is the bigger target.
+
+## Extractor
+
+`tools/re/Extract-MsgRegistry.ps1` decodes a table dump into message records. Input is JSON:
+one object per table, each entry carrying the `defArray` pointer, the handler address and the
+first 40 bytes of the descriptor chain read from the image.
+
+It refuses rather than guesses:
+
+- a descriptor shorter than 40 bytes **throws**, naming the exact entry;
+- a first descriptor whose `fieldType != 1` is **skipped and named**, never decoded as an id;
+- an `MP_ARRAY` (`fieldType 0x0a`) envelope is skipped with an explicit reason, since the id
+  sits in the descriptor the array wraps and that inner descriptor is not walked.
+
+### Validated behaviour
+
+| Case | Result |
+| --- | --- |
+| channel 14, 8 entries | 8 decoded, 0 skipped |
+| first descriptor set to `fieldType 0x0a` | 7 decoded, 1 skipped, reason printed |
+| descriptor truncated to 8 bytes | throws `descriptor is 8 bytes, need 40` naming the entry |
+| malformed JSON input | fails at parse, no partial output |
+
+The truncation case was not hypothetical: the first run of this tool failed on it because the
+descriptor bytes had been read as 24 bytes instead of 40. The check caught a real error in the
+data rather than emitting eight wrong ids.
+
+## Channel 14 recv ids (first 8 of 220)
+
+| Id | Handler |
+| --- | --- |
+| `0x1C` | `1410F1830` |
+| `0x1E` | `1410F15D0` |
+| `0x1F` | `1410F1690` |
+| `0x20` | `1410F1650` |
+| `0x21` | `1410F1870` |
+| `0x22` | `1410F1830` |
+| `0x23` | `1410F15D0` |
+| `0x24` | `1410F1690` |
+
+Handlers are reused across ids (`1410F1830` serves `0x1C` and `0x22`), so the handler address
+is not a message identity — one handler can serve several ids.
+
+## What this establishes
+
+- the true registration-site count, 59, and the existence of the `TablePair` registrar;
+- that a send-side (outbound) schema corpus exists statically and is far larger than the
+  inbound one;
+- channel `0x14`'s size: 220 recv, 624 send;
+- an extractor whose failure mode is a named error rather than a plausible-looking wrong value;
+- eight channel-14 recv ids with their handlers.
+
+## What this does not establish
+
+- **212 of channel 14's 220 recv entries, and all 624 of its send entries, are unwalked.**
+  A single-entry walk per table was done; the bulk is not enumerated.
+- **58 of 59 registration sites are unwalked.** Only channel 14 was extracted, and only its
+  first 8 entries.
+- The `MP_ARRAY` envelope form is not unwrapped, so any message using it has no id recorded.
+- `maxSize <= 0x2000` was asserted from the validator's code but has **not** been checked
+  across a real corpus, since the corpus is not yet extracted. The check is currently a claim
+  about the validator, not about the data.
+- Nothing is reconciled with the runtime record array or with any catalog entry. `0x264` is
+  still not among the ids found.
+- **Still no wire fixture.**
+
+## Next steps
+
+1. Bulk-read the channel-14 tables (220 + 624 pointers) and run the extractor over them. The
+   tool and the format are proven; this is now data entry, not investigation.
+2. Check `maxSize <= 0x2000` across the extracted corpus, and treat a violation as a decode bug
+   rather than a game bug — it would mean a descriptor offset is wrong.
+3. Unwrap the `MP_ARRAY` envelope so those ids are not lost.
+4. Walk the remaining 58 sites, largest first.
+5. Recover the KSA at `140feea50` (unchanged).
+6. Reconcile ids with catalog entries, then take a captured frame end to end.
+
+
