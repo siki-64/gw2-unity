@@ -2857,3 +2857,99 @@ So the outbound layout is:
 
 ---
 
+# Addendum 25: the outbound state is a snapshot of the inbound state
+
+**Status:** read from `MsgRaw::ClientRecvEncrypt`; the outbound RC4 state is a byte-for-byte copy of
+the inbound KSA state, so both directions begin with the same keystream; the inbound frame container
+is re-confirmed
+
+## The handshake, in full
+
+`MsgRaw_ClientRecvEncrypt(out, conn, arg3, frame)`:
+
+```c
+require conn+0x108 == 2;                 // MSGCONN_MODE_ENCRYPTED
+require frame[1] == 0x16;                // handshake frame kind
+key[0..19] = frame[2..0x15] XOR conn[0x118..0x12b];
+conn+0x108 = 3;
+MsgUtil_Rc4Ksa(conn+0x12c, 0x14, key);
+/* copy 0x108 bytes conn+0x12c -> conn+0x234 */
+(*conn+0x110)(out, arg3, { 0x300000, 0xc451b58 });
+```
+
+The copy is unconditional and immediately follows the KSA, so **`conn+0x234` is exactly the inbound
+KSA state at position 0**, under the same key.
+
+## Consequence: cross-direction keystream reuse
+
+The inbound path advances `conn+0x12c` (`MsgConn::Dispatch`) and the outbound path advances
+`conn+0x234` (`FUN_140fe96f0`). The two are independent PRGA counters over the **same** key and the
+**same** starting permutation, so while both directions have processed fewer than N bytes the same
+keystream byte is used in each. That is a **two-time pad**:
+
+```text
+ciphertext_in XOR ciphertext_out = plaintext_in XOR plaintext_out   (for aligned positions)
+```
+
+This is an *inference from the code*, not an observation: it should be confirmed by capturing one
+inbound and one outbound stream from the same connection and checking that the derived keystreams
+coincide. If it holds, the transport cipher only protects a direction while the other is idle, which
+is never true in a live session. Record it as a transport-layer weakness — it does not block
+decoding (we decrypt one direction at a time with that direction's state).
+
+## Correction to Addendum 10's wording
+
+Addendum 10 called `conn+0x234` "a second state snapshot" but did not draw the reuse conclusion.
+
+## The inbound frame container, re-confirmed
+
+`FUN_140fe8ef0(conn)` reads a 4-byte header `[u16 compLen][u16 decodedLen]` at `conn+0x78` in the
+buffer based at `*(conn+0x60)`:
+
+- available = `(conn+0x6c - conn+0x78) - 4`;
+- `compLen == 0`: copy `decodedLen` raw bytes from `frame+4` to the raw buffer `conn+0x348`;
+- else: `FUN_141574a00(conn+0x350, raw, decodedLen, frame+4, compLen)` = LZ4;
+- advance the cursor by `size+4` (`FUN_140fee770`), append `decodedLen` bytes to the message stream
+  at `conn+0x80` (`FUN_140fee4e0`).
+
+This matches Addendum 20's deframe exactly.
+
+## Outbound has no compression container
+
+`FUN_140fe96f0` encrypts the message stream at `conn+0x398` directly; there is no
+`[compLen][decodedLen]` and no LZ4 on the outbound side. Outbound is therefore a concatenation of
+`[u16 msgid][schema fields]` records (the same shape the reader consumes), optionally length-framed
+below `FUN_140fe3e60` by the transport. So the inbound container is an inbound-only compression layer,
+not a symmetric framing.
+
+## The transport object
+
+The connection allocator `FUN_140fe8b70` stores the caller's handle at `conn+8`
+(`*(conn+8) = param_1`). Everything the client sends goes through `FUN_140fe3e60(conn+8, data, len)`,
+which calls the handle's vtable `+0x38` with `(len, data)`. So the transport is an external object
+owned by the network layer: `MsgConn` adds no outer length prefix, and any packet/length framing is
+below this boundary. The constructor corroborates this — it builds the handshake `outB` message as
+`{0x00, len+2}` + `outB` and hands that buffer to the same `FUN_140fe3e60` (Addendum 10's `{0x00,len}`
+header is really `{0x00, len+2}`, the `+2` being the two header bytes themselves).
+
+## What this establishes
+
+- `conn+0x234` is the inbound KSA state copy, same key, position 0;
+- the cross-direction keystream-reuse implication (two-time pad);
+- the inbound container layout, re-confirmed against `FUN_140fe8ef0`;
+- outbound carries no compression container at the `MsgConn` layer.
+
+## What this does not establish
+
+- empirical proof of the keystream reuse (needs one inbound and one outbound capture from one
+  connection);
+- whether the transport adds a length prefix;
+- outbound sequence/acknowledgement rules.
+
+## Next steps
+
+1. Capture both directions of one connection and test keystream equality (the two-time-pad test).
+2. Resolve the transport send (`vtable +0x38`) for any framing.
+
+---
+
