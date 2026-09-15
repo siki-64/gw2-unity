@@ -207,10 +207,33 @@ FUN_14102aac0(registry, 0, key = u16@rec+2, seqArg = u32@rec+4/+5, obj):
   FUN_14101e7c0 also drives FUN_14101e4a0 (list remove) / FUN_14102ad20 (list insert)
 ```
 
-`FUN_14102ad20(registry, obj)` asserts from `AgWorld.cpp:0x532` and inserts `obj` into the list at
-`registry+0x150` (`FUN_14101e080`). So the registry is the **agent world (`AgWorld`)**; the messages
-insert typed objects into an `AgWorld` list. Every object carries a network id (`+0x18`), a sequence
-and flag word (`+0x1c`), a registry back-link (`+0x58`) and a related-object link (`+0x20`).
+`FUN_14102ad20(registry, obj)` asserts from `AgWorld.cpp:0x532` and inserts `obj` via
+`FUN_14101e080((registry+0x150), obj)`; `FUN_14101e080` asserts from `PriQ.h` and is a **binary-heap
+priority-queue insert** keyed by the object's `+0x18` (id) then `+0x1c` (sequence). So the registry is
+the **agent world (`AgWorld`)**, and `AgWorld+0x150` is a PriQ of typed objects ordered by network id
+and sequence; `FUN_14101e4a0` is the PriQ remove.
+
+The object base constructor `FUN_141030110(obj, kind, typeBits, manager)` gives the object layout:
+
+| Offset | Field |
+| --- | --- |
+| `+0x00` | vtable (base `PTR_FUN_142113d40`, then the per-kind vtable) |
+| `+0x08`/`+0x10` | id/seq scratch, zeroed |
+| `+0x18` | `u32` network id |
+| `+0x1c` | `u32` flag (`0x80000000` init) \| sequence |
+| `+0x20` | related/existing object pointer |
+| `+0x28` | embedded sub-list (`FUN_14101ecf0`) |
+| `+0x48` | `u32` (zeroed) |
+| `+0x4c` | `u32` from `FUN_14102a370(manager)` |
+| `+0x50` | `u32` typeBits |
+| `+0x54` | `u8` kind |
+| `+0x58` | registry (`AgWorld*`) back-link |
+| `+0x60` | intrusive list head (own links at `+0x64`/`+0x68`) |
+| `+0xe8`/`+0xec` | state flag words (see `FUN_1410270d0`, bits `0x80`/`0x100`) |
+
+`FUN_14102b2c0`/`FUN_14102b470`/`FUN_14102b4d0` (`AgUtil.cpp`) copy a `0x38`-byte **motion** block
+(position/velocity/heading, sub-pointers at `rec+0x14`/`+0x1c`) into the object — so AgWorld content
+carries its own motion state.
 
 The per-message builders (`FUN_141030110(obj, kind, typeBits, manager)` is the shared base
 constructor) turn the decoded record into a typed object:
@@ -235,13 +258,13 @@ window with reorder/late-handling, and `FUN_14102aac0` can emit an outbound mess
 `FUN_140fea110` for `dispatchType == 1` — the client requests/acks content rather than only
 consuming it.
 
-Observed `AgWorld` fields (build-local): `+0x10`, key table `+0xd0`/count `+0xdc`, insert list
-`+0x150`, `+0x178`, counter `+0x1bc`, `+0x1cc`, `+0x1d0`, `+0x1d4`, `+0x1f8`, `+0x20c`.
+Observed `AgWorld` (registry) fields, build-local: sub-mode `+0x10`, key table `+0xd0`/count `+0xdc`,
+priority queue `+0x150`, `+0x178`, counters `+0x1bc`, `+0x1cc`, `+0x1d0`, `+0x1d4`, `+0x1f8`,
+`+0x20c`.
 
 ## Open
 
-- The `AgWorld` object kinds/vtables and the full list at `+0x150`.
-- The identity of `*(ctx+0x28)` (the `AgWorld` owner).
+- The identity of `*(ctx+0x28)` (the `AgWorld` owner) and the `+0xd0` key-table semantics.
 - The `CmbtCli` combatant and buff layouts behind `FUN_1412c0470`/`0530`.
 - Which subsystem `FUN_141345bd0` is (`0x312`/`0x315`).
 - What selects `ChCliPlayer +0x18` vs `+0x20`.
