@@ -321,6 +321,44 @@ Observed `AgWorld` (registry) fields, build-local: sub-mode `+0x10`, key table `
 priority queue `+0x150`, `+0x178`, counters `+0x1bc`, `+0x1cc`, `+0x1d0`, `+0x1d4`, `+0x1f8`,
 `+0x20c`.
 
+### The motion block and orientation (positions)
+
+The family is wider than the builders above: `0x36`, `0x37`, `0x38` and `0x43` share the same
+record prologue (`u16, varint, u8, varint, <blob>, <optional>`) and carry the same motion optional
+as `0x39`/`0x33`/`0x34`. The optional's subchain is:
+
+```text
+0x09 (16-byte blob)  varint  0x0f{0x09}  0x0f{0x09}  u8  u8
+```
+
+For `0x39` (kind `0x11`, builder `FUN_141031740`) the object receives:
+
+| Object | Source | Meaning |
+| --- | --- | --- |
+| `+0x70`, `+0x7c` | the two `0x08` (12-byte) fields (`rec+0x1e`, `rec+0x2a`) | two **unit** vec3s (orientation), validated by `FUN_14102b470`/`FUN_14102b4d0` (`length^2 ~ 1`) |
+| `+0x88` | the motion optional (`rec+0x16`) via `AgUtil::FUN_14102b2c0` | a `0x38` **motion block** |
+| `+0x28` | `rec+0x0e` | embedded sub-list (`FUN_14101f4f0`) |
+
+`FUN_14102b2c0` (`AgUtil.cpp`) lays the motion block out as:
+
+| Motion offset | Source | Size |
+| --- | --- | --- |
+| `+0x00` | the `0x09` 16-byte blob | 16 |
+| `+0x10` | the varint | 4 |
+| `+0x14` | the first `0x0f{0x09}` blob | 16 |
+| `+0x24` | the second `0x0f{0x09}` blob | 16 |
+| `+0x34`, `+0x35` | the two `u8` fields | 1 each |
+
+So the wire gives four contiguous floats at `+0x00` (the 16-byte blob), a `u32` at `+0x10`, then two
+optional four-float vectors. `FUN_141037480`/`FUN_141037680` (`AgCommand.cpp`, tags `0x39`/`0x3a`/`0x2c`)
+read exactly this block (`+0x88`, `+0x98`, `+0x9c`, `+0xac`) together with the orientation
+(`+0x70`/`+0x7c`) and pack it into outbound agent commands.
+
+**Open:** the semantic role of each motion field (which four floats are position vs velocity, and
+what the two vectors are) is not yet proven from a named reader; the layout above is the wire ->
+native mapping, not a field naming. The agent's own grounded position (`AgChar +0x120`) is a
+separate object that this content block feeds.
+
 ## World entry and the map loader (correction to the `0x100` lead)
 
 The catalog's `0x100` lead ([../UI/Widgets/pvp-equipment-state.md](../UI/Widgets/pvp-equipment-state.md))

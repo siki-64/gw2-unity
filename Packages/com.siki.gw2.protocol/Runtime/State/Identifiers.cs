@@ -24,6 +24,27 @@ namespace Gw2.Protocol.State
     }
 
     /// <summary>
+    /// The AgWorld object network id (build 205.780): the key at record `+0x02` that the agent-world
+    /// content family stores at object `+0x18`. It is a **separate domain** from
+    /// <see cref="PlayerListIndex"/> and from a native content id; its relation to `Agent.agentId`
+    /// is not established.
+    /// </summary>
+    public readonly struct AgentNetworkId : IEquatable<AgentNetworkId>
+    {
+        public AgentNetworkId(uint value) { Value = value; }
+
+        public uint Value { get; }
+
+        public bool Equals(AgentNetworkId other) => Value == other.Value;
+
+        public override bool Equals(object obj) => obj is AgentNetworkId other && Equals(other);
+
+        public override int GetHashCode() => (int)Value;
+
+        public override string ToString() => "0x" + Value.ToString("x");
+    }
+
+    /// <summary>
     /// A native skill content id (build 205.780). The configured-skill path resolves it to a skill
     /// definition through the <c>CnContext</c> content resolver (type <c>0x41</c>). Public API ids
     /// must not be assumed equal, and no members are enumerated until a captured packet binds an id
