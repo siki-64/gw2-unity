@@ -2585,8 +2585,8 @@ two 14-byte messages.
 
 ## The capture
 
-Connection `conn = 0x2503D11B170` (game, mode 3), key material at `conn+0x118`
-`779a225ab787cadaae5b4f298ab221dfa350110a` (session-private, not committed).
+Connection `conn = 0x2503D11B170` (game, mode 3); the session key material at `conn+0x118` is
+private and not recorded here.
 
 At the `0x264` handler the frame container held:
 
