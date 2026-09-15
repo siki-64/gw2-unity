@@ -1,6 +1,6 @@
 # Monthly Champion novelty effects
 
-**Confirmed build:** 205.780  
+**Confirmed build:** 207.032  
 **Runtime state:** direct Chalice replay is disabled. The live-captured factory operands return an effect, but the client later crashes during native processing, proving that the direct factory call is not a complete activation contract.
 **Important:** preview-panel effect data and in-world effect data are separate contracts. Never substitute one for the other.
 

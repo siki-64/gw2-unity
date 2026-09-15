@@ -1,6 +1,6 @@
 # AsContext – target / selection / mouseover manager
 
-**Confirmed build(s):** `204.132`, `204.489`, and `205.780`, scoped by the sections below.<br>
+**Confirmed build(s):** `207.032`, scoped by the sections below.<br>
 **Status:** build-local reconstruction combining static analysis and controlled live observations.<br>
 **Unresolved:** behavior outside the listed build/section scopes and meanings explicitly marked unresolved.
 
@@ -40,7 +40,7 @@ unit's agent/owner object when active** — confirmed bidirectionally against a 
 | **spectator camera follow** | lock spectator camera to a player | `+0x1A0`, `+0x218`, `+0x2B8` |
 | **Take Target** | acquire another unit currently called by the party | `+0x098`, `+0x1A0`, `+0x1D0`, `+0x218`, `+0x298` |
 
-Build `205.780` adds a second confirmed use for `+0x218`. While another party member had the local
+Build `207.032` adds a second confirmed use for `+0x218`. While another party member had the local
 player called, `+0x218` held the local player's unit and the red shared call-target reticle was visible;
 primary-picked, personal-target, and `+0x250` were null. Moving the shared call target to another unit
 cleared `+0x218` rather than storing the newly called unit. Therefore `+0x218` remains a local
@@ -53,13 +53,13 @@ shared party call target. Therefore the captured `+0x218 = local player` state c
 the result of locally taking/selecting the shared target; it is associated with the local player being
 the called unit itself.
 
-Build `205.780` then captured Take Target on a different party-called critter. Before the action, all
+Build `207.032` then captured Take Target on a different party-called critter. Before the action, all
 listed local target fields were null. Afterward the critter's unit appeared at `+0x098`, `+0x1A0`,
 `+0x1D0`, `+0x218`, and `+0x298`; `+0x250` remained null. This confirms the user-observed behavior:
 Take Target copies the party-called unit into ordinary local selection/primary-picked state rather than
 writing the local call/personal-target marker at `+0x250`.
 
-The shared source itself was located in build `205.780`. `g_AsContext +0x3A8` holds a pointer to an
+The shared source itself was located in build `207.032`. `g_AsContext +0x3A8` holds a pointer to an
 owner object whose tracked-unit slot at `+0x48` contains the current shared party call-target `Unit*`.
 A hardware watch across two different call-target transitions captured that field changing from the old
 called unit to each new called unit while local selection was untouched. `SetSharedPartyCallTarget`
@@ -68,7 +68,7 @@ through `sub_254D70`. The owner's vtable constructor and the setter's assertions
 `ChCliPlayer.cpp`, but that source string alone does not establish the native class name; the canonical
 layout therefore retains the provisional `AsContext.Slot3A8` name.
 
-Build `205.780` custom-arena spectator captures established another independent slot combination.
+Build `207.032` custom-arena spectator captures established another independent slot combination.
 Locking the spectator camera to a blue-side player populated `+0x1A0`, `+0x218`, and `+0x2B8` with that
 player's Character unit; unlocking cleared all three. Locking to a red-side player populated the same
 three fields with the different red player's Character unit. `+0x098`, `+0x1D0`, `+0x250`, and
@@ -147,7 +147,7 @@ direction at `+0x2D8`, with a `10000.0`-unit endpoint. A query result supplies t
 `+0x300`; no result stores positive infinity there. `RecomputeMouseover` computes the distance from
 the origin to that position and passes it to `ScoreMouseoverCandidate`.
 
-Build `205.780` further resolves an early classification gate in `ScoreMouseoverCandidate`. The scorer
+Build `207.032` further resolves an early classification gate in `ScoreMouseoverCandidate`. The scorer
 calls `sub_11B0C10` through a context interface at vtable `+0xB8`. That dispatcher handles agent types
 and tail-jumps through vtable `+0xB0` to `sub_11B0DE0` for a valid type-0 Character wrapper. The
 returned presentation-category integer is stored by the scorer. When scorer field `+0xB0` has mask

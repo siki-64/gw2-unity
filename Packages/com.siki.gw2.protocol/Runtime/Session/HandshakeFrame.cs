@@ -3,7 +3,7 @@ using System;
 namespace Gw2.Protocol.Session
 {
     /// <summary>
-    /// The frame kinds in the <c>MsgConn</c> handshake/control space (build 205.780): the three-entry
+    /// The frame kinds in the <c>MsgConn</c> handshake/control space: the three-entry
     /// dispatch table indexed by the frame's first byte. This space is only used before the transport
     /// cipher is keyed (modes 1/2); established traffic is not framed this way.
     /// </summary>
@@ -23,7 +23,7 @@ namespace Gw2.Protocol.Session
     }
 
     /// <summary>
-    /// The <c>MsgConn</c> handshake/control frame codec, recovered for build 205.780
+    /// The <c>MsgConn</c> handshake/control frame codec, recovered from the client image
     /// (<c>MsgConn.cpp</c>: the constructor, <c>MsgRaw_ClientRecvEncrypt</c>,
     /// <c>MsgRaw_ClientRecvError</c>). See
     /// <c>research/contracts/notes/Protocol/session-state.md</c>.
@@ -73,7 +73,7 @@ namespace Gw2.Protocol.Session
         /// <summary>
         /// Decode the server key frame (<c>[0x01][0x16][20 bytes]</c>) and return the 20-byte server
         /// value, which the transport key is XOR-ed against. Validated live
-        /// (msg-dispatch-addenda Addendum 26).
+        /// (the schema re-derivation).
         /// </summary>
         public static bool TryDecodeServerKey(ReadOnlySpan<byte> frame, out byte[] serverValue)
         {

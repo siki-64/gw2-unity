@@ -1,10 +1,10 @@
 # Native player-name resolution
 
-**Confirmed build(s):** `205.780`.<br>
+**Confirmed build(s):** `207.032`.<br>
 **Status:** build-local live reconstruction of the player-wrapper to character/name relationship.<br>
 **Unresolved:** stale-entry handling, unresolved aliases, and cross-build validity.
 
-Build-`205.780` live inspection confirms the native player/name relationship.
+Build-`207.032` live inspection confirms the native player/name relationship.
 
 ```text
 ContextCollection +0x98
@@ -26,7 +26,7 @@ player wrapper's name pointer. This is native memory, independent of MumbleLink 
 ## Full native object
 
 The player-list entry is the full native `ChCliPlayer`, not a small name-record wrapper. In build
-`205.780`, the allocator passes `0xA178` as the object size, calls the constructor that installs
+`207.032`, the allocator passes `0xA178` as the object size, calls the constructor that installs
 the `ChCliPlayer` vtable, and the matching deleting path passes the same size. The player object
 also owns the recovered progress, reward-track, and specialization regions represented by the
 overlay in `Gw2.Contracts/Character/ChCliPlayer.cs`. Its PvP loadout region is a separate

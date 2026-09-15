@@ -1,6 +1,6 @@
 # ChCliContext and health state
 
-**Confirmed build(s):** `205.780` for the allocation/layout paths described here; reflected and
+**Confirmed build(s):** `207.032` for the allocation/layout paths described here; reflected and
 InfoBar evidence is scoped in the linked subsystem notes.  
 **Status:** build-local reconstruction with cross-subsystem relationships confirmed on the stated build.  
 **Unresolved:** the complete network writer/bridge for every health value and ownership of unrelated
@@ -153,7 +153,7 @@ These are unrelated to the world-entry `Players` lookup:
 Native assertions bound the compact definition index against `arrsize(...)`. The profession cache is
 populated from content request family `0x13B`; the race cache from family `0x158`.
 
-`ChCliPlayer` is a large native object: build `205.780` allocates `0xA178` bytes for each instance.
+`ChCliPlayer` is a large native object: build `207.032` allocates `0xA178` bytes for each instance.
 The player-list entry is therefore a pointer to the same full object that owns the recovered inline
 character/progress/specialization state, not a separate compact name wrapper. Its canonical character
 link is `+0x18`; the adjacent `+0x20` link currently aliases it in live captures and is retained as
@@ -165,7 +165,7 @@ client.
 
 ## Agent attitude cache
 
-Build-`205.780` disassembly identifies `ChCliContext_GetAttitude` at `g_ChCliContextVtbl+0x50`. The
+Build-`207.032` disassembly identifies `ChCliContext_GetAttitude` at `g_ChCliContextVtbl+0x50`. The
 function accepts an agent, indexes it by `agentId` at agent `+0x0C`, and first checks an explicit
 presence bitset before reading the cached `Attitude` byte:
 

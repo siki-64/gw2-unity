@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compute MsgPack defSize/maxSize per defArray chain across the 205.780 corpus.
+"""Compute MsgPack defSize/maxSize per defArray chain across the 207.032 corpus.
 
 Reads Gw2-64.exe directly (PE VA->file mapping), walks every descriptor chain
 referenced by the schema corpus, and computes per chain:
@@ -8,11 +8,11 @@ referenced by the schema corpus, and computes per chain:
   defSize  exactly as MsgPack_ComputeDefSize (140fe9830) does;
   ok       maxSize <= MSG_MAX_BUFFER_SIZE (0x2000), the validator's bound.
 
-The default corpus is protocol/schema/205780/live_ids.csv, the live per-connection
+The default corpus is protocol/schema/207032/live_ids.csv, the live per-connection
 recv schema map dumped from the game connection's registry. It supersedes
 sweep2.csv as a schema map because sweep2.csv has 469 ids with more than one
-candidate defArray and its first-row choice is often wrong (msg-dispatch
-Addendum 18). Pass --corpus sweep2.csv to reproduce the older static sweep.
+candidate defArray and its first-row choice is often wrong. Pass --corpus
+sweep2.csv to reproduce the older static sweep.
 
 Read-only: never writes to the image. Run offline from the repository root.
 
@@ -41,9 +41,9 @@ import sys
 ROOT = os.path.join(os.path.dirname(__file__), "..", "..")
 
 IMAGE = r"C:\Program Files (x86)\Steam\steamapps\common\Guild Wars 2\Gw2-64.exe"
-CORPUS = os.path.join(ROOT, "protocol", "schema", "205780", "live_ids.csv")
-OUT = os.path.join(ROOT, "protocol", "schema", "205780", "maxsize.csv")
-COLLISIONS = os.path.join(ROOT, "protocol", "schema", "205780",
+CORPUS = os.path.join(ROOT, "protocol", "schema", "207032", "live_ids.csv")
+OUT = os.path.join(ROOT, "protocol", "schema", "207032", "maxsize.csv")
+COLLISIONS = os.path.join(ROOT, "protocol", "schema", "207032",
                           "collisions.csv")
 
 MSG_MAX_BUFFER_SIZE = 0x2000

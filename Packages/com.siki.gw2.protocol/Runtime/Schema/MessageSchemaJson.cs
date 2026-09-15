@@ -8,7 +8,7 @@ namespace Gw2.Protocol.Schema
     /// Loads a build's message-schema corpus from the JSON emitted by
     /// <c>tools/re/ExtractSchemaCorpus.py</c>:
     /// <code>
-    /// { "build": 205780, "messages": { "0x264": [ {"t":1,"p":612}, {"t":4}, ... ] } }
+    /// { "build": 207032, "messages": { "0x264": [ {"t":1,"p":612}, {"t":4}, ... ] } }
     /// </code>
     /// </summary>
     /// <remarks>

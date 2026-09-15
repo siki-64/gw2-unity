@@ -1,7 +1,6 @@
 # Keybind / input pipeline
 
-**Confirmed build(s):** `204.489` for input-binding import; `205.780` for the native UI pointer
-coordinate path.<br>
+**Confirmed build(s):** `207.032`.<br>
 **Status:** build-local partial reconstruction of modifier polling, input-binding import, and the
 FrMouse pointer-to-frame coordinate transform.<br>
 **Unresolved:** the general gameplay key-read mechanism, the game's native wheel accumulator contract,
@@ -82,13 +81,13 @@ All foreign-memory traversal uses the guarded process-memory reader, so map tear
 context root produces empty/unavailable snapshot state rather than a raw pointer dereference.
 
 
-## Native UI pointer coordinates (build 205.780)
+## Native UI pointer coordinates (build 207.032)
 
 `ScreenToClient` output was originally treated as if it were already in GW2 logical UI coordinates.
 That is incorrect whenever the client pixel size and native UI scale differ, producing a hit-test
 offset that grows with screen position.
 
-Build 205.780's FrMouse path at `sub_14107E440` reads:
+Build 207.032's FrMouse path at `sub_14107E440` reads:
 
 ```text
 0x142893B58  raw mouse X

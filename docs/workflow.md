@@ -29,9 +29,9 @@ Keep transport, session, protocol, state, assets and Unity presentation as disti
 
 ## Scope of the findings
 
-The research spans build 205780 and is a historical evidence scope, not a declaration of current server support. Reuse `research/contracts/notes`, the `research/contracts/Gw2.Contracts` contracts (field semantics, enum values, handler records; not pointer offsets or ABI) and the `research/data/Gw2.Dat` archive/texture/schema tooling source (namespace `Gw2.Dat`). Do not reuse native UI, D3D11 proxy, injection or patching, which are tied to the official client's in-process execution, nor live captures, caches, dumped fonts or game assets.
+The research spans build 207032 and is a historical evidence scope, not a declaration of current server support. Reuse `research/contracts/notes`, the `research/contracts/Gw2.Contracts` contracts (field semantics, enum values, handler records; not pointer offsets or ABI) and the `research/data/Gw2.Dat` archive/texture/schema tooling source (namespace `Gw2.Dat`). Do not reuse native UI, D3D11 proxy, injection or patching, which are tied to the official client's in-process execution, nor live captures, caches, dumped fonts or game assets.
 
-For build 205.780 the transport cipher, handshake key derivation, inbound frame container and
+For build 207.032 the transport cipher, handshake key derivation, inbound frame container and
 direction-specific schema corpora are recovered and validated against private captures, and the
 package implements inbound and outbound codecs for that build. This is still **not** live-server
 compatibility: no runtime wire message is registered as supported (`supportedWireBuilds` stays

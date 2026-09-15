@@ -1,6 +1,6 @@
 # Native localization and text-service path
 
-**Confirmed build(s):** unknown; evidence is from an independent July 2026 native consumer plus current repository TLS/context observations.<br>
+**Confirmed build:** 207.032<br>
 **Status:** execution-context requirements and service relationship recovered; callable ArenaNet ABI remains unresolved.<br>
 **Unresolved:** exact TLS accessor identities, text-service type, localization request structure, callback ABI,
 and whether the TLS-backed service feeds the already recovered `CtlText`/`FrText` layout path.
@@ -33,7 +33,7 @@ It does **not** by itself solve glyph layout or rendering. Keep localization/dec
 recovered renderer path documented in [`../Frames/native-text-rendering.md`](../Frames/native-text-rendering.md):
 `string -> metrics/glyphs -> native draw submission`.
 
-For build 205.780, the current static and live font evidence rules out the FrText/localization layer
+For build 207.032, the current static and live font evidence rules out the FrText/localization layer
 as a source of fallback-square substitution for direct UTF-16 text. FrText preserves line spans into
 the original UTF-16 buffer, while the GrFont layer performs exact code-unit lookup. The tested
 Greek/Cyrillic and kana code units returned null glyph records and rendered as blank advance-only

@@ -2,13 +2,13 @@ using System.Runtime.InteropServices;
 
 namespace Gw2.Contracts;
 
-// Leading partial FontContext view for build 205.780. The object is much
+// Leading partial FontContext view for build 207.032. The object is much
 // larger; only the vtable and the ANTF asset-load gate are promoted. Font
 // data, cached-font slots, and the font-key table remain opaque.
 [StructLayout(LayoutKind.Explicit, Size = 0x0C)]
 internal struct FontContext
 {
-    // These constants describe the recovered build-205.780 layout only.
+    // These constants describe the recovered build-207.032 layout only.
     // They are metadata for readers/validators, not a promise that the
     // native object is safe to construct or retain.
     internal const int SupportedBuild = (int)GameBuild.SupportedGameBuild;
@@ -27,7 +27,7 @@ internal struct FontContext
     [FieldOffset(AssetLoadStateOffset)] internal uint AssetLoadState;
 }
 
-// One entry in the fixed build-205.780 FontContext character-range table.
+// One entry in the fixed build-207.032 FontContext character-range table.
 // The static table stores 32-bit half-open bounds; GrFontRange narrows the
 // same BMP values to 16-bit fields when a concrete range is constructed.
 [StructLayout(LayoutKind.Explicit, Size = 0x08)]
@@ -58,7 +58,7 @@ internal enum FontCharacterRangeSlot
     HalfwidthAndFullwidthForms = 12 // [U+FF01, U+FFE7)
 }
 
-// Stable descriptive metadata for the fixed build-205.780 registration slots.
+// Stable descriptive metadata for the fixed build-207.032 registration slots.
 // A face may omit any of these slots; this is not the compact GrFontRange list.
 internal readonly record struct FontCharacterRangeMetadata(
     FontCharacterRangeSlot Slot,

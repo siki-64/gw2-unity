@@ -11,16 +11,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Gw2.Protocol.Tests
 {
-    // Minimal per-player state (build 205.780): configured-skills from 0x264.
+    // Minimal per-player state: configured-skills from 0x264.
     [TestClass]
     public class PlayerStateTests
     {
-        private static string Fixture(string name) =>
-            Path.Combine(AppContext.BaseDirectory, "fixtures", name);
 
         private static ProtocolSchemaCorpus Corpus() => ProtocolSchemaCorpus.FromJson(
-            File.ReadAllText(Fixture("chains-recv.json")),
-            File.ReadAllText(Fixture("chains-send.json")));
+            Fixtures.ReadText("chains-recv.json"),
+            Fixtures.ReadText("chains-send.json"));
 
         private static TransportCipherState State(JsonElement cs) => TransportCipherState.FromCapturedState(
             Convert.ToInt32(cs.GetProperty("i").GetString(), 16),
@@ -133,7 +131,7 @@ namespace Gw2.Protocol.Tests
         [TestMethod]
         public void Replay_CapturedWire_UpdatesConfiguredSkills()
         {
-            using var doc = JsonDocument.Parse(File.ReadAllBytes(Fixture("0x264-wire.json")));
+            using var doc = JsonDocument.Parse(Fixtures.ReadBytes("0x264-wire.json"));
             JsonElement root = doc.RootElement;
             byte[] wire = Convert.FromHexString(root.GetProperty("wireHex").GetString());
 

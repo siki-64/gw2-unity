@@ -6,7 +6,7 @@ using Gw2.Protocol.Schema;
 namespace Gw2.Protocol.MsgPack
 {
     /// <summary>
-    /// The message-schema writer (the inverse of <see cref="MsgPackReader"/>), build 205.780.
+    /// The message-schema writer (the inverse of <see cref="MsgPackReader"/>).
     /// <para>
     /// It re-encodes field values produced by a decode, so a captured message can be round-tripped.
     /// Unlike the reader it is bounds-agnostic: the client's writer trusts the caller to have sized

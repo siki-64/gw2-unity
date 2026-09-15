@@ -6,7 +6,7 @@ using Gw2.Protocol.MsgPack;
 namespace Gw2.Protocol.State
 {
     /// <summary>
-    /// The motion block of an AgWorld object (build 205.780, object <c>+0x88</c>, <c>0x38</c> bytes)
+    /// The motion block of an AgWorld object (object <c>+0x88</c>, <c>0x38</c> bytes)
     /// as the wire carries it: four contiguous floats, a <c>u32</c>, two optional four-float vectors
     /// and two flag bytes (<c>AgUtil::FUN_14102b2c0</c>).
     /// <para>
@@ -36,7 +36,7 @@ namespace Gw2.Protocol.State
     }
 
     /// <summary>
-    /// Minimal per-agent (AgWorld object) state for build 205.780: the object kind, the last
+    /// Minimal per-agent (AgWorld object) state: the object kind, the last
     /// transform/orientation and the motion block. Keyed by <see cref="AgentNetworkId"/>.
     /// </summary>
     public sealed class AgentState
@@ -65,7 +65,7 @@ namespace Gw2.Protocol.State
     }
 
     /// <summary>
-    /// Applies decoded AgWorld content messages to per-agent state (build 205.780). Currently the
+    /// Applies decoded AgWorld content messages to per-agent state. Currently the
     /// transform message <c>0x39</c> (kind <c>0x11</c>): two orientation vec3s and the motion block.
     /// See <c>research/contracts/notes/Protocol/handler-to-subsystem.md</c>.
     /// <para>

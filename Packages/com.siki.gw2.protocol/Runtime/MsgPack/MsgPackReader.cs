@@ -6,7 +6,7 @@ using Gw2.Protocol.Schema;
 namespace Gw2.Protocol.MsgPack
 {
     /// <summary>
-    /// The build-205.780 message-schema reader (<c>MsgPack::ReadFields</c>), ported from the
+    /// The message-schema reader (<c>MsgPack::ReadFields</c>), ported from the
     /// recovered semantics. It walks a <see cref="FieldDefinition"/> chain over the message
     /// stream and fails closed: any overrun, unknown type, or missing nested chain throws
     /// <see cref="FormatException"/> rather than returning partial data.

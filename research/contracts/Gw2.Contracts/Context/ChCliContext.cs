@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Gw2.Contracts;
 
-[StructLayout(LayoutKind.Explicit, Size = 0x530)]
+[StructLayout(LayoutKind.Explicit, Size = 0x548)]
 internal unsafe struct ChCliContext
 {
     [FieldOffset(0x000)] internal nint ChCliContextVtable;
@@ -72,6 +72,9 @@ internal unsafe struct ChCliContext
     [FieldOffset(0x524)] internal uint AttitudeCount;
     [FieldOffset(0x528)] internal uint AttitudeGrowth;
     [FieldOffset(0x52C)] internal uint Unknown52C;
+    [FieldOffset(0x530)] internal nint Unknown530;
+    [FieldOffset(0x538)] internal nint Unknown538;
+    [FieldOffset(0x540)] internal uint Unknown540;
     [StructLayout(LayoutKind.Explicit, Size = 0x20)]
     internal struct NativeArrayHeader
     {

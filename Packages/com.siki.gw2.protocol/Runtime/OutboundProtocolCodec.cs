@@ -8,7 +8,7 @@ namespace Gw2.Protocol
 {
     /// <summary>
     /// Outbound codec for a game connection: schema encode -> transport cipher. There is no
-    /// compression container on the outbound side (build 205.780), and outbound uses the **send**
+    /// compression container on the outbound side, and outbound uses the **send**
     /// corpus, which has different chains from recv for the same id.
     /// </summary>
     public sealed class OutboundProtocolCodec

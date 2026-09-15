@@ -4,76 +4,15 @@
   "supportedWireBuilds": [],
   "buildStamps": [
     {
-      "name": "ConfiguredSkillRecordLead",
-      "build": 205780,
-      "buildLabel": "205.780",
-      "stampedAtUtc": "2026-09-14T00:00:00Z",
+      "name": "SchemaRegistryRederivation207032",
+      "build": 207032,
+      "buildLabel": "207.032",
+      "stampedAtUtc": "2026-09-15T00:00:00Z",
       "tool": "gw2re/1",
-      "imageSha256": "D2AE84876A0B93277FCCB368969046B848BB0403FD09DB420389C813D2459B23",
-      "notes": "Image identity confirmed by the operator: Gw2-64.exe SHA-256 matches the Ghidra image analysed for this build. The historical scope recorded no hash; this entry supplies it. The stamp records image identity only and asserts no wire compatibility."
+      "imageSha256": "612364759DFA24800F4F9802F842323FC21EB127A08DB8132BC12EA74D5FC3D1",
+      "notes": "Live binary updated; the analysed image was re-imported and re-analysed (64,703 functions). The registry record shape, MsgPackFieldDef stride/offsets and field-type cases were re-derived on this image from string/assert anchors rather than by Version Tracking; no identifiers or addresses were carried from any other build. See research/contracts/notes/Protocol/msg-schema-207032.md. This stamp records image identity and static schema-shape recovery only, and asserts no wire compatibility."
     }
   ],
-  "messages": [
-    {
-      "name": "ConfiguredSkillRecordLead",
-      "build": 205780,
-      "buildLabel": "205.780",
-      "connectionRole": "game",
-      "direction": "server-to-client",
-      "messageId": "0x264",
-      "representation": "wire-bytes",
-      "evidenceLevel": "observed",
-      "pipeline": { "id": "msgpack-schema", "state": "static-located", "opcodeEncoding": "unknown" },
-      "artifact": "protocol/messages/205780/0x264.json",
-      "wireVerified": true,
-      "supported": false,
-      "note": "Static registry location resolved (msg-dispatch-addenda Addendum 7): channel 0x14 recv table B entry 513, defArray 1425cd320, handler FUN_141257a20 (ChCliMsg.cpp). Addendum 8 resolves the chain to a decoded record shape (u16 msgid, two base-128 varints, two u8; defSize 0x0C, maxSize 0x0E). Addendum 22 captures the wire bytes: a live 19-byte game-connection packet RC4-decrypts to transport frame 0f000e00e0640286240200016402ab24010001, which deframes/decodes to two 0x264; the base-128 varint's little-endian order is confirmed from data (0x1206 -> 86 24) and the ciphertext was located in the process network buffer. wireVerified is true for this captured frame; build 205780 stays out of supportedWireBuilds and supported stays false because no general codec is implemented and one captured message is not a supported build."
-    }
-  ],
-  "researchLeads": [
-    {
-      "build": 205780,
-      "buildLabel": "205.780",
-      "messageId": "0x27C",
-      "direction": "server-to-client",
-      "representation": "decoded-handler-record",
-      "evidenceLevel": "static",
-      "source": "research/contracts/notes/UI/Widgets/remote-equipped-skills.md",
-      "wireVerified": false,
-      "note": "Runtime skillbar for the owned character; live triggering evidence incomplete"
-    },
-    {
-      "build": 205780,
-      "buildLabel": "205.780",
-      "messageId": "0x200..0x207",
-      "direction": "server-to-client",
-      "representation": "decoded-handler-record",
-      "evidenceLevel": "observed",
-      "source": "research/contracts/notes/UI/Widgets/pvp-equipment-state.md",
-      "wireVerified": false,
-      "note": "PvP equipment/rank provider updates; descriptor sizes are runtime records"
-    },
-    {
-      "build": 205780,
-      "buildLabel": "205.780",
-      "messageId": "0x100",
-      "direction": "server-to-client",
-      "representation": "semantic-call-trace",
-      "evidenceLevel": "observed",
-      "source": "research/contracts/notes/UI/Widgets/pvp-equipment-state.md",
-      "wireVerified": false,
-      "note": "Starts world loading; not a complete session implementation"
-    },
-    {
-      "build": 205780,
-      "buildLabel": "205.780",
-      "messageId": "0x1A5",
-      "direction": "client-to-server",
-      "representation": "semantic-call-trace",
-      "evidenceLevel": "observed",
-      "source": "research/contracts/notes/UI/Widgets/pvp-equipment-state.md",
-      "wireVerified": false,
-      "note": "Acknowledges world-load completion; prerequisites and serialization unknown"
-    }
-  ]
+  "messages": [],
+  "researchLeads": []
 }

@@ -4,7 +4,7 @@ using System.Numerics;
 namespace Gw2.Protocol.Session
 {
     /// <summary>
-    /// The client's Diffie-Hellman material for one handshake (build 205.780). Both values are 64
+    /// The client's Diffie-Hellman material for one handshake. Both values are 64
     /// bytes, little-endian, as stored by the client.
     /// </summary>
     public readonly struct HandshakeKeyPair
@@ -34,7 +34,7 @@ namespace Gw2.Protocol.Session
     }
 
     /// <summary>
-    /// The build 205.780 handshake key derivation (<c>MsgConn.cpp</c>, <c>FUN_140fede80</c>):
+    /// The handshake key derivation (<c>MsgConn.cpp</c>):
     /// <c>R = FUN_141570640(seed, 512)</c>, <c>outA = G^R mod P</c>, <c>outB = 4^R mod P</c>.
     /// See <c>research/contracts/notes/Protocol/handshake-key-derivation.md</c>.
     /// <para>

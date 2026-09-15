@@ -1,10 +1,9 @@
 # Native profession state
 
-**Confirmed build(s):** `205.780`.<br>
+**Confirmed build(s):** `207.032`.<br>
 **Status:** build-local native state and selected relationships confirmed by live reads and structural evidence.<br>
 **Unresolved:** semantics of the remaining unresolved fields and cross-build validity.
 
-Build: `205.780`
 
 `ChCliCharacter +0x510` points to the character's native profession object.
 Its `ChCliProfession +0x40` field is `ECharProfessionState`. The field is
@@ -66,7 +65,7 @@ profession-specific extension/derived object and must not be modeled as a
 member of the common base.
 
 The following relationships were observed from the live `ChCliContext` ->
-`ChCliCharacter` -> subsystem chain at build `205.780`:
+`ChCliCharacter` -> subsystem chain at build `207.032`:
 
 | Location | Observation | Confidence |
 | --- | --- | --- |

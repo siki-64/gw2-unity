@@ -5,7 +5,7 @@ using Gw2.Protocol.MsgPack;
 namespace Gw2.Protocol.State
 {
     /// <summary>
-    /// Applies decoded server-to-client messages to a minimal per-player state for build 205.780.
+    /// Applies decoded server-to-client messages to a minimal per-player state.
     /// <para>
     /// Players are keyed by <see cref="PlayerListIndex"/> and created on first reference: the traced
     /// <c>0x264</c> path resolves a player through <c>GetPlayerByListIndex</c> without carrying a
@@ -123,7 +123,7 @@ namespace Gw2.Protocol.State
             return changes;
         }
 
-        // Chain (build 205.780): MP_MSGID, playerId (varint u32), name (0x0d utf-16 cstring),
+        // Chain: MP_MSGID, playerId (varint u32), name (0x0d utf-16 cstring),
         // key (0x0b 16-byte blob), flags (varint u32).
         private int ApplyPlayerAdd(DecodedMessage message)
         {
@@ -141,7 +141,7 @@ namespace Gw2.Protocol.State
             return player.SetIdentity(name, key, flags) ? 1 : 0;
         }
 
-        // Chain (build 205.780): MP_MSGID, playerId (varint u32).
+        // Chain: MP_MSGID, playerId (varint u32).
         private int ApplyPlayerRemove(DecodedMessage message)
         {
             IReadOnlyList<DecodedField> fields = message.Fields;
@@ -153,8 +153,8 @@ namespace Gw2.Protocol.State
             return Remove(index) ? 1 : 0;
         }
 
-        // Chain (build 205.780): MP_MSGID, skillContentId (varint u32), slot (u8), context (u8),
-        // playerListIndex (varint u32). See protocol/messages/205780/0x264.json.
+        // Chain: MP_MSGID, skillContentId (varint u32), slot (u8), context (u8),
+        // playerListIndex (varint u32).
         private int ApplyConfiguredSkillUpdate(DecodedMessage message)
         {
             IReadOnlyList<DecodedField> fields = message.Fields;

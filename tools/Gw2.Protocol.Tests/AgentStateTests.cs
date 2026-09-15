@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Gw2.Protocol.Tests
 {
-    // Minimal per-agent (AgWorld) state for build 205.780: message 0x39 (kind 0x11).
+    // Minimal per-agent (AgWorld) state for the current build: message 0x39 (kind 0x11).
     [TestClass]
     public class AgentStateTests
     {

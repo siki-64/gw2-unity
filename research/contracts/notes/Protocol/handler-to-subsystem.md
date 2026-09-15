@@ -1,7 +1,6 @@
 # Handler-to-subsystem traces
 
-**Build:** `205.780` (Gw2-64.exe, image SHA-256
-`D2AE84876A0B93277FCCB368969046B848BB0403FD09DB420389C813D2459B23`).
+**Build:** `207.032` (Gw2-64.exe, image identity in protocol/catalog.json).
 
 **Status:** in progress. This note traces a decoded message through its handler into the native
 subsystems whose layouts are already recovered. It complements the wire-level notes
@@ -227,7 +226,7 @@ pass, so the family remains unmodelled in the runtime.
 
 ## Captured-stream families
 
-The message ids actually observed in the private captures (Addenda 14, 20), traced to their
+The message ids actually observed in the private captures (the recovered evidence), traced to their
 subsystem accessors. `ctx = FUN_1409b4820()`.
 
 | Msg(s) | Handler(s) | Subsystem | Effect |
@@ -362,7 +361,7 @@ separate object that this content block feeds.
 ## World entry and the map loader (correction to the `0x100` lead)
 
 The catalog's `0x100` lead ([../UI/Widgets/pvp-equipment-state.md](../UI/Widgets/pvp-equipment-state.md))
-says it "starts world loading". The build-205.780 recv registration does **not** support that.
+says it "starts world loading". The build-207.032 recv registration does **not** support that.
 
 `0x100`'s recv handler, via the same pairing that resolves `0x264 -> FUN_141257a20` correctly, is
 **`FUN_14124bc70`** (`ChCliMsg.cpp`):
@@ -379,7 +378,7 @@ FUN_14124bc70(decoded):
 So `0x100` is a two-float update on an object selected from a `ChCliContext` array — not a world-load
 trigger. The id/handler mapping behind the old claim is likely a live mis-trace.
 
-The map loader (`CMapLoader`) does exist in 205.780 (state strings
+The map loader (`CMapLoader`) does exist in 207.032 (state strings
 `MapLoader: STATE_LOAD_CONTENT / LOAD_MANIFEST / SERVER_WAIT / MAP_DOWNLOAD / MAP_STREAM /
 MODELS_STREAM / MAP_ASSET_STREAM / AGENT_STREAM / READY_WAIT` at `0x141b7d698..`). Its load method
 `FUN_14094fda0` sets state `0xd`, broadcasts, and calls `BeginMap` `FUN_140954e10(param+0xfc, mapId,
@@ -463,7 +462,7 @@ Runtime: `Gw2.Protocol.State.PlayerStateStore` handles `0x1AB`/`0x1AD` (`PlayerA
 ## Player-subsystem message map (`0x1A5`..`0x1B0`)
 
 `ctx = FUN_1409b4820()`. Ids are resolved by **matching the defArray pointer to
-[`live_ids.csv`](../../../protocol/schema/205780/live_ids.csv)**, because the static registration
+[`live_ids.csv`](../../../protocol/schema/207032/live_ids.csv)**, because the static registration
 table is stored in source order, not id order (see [schema-registry.md](schema-registry.md)).
 
 | Msg | Handler | Record (corpus) | Effect |

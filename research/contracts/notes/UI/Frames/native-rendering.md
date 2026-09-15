@@ -1,6 +1,6 @@
 # Native GUI rendering foundation
 
-**Confirmed build:** 205.780.<br>
+**Confirmed build:** 207.032.<br>
 **Status:** current-build renderer, queue, traversal, pooled-model, and FrCache-to-device stages recovered; the C# native-window submission path is implemented behind a signature-gated observer, while live acceptance and resource ownership remain open.<br>
 **Scope:** static Ghidra evidence, the live-validated healthbar submission path, and the unvalidated C# native-window implementation.<br>
 
@@ -90,7 +90,7 @@ The partial current-build layout is modeled by `Gw2.Contracts.FrFrame`:
 | `+0x2A0` | `uint` | creation flags; opacity walk tests low-byte mask `0x44` |
 
 The inline queue occupies `0x68` bytes, ending before frame `+0x170`; opacity is queue `+0x50`.
-Build 205780 child creation allocates `0x2E0` bytes, now reflected in `Gw2.Contracts.FrFrame`.
+Build 207032 child creation allocates `0x2E0` bytes, now reflected in `Gw2.Contracts.FrFrame`.
 The former queue-size interpretation included unrelated frame state. See [FrApi](frapi.md) for
 constructor evidence, frame ID, pending-list links, and recovered lifecycle operations.
 
@@ -277,7 +277,7 @@ FrContent/FrCache boundary and let the existing `GrDev`/BGFX stages execute it. 
 upstream-equivalent routine from the DXGI Present hook would bypass the frame/context ownership that
 these routines assume.
 
-Live trace confirmation (build 205.780, PID 12864, session-local) shows the consumer executing on the
+Live trace confirmation (build 207.032, PID 12864, session-local) shows the consumer executing on the
 same render/UI thread as the FrContent path. Four read-only hits at `sub_140A6D150` ran on thread
 `13108`, all called from RVA `0x107457C` (the type-1 branch of `sub_141074350`); the observed calls
 passed model counts `0x6C`, `1`, `0x13`, and `1`, model-array pointers in `RDX`, render context/state
@@ -415,12 +415,12 @@ layer ordering, and resize behavior.
 5. Keep mouse/keyboard focus and frame lifecycle separate from renderer submission until their ownership is proven.
 
 Do not construct or destroy native frames yet. The current layouts make inspection and submission possible,
-but the statically recovered [parent/child destruction path](frapi.md#build-205780-lifecycle-surface)
+but the statically recovered [parent/child destruction path](frapi.md#build-207032-lifecycle-surface)
 still needs callback ABI, resource-retention, and live client-owned lifecycle validation.
 
 ## Neutral solid-material acquisition
 
-Build 205.780 exposes a dedicated solid-material cache through the same `McMaterial` service used by
+Build 207.032 exposes a dedicated solid-material cache through the same `McMaterial` service used by
 ordinary filename-backed UI quads. This is distinct from borrowing a `FrameContentParams.Material`
 pointer from whichever widget happens to submit first.
 
@@ -481,7 +481,7 @@ retaining the original game payload.
 The renderer remains the recovered FrApi/FrText path described above. The tool-window layer above it
 is a managed immediate-mode GUI; ImGui is not part of the active architecture.
 
-Build-205.780 hardening now includes:
+Build-207.032 hardening now includes:
 
 - FrMouse pointer coordinates are read from raw X/Y at RVAs `0x02893B58/0x02893B5C` and multiplied
   by the native UI scales at `0x02893D38/0x02893D3C`, matching the transform in

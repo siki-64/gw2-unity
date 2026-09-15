@@ -1,11 +1,11 @@
 # ChCliCharacter native layout
 
-**Confirmed build(s):** `205.780`.<br>
+**Confirmed build(s):** `207.032`.<br>
 **Status:** build-local native layout reconstruction supported by allocation, destruction, and subobject evidence.<br>
 **Unresolved:** fields explicitly marked unresolved below and cross-build validity.<br>
 **Address scope:** absolute analysis VAs are build-local evidence; active symbols and addresses belong in Ghidra.
 
-Build target: attached `Gw2-64.exe` aligned structurally with the build-205.780
+Build target: attached `Gw2-64.exe` aligned structurally with the build-207.032
 symbol set.
 
 `ChCliCharacter` is a native `0xB08`-byte object. Its allocation size is

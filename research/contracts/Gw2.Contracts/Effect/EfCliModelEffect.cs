@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace Gw2.Contracts;
 
-// Build-205.780 common runtime object allocated for applicationTargetMode
+// Build-207.032 common runtime object allocated for applicationTargetMode
 // 4, 6, and 10. Only fields established by constructor/setup code are exposed.
 // The 3x4 transform at +0x120 is row-major; its fourth column is the world
 // translation written by the model-effect setup path.

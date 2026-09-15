@@ -8,7 +8,7 @@ cached by friends or earlier matches. There is no general-registry fallback. The
 is re-read on a 250 ms cadence and its members are discarded when the queue ends. A member
 whose name has not resolved retains its match ID and is reported as pending.
 
-## Static contract (build 205.780)
+## Static contract (build 207.032)
 
 Recovered in Ghidra on 2026-09-06:
 

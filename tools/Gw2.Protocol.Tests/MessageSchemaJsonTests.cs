@@ -12,15 +12,15 @@ namespace Gw2.Protocol.Tests
     public class MessageSchemaJsonTests
     {
         private static string CorpusJson =>
-            File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "fixtures", "chains-recv.json"));
+            Fixtures.ReadText("chains-recv.json");
 
         private static string WireJson =>
-            File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "fixtures", "0x264-wire.json"));
+            Fixtures.ReadText("0x264-wire.json");
 
         [TestMethod]
         public void LoadsCorpus()
         {
-            Assert.AreEqual(205780, MessageSchemaJson.ReadBuild(CorpusJson));
+            Assert.AreEqual(207032, MessageSchemaJson.ReadBuild(CorpusJson));
             var schemas = MessageSchemaJson.Parse(CorpusJson);
             Assert.AreEqual(1241, schemas.Count);
 
@@ -55,7 +55,7 @@ namespace Gw2.Protocol.Tests
         public void RejectsMalformedCorpus()
         {
             Assert.ThrowsExactly<FormatException>(
-                () => MessageSchemaJson.Parse("{\"build\":205780}"));
+                () => MessageSchemaJson.Parse("{\"build\":207032}"));
             Assert.Throws<JsonException>(
                 () => MessageSchemaJson.Parse("{ not json"));
         }

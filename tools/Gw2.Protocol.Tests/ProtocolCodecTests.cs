@@ -14,12 +14,9 @@ namespace Gw2.Protocol.Tests
     {
         private static string Hex(ReadOnlySpan<byte> b) => Convert.ToHexString(b).ToLowerInvariant();
 
-        private static string Fixture(string name) =>
-            Path.Combine(AppContext.BaseDirectory, "fixtures", name);
-
         private static ProtocolSchemaCorpus Corpus() => ProtocolSchemaCorpus.FromJson(
-            File.ReadAllText(Fixture("chains-recv.json")),
-            File.ReadAllText(Fixture("chains-send.json")));
+            Fixtures.ReadText("chains-recv.json"),
+            Fixtures.ReadText("chains-send.json"));
 
         private static TransportCipherState State(JsonElement cs) => TransportCipherState.FromCapturedState(
             Convert.ToInt32(cs.GetProperty("i").GetString(), 16),
@@ -29,7 +26,7 @@ namespace Gw2.Protocol.Tests
         [TestMethod]
         public void Inbound_EndToEnd_FromCiphertext()
         {
-            using var doc = JsonDocument.Parse(File.ReadAllBytes(Fixture("0x264-wire.json")));
+            using var doc = JsonDocument.Parse(Fixtures.ReadBytes("0x264-wire.json"));
             var root = doc.RootElement;
             byte[] wire = Convert.FromHexString(root.GetProperty("wireHex").GetString());
 
@@ -45,7 +42,7 @@ namespace Gw2.Protocol.Tests
         [TestMethod]
         public void Inbound_BuffersAPacketSplitMidFrame()
         {
-            using var doc = JsonDocument.Parse(File.ReadAllBytes(Fixture("0x264-wire.json")));
+            using var doc = JsonDocument.Parse(Fixtures.ReadBytes("0x264-wire.json"));
             var root = doc.RootElement;
             byte[] wire = Convert.FromHexString(root.GetProperty("wireHex").GetString());
 
@@ -58,7 +55,7 @@ namespace Gw2.Protocol.Tests
         [TestMethod]
         public void Outbound_RoundTripsTheCapturedPacket()
         {
-            using var doc = JsonDocument.Parse(File.ReadAllBytes(Fixture("outbound-0x120.json")));
+            using var doc = JsonDocument.Parse(Fixtures.ReadBytes("outbound-0x120.json"));
             var root = doc.RootElement;
             byte[] plaintext = Convert.FromHexString(root.GetProperty("plaintextHex").GetString());
             byte[] wire = Convert.FromHexString(root.GetProperty("wireHex").GetString());

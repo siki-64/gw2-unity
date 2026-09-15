@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace Gw2.Contracts;
 
-// Build 205780: FrApi child allocation is 0x2E0. See research/contracts/notes/UI/Frames/frapi.md.
+// Build 207032: FrApi child allocation is 0x2E0. See research/contracts/notes/UI/Frames/frapi.md.
 [StructLayout(LayoutKind.Explicit, Size = 0x2E0)]
 internal struct FrFrame
 {

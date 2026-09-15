@@ -1,10 +1,10 @@
 # Widget/component framework
 
-**Confirmed build(s):** unknown; provenance was not recorded consistently.<br>
+**Confirmed build(s):** `207.032`.<br>
 **Status:** provisional durable framework reconstruction with unknown build provenance.<br>
 **Unresolved:** source build for individual observations and cross-build validity where not explicitly established.
 
-Build 205780 frame-specific corrections are recorded in [FrApi](../Frames/frapi.md): the frame's
+Build 207032 frame-specific corrections are recorded in [FrApi](../Frames/frapi.md): the frame's
 leading self-pointer is an intrusive pending-list link, not a vtable, and its callback registry is
 at `+0x220`. Do not transfer the older `+0x200` component layout below to `FrFrame`. Its state
 `+0x29C` bit `0x200` means Hidden; this does not establish semantics for other widget object types.

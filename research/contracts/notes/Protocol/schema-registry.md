@@ -1,11 +1,12 @@
 # Schema registry
 
-**Build:** `205.780` (Gw2-64.exe, image SHA-256
-`D2AE84876A0B93277FCCB368969046B848BB0403FD09DB420389C813D2459B23`).
+**Build:** `207.032` (Gw2-64.exe, image identity in protocol/catalog.json).
 
 **Status:** registry and schema format recovered; the corpora are extracted and used by the runtime
-decoder. Evidence trail: Addenda 2, 3, 6, 7, 8, 18, 19, 21, 26, 27; see
-[msg-dispatch-addenda.md](msg-dispatch-addenda.md).
+decoder. A fresh re-derivation for the current image, from string/assert anchors, re-recovered the
+registry record shape, `MsgPackFieldDef` stride/offsets and field-type cases; see
+[msg-schema-207032.md](msg-schema-207032.md). Ids, addresses and corpora are build-local and must
+not be carried between builds.
 
 ## Registration (`MsgChannel.cpp`)
 
@@ -18,7 +19,7 @@ decoder. Evidence trail: Addenda 2, 3, 6, 7, 8, 18, 19, 21, 26, 27; see
 | B | pair array (16-byte stride) | `FUN_140fecd10` | base `+0x70`, count `+0x7c`, 32-byte records | `{+0x00 flags, +0x08 defArray, +0x10 dispatchType, +0x18 handlerFn}` — **recv** |
 
 `RegisterRecvOnly` installs only a table-B (recv) pairs table. **Table A is send, table B is recv**
-(proven from the installers, Addendum 7).
+(proven from the installers, the recovered evidence).
 
 Startup validation asserts, per entry: `defArray[0].fieldType == MP_MSGID`; `defSize <= 0xFFFF`;
 `maxSize <= 0xFFFF`; and `maxSize <= MSG_MAX_BUFFER_SIZE` (`0x2000`). So no message exceeds 8192 bytes
@@ -58,7 +59,7 @@ service instead keeps a `s_socketManager` singleton.
 
 ## The schema: `MsgPackFieldDef`
 
-Stride `0x28`. Offsets (corrected, Addendum 8):
+Stride `0x28`. Offsets (corrected, the recovered evidence):
 
 | Offset | Field |
 | --- | --- |
@@ -115,13 +116,13 @@ the `param` maximum.
 
 ## Corpora
 
-Direction-specific, since inbound and outbound have **different chains per id** (Addendum 26/27):
+Direction-specific, since inbound and outbound have **different chains per id** (the recovered evidence/27):
 
 | File | Source | Messages |
 | --- | --- | --- |
-| `protocol/schema/205780/live_ids.csv` | live recv registry | 1241 |
-| `protocol/schema/205780/chains-recv.json` | that map + image chains | 1241 |
-| `protocol/schema/205780/chains-send.json` | static table A, split by `registrars3.csv countA` | 481 |
+| `protocol/schema/207032/live_ids.csv` | live recv registry | 1241 |
+| `protocol/schema/207032/chains-recv.json` | that map + image chains | 1241 |
+| `protocol/schema/207032/chains-send.json` | static table A, split by `registrars3.csv countA` | 481 |
 
 `0x264` (recv) is `MP_MSGID(0x264), varint, u8, u8, varint` (`defSize 0x0C`, `maxSize 0x0E`).
 `0x120` is recv `1,4,4,2,4` but send `1,4,2`.

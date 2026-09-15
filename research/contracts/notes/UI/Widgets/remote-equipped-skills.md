@@ -1,12 +1,12 @@
 # Remote PvP equipped skills
 
-**Confirmed build(s):** `205.780`.<br>
+**Confirmed build(s):** `207.032`.<br>
 **Status:** build-local configured-skill layout and handler reconstruction.<br>
 **Unresolved:** spectator-reader confirmation for the remaining context distinctions and cross-build validity.<br>
 **Address scope:** runtime access uses the discovered `ContextCollection` anchor and Native
 intra-object offsets. Build-local code coordinates are not part of the access contract.
 
-Build target: `205.780`.
+Build target: `207.032`.
 
 This note records the per-player configured-skill path used for remote players.
 It is separate from both the PvP equipment provider messages (`0x200..0x207`)
@@ -40,7 +40,7 @@ captures; public API ids must not be assumed equivalent.
 
 ## Native content resolver: validated boundary
 
-`ContextCollection +0xE0` is a `CnContext*`. Build `205.780` constructs this
+`ContextCollection +0xE0` is a `CnContext*`. Build `207.032` constructs this
 object with `0x58A8` bytes and keeps two `CnData*` source pointers at `+0x08`
 and `+0x10`. Live memory confirms the static vtable at `0x142206160` and that
 the first source provides the populated content tables.
@@ -85,7 +85,7 @@ connection's handler table (`sub_140FED3B0`) and stores it at `msgConn + 0x40`
 at `0x140FE91E4` before invoking the schema decoder (`sub_140FEBC30`) and the
 handler vtable.
 
-This is confirmed dynamically on build `205.780`: a trace at the ID-store
+This is confirmed dynamically on build `207.032`: a trace at the ID-store
 instruction captured live decoded IDs `0x2DE`, `0x2E3`, `0x25`, `0x178`,
 `0x292`, `0x97`, and `0x2DF`. A 30-second filtered trace for `0x27C` saw no
 such packet during the idle sample, so the runtime-skillbar message still

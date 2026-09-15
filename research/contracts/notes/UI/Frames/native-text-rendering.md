@@ -1,16 +1,16 @@
 # Native GW2 text rendering
 
-**Confirmed build:** 205.780<br>
+**Confirmed build:** 207.032<br>
 **Status:** native `CtlText` assignment, measurement, layout, glyph-model creation, frame-content
 model grouping, `FontContext` range registration, and the `GrFont` range lookup/coverage-raster path are
-statically recovered and partially live-traced. A build-205.780 live glyph probe confirmed that the
+statically recovered and partially live-traced. A build-207.032 live glyph probe confirmed that the
 tested unsupported Greek/Cyrillic and kana code units reach exact lookup, return no glyph record,
 and render as blank advance-only gaps. Literal `U+25A1` resolves to a real square glyph; it is not
 automatically substituted for an unsupported code unit.
 A fixed client-owned draw call has been live-validated. The root pre-traversal submission experiment was rejected by a live
 `GrModel::m_frustum` assertion; the current safe experiment uses the already-observed native content
 callback and its current frame id.<br>
-**Scope:** this note records build-local evidence only. RVAs below are relative to the 205.780
+**Scope:** this note records build-local evidence only. RVAs below are relative to the 207.032
 `Gw2-64.exe` image base.
 
 This is the native text path behind ordinary UI labels. It is distinct from the solid-quad glyph
@@ -208,7 +208,7 @@ frame cleanup path, and is sufficient to prohibit client retention across frames
 
 ## GrFont glyph coverage and font registration
 
-The build-205.780 `GrFont.cpp` path separates glyph coverage from text layout. `sub_140AD60F0`
+The build-207.032 `GrFont.cpp` path separates glyph coverage from text layout. `sub_140AD60F0`
 (`RVA 0xAD60F0`) is a per-string metric routine, not a maximum-font or font-registration table. Its
 first argument is a `GrFont*`; it walks a UTF-16 span, calls `sub_140AD67F0` for each code unit, and
 returns the accumulated metric pair plus the consumed-character count. The effective native shape is:
@@ -283,7 +283,7 @@ The earlier font-registration path is also identified. The `FontContext` vtable 
   `sub_1410790F0` dispatches that key to `FontContext`, where `sub_140A69220` resolves the cached
   `GrFont*` and operation-scoped font metadata.
 
-### Fixed build-205.780 character-range slots
+### Fixed build-207.032 character-range slots
 
 `sub_140A68B80` passes the static table at `RVA 0x01BF8100` and count `13` into
 `sub_140A68E40`. The table is recovered exactly as these half-open BMP/UTF-16 intervals:
@@ -363,7 +363,7 @@ coverage:
    bitmap with a per-pixel maximum operation. No later character-aware substitution exists in this
    recovered layer.
 
-The live build-205.780 result now narrows the behavior:
+The live build-207.032 result now narrows the behavior:
 
 - `U+0416`, `U+03A9`, `U+3042`, and `U+30AB` reached `GrFontFindGlyph` unchanged, returned
   `glyph=<null>`, and reported `default-advance=4`. The screenshot showed the resulting blank
@@ -387,7 +387,7 @@ The intervention boundary is therefore:
 
 ### Synthetic assets for empty fixed ranges
 
-`NativeFontRangeWarmup` is a separate build-205.780 development experiment for capturing the
+`NativeFontRangeWarmup` is a separate build-207.032 development experiment for capturing the
 complete registered range set of each observed 15px or 16px face. When any native glyph lookup
 identifies a live supported-height `GrFont`, it calls the proven `GrFontFindGlyph` target once with
 the start code unit of each unloaded concrete range. This exercises the game's own lazy asset loader;
@@ -547,7 +547,7 @@ boundary that guarantees `sub_140A85050` has been live-confirmed.
 
 ## Live validation
 
-Read-only tracepoints were installed temporarily against the running build-205.780 process and
+Read-only tracepoints were installed temporarily against the running build-207.032 process and
 restored after each capture:
 
 | Boundary | Live result |
@@ -566,7 +566,7 @@ prove that an arbitrary client call to `sub_14106AF90` is legal from the current
 
 ## Live boundary confirmation in the current session
 
-The following observation-only traces were run against build `205.780`, process PID `13696`, while
+The following observation-only traces were run against build `207.032`, process PID `13696`, while
 the game was in a normal world frame. They are historical evidence; the shipped runtime does not
 expose a diagnostic/proof settings switch.
 The process remained responsive throughout; no native arguments were modified and no native pointer
@@ -609,7 +609,7 @@ pre-traversal boundary and its insertion-to-frustum order are live-confirmed.
 ## Staged measurement seam
 
 The repository now contains a disabled probe for the recovered `sub_14106F280` measurement
-boundary. It is initialized only for build `205.780`, reads the live entry bytes at RVA
+boundary. It is initialized only for build `207.032`, reads the live entry bytes at RVA
 `0x0106F280`, and requires the exact current prologue:
 
 ```text
@@ -634,7 +634,7 @@ settings file or module option, so startup cannot enable measurement or temporar
 The first reusable native text boundary was validated with a temporary proof call. That proof is
 retired from the runtime and is retained here only as build-local evidence. Its original guards were:
 
-- build `205.780` is active;
+- build `207.032` is active;
 - the complete `sub_14106AF90` entry signature at `RVA 0x0106AF90` matches;
 - the native frame-content and recurring game-thread patches are active; and
 - the draw and pre-traversal phase observation patches are active.
@@ -803,7 +803,7 @@ is considered.
 
 ## Live validation after removing `-maploadinfo`
 
-Build 205.780 session PID 11424 was started without `-maploadinfo` after deploying the measurement
+Build 207.032 session PID 11424 was started without `-maploadinfo` after deploying the measurement
 caller and draw observers. The process remained responsive and produced 128 stable records in each
 of the measurement, draw, and generic frame-submission streams. Draw previews included chat text,
 percentages, names, and ordinary world/UI labels; rectangles such as `(0,0,83,16)`, colors such as
@@ -846,7 +846,7 @@ native call or retain the descriptor/material pointers.
 
 ## Historical live validation of the client-owned draw path
 
-A fresh build-205.780 session after the proof-window extension remained responsive in the normal
+A fresh build-207.032 session after the proof-window extension remained responsive in the normal
 world frame. The screen showed `GW2 NATIVE TEXT TEST` over the game world, not only on the loading
 screen. The latest log marker reported a matched draw signature and active frame-content,
 game-thread, and draw-observation gates.

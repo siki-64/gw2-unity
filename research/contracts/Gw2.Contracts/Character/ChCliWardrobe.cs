@@ -5,7 +5,7 @@ namespace Gw2.Contracts;
 [StructLayout(LayoutKind.Explicit, Size = 0x708)]
 internal struct ChCliWardrobe
 {
-    // Build-205.780 virtuals used by SbToySlot's world-activation path.
+    // Build-207.032 virtuals used by SbToySlot's world-activation path.
     internal const int GetEquippedToyVtableOffset = 0x250;
     internal const int RequestToySlotActivationVtableOffset = 0x2B8;
     internal const ushort ToySlotActivationOpcode = 0x00F0;

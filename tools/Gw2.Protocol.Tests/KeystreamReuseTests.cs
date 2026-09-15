@@ -12,8 +12,7 @@ namespace Gw2.Protocol.Tests
         [TestMethod]
         public void OutboundState_Advanced_ReproducesInboundState()
         {
-            using var doc = JsonDocument.Parse(File.ReadAllBytes(
-                Path.Combine(AppContext.BaseDirectory, "fixtures", "keystream-reuse.json")));
+            using var doc = JsonDocument.Parse(Fixtures.ReadBytes("keystream-reuse.json"));
             var root = doc.RootElement;
             var ob = root.GetProperty("outboundState");
             var ib = root.GetProperty("inboundState");

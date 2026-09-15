@@ -9,10 +9,9 @@ namespace Gw2.Protocol.Tests
     [TestClass]
     public class TransportCipherTests
     {
-        private static string FixtureDir => Path.Combine(AppContext.BaseDirectory, "fixtures");
 
         private static JsonDocument Load(string name) =>
-            JsonDocument.Parse(File.ReadAllBytes(Path.Combine(FixtureDir, name)));
+            JsonDocument.Parse(Fixtures.ReadBytes(name));
 
         private static string Hex(ReadOnlySpan<byte> b) => Convert.ToHexString(b).ToLowerInvariant();
 

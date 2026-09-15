@@ -1,17 +1,16 @@
 # Message dispatch and transport framing
 
-**Build:** `205.780` (Gw2-64.exe, image SHA-256
-`D2AE84876A0B93277FCCB368969046B848BB0403FD09DB420389C813D2459B23`). Addresses, field-type
+**Build:** `207.032` (Gw2-64.exe, image identity in protocol/catalog.json). Addresses, field-type
 numbers and sizes are build-local coordinates; do not carry them to another build.
 
 **Status:** the inbound path and the connection handshake are recovered and validated against
 private captures; outbound encoding is located and validated on one captured packet. This is not
 live-server compatibility.
 
-This note is an **index**. The detail lives in the topic notes below; the chronological evidence
-(the original note and Addendum 1-29, verbatim, including superseded claims and corrections) is in
-[msg-dispatch-addenda.md](msg-dispatch-addenda.md). Other notes and code cite that file as
-`msg-dispatch-addenda Addendum N`.
+This note is an **index** for the inbound/outbound dispatch layer. The schema and registry
+re-derivation for the current image is in [msg-schema-207032.md](msg-schema-207032.md); the
+connection-mode, transport-state and per-id facts described below are not yet revalidated for the
+current image.
 
 ## The pipeline
 
@@ -68,12 +67,12 @@ schema encode (Msg::WriteMsg -> FUN_140fea110)   send registry (conn+0x18, +0x50
 
 ## Runtime
 
-The engine-independent `Gw2.Protocol` package implements this pipeline for build 205.780
+The engine-independent `Gw2.Protocol` package implements this pipeline for build 207.032
 (`TransportCipher`, `TransportFrame`/`Lz4Block`, `MsgPackReader`/`MsgPackWriter`,
 `MessageStreamDecoder`, `ProtocolCodec`, `OutboundProtocolCodec`, `SessionPhase`/`HandshakeFrame`,
 `HandshakeKeyExchange`, `PlayerStateStore`)
 with a direction-aware `ProtocolSchemaCorpus`. See
-[msg-dispatch-addenda Addendum 29](msg-dispatch-addenda.md).
+[msg-schema-207032](msg-schema-207032.md).
 
 `Gw2.Protocol.State` is the first semantic layer above decoding: `PlayerStateStore` applies decoded
 messages (`0x264` configured-skill updates) to a minimal per-player state keyed by `PlayerListIndex`,

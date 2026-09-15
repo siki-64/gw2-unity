@@ -3,7 +3,7 @@ using System;
 namespace Gw2.Protocol.State
 {
     /// <summary>
-    /// Minimal per-player state for build 205.780: the two context arrays of configured standard
+    /// Minimal per-player state: the two context arrays of configured standard
     /// skills (message <c>0x264</c>), five slots each. Identifiers stay typed — the player is keyed
     /// by <see cref="PlayerListIndex"/> and values are <see cref="SkillContentId"/>.
     /// <para>

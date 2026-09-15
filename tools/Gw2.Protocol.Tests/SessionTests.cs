@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Gw2.Protocol.Tests
 {
-    // Session state machine + handshake/control frame codec (build 205.780).
+    // Session state machine + handshake/control frame codec.
     // See research/contracts/notes/Protocol/session-state.md.
     [TestClass]
     public class SessionTests
