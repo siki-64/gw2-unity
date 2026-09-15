@@ -25,7 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\re\fixtures\205780\*.json" LinkBase="fixtures" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="..\..\protocol\schema\205780\chains-*.json" LinkBase="fixtures" CopyToOutputDirectory="PreserveNewest" />
+    <!-- Sanitized per-build fixtures are copied when present; the harness reports fixture-backed
+         tests inconclusive (not failed) when a build's data has not been re-extracted yet. -->
+    <None Include="..\re\fixtures\207032\*.json" LinkBase="fixtures" CopyToOutputDirectory="PreserveNewest" Condition="Exists('..\re\fixtures\207032')" />
+    <None Include="..\..\protocol\schema\207032\chains-*.json" LinkBase="fixtures" CopyToOutputDirectory="PreserveNewest" Condition="Exists('..\..\protocol\schema\207032')" />
   </ItemGroup>
 </Project>

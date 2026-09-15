@@ -7,14 +7,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Gw2.Protocol.Tests
 {
-    // Handshake key derivation (build 205.780): seed -> R, outA, outB.
+    // Handshake key derivation: seed -> R, outA, outB.
     // See research/contracts/notes/Protocol/handshake-key-derivation.md.
     [TestClass]
     public class HandshakeKdfTests
     {
         private static JsonDocument Load() =>
-            JsonDocument.Parse(File.ReadAllBytes(
-                Path.Combine(AppContext.BaseDirectory, "fixtures", "handshake-kdf.json")));
+            JsonDocument.Parse(Fixtures.ReadBytes("handshake-kdf.json"));
 
         private static byte[] Hex(string s)
         {

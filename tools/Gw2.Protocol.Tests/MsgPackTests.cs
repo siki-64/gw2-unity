@@ -11,7 +11,7 @@ namespace Gw2.Protocol.Tests
     [TestClass]
     public class MsgPackTests
     {
-        // fieldType 1 = MP_MSGID, 4 = base-128 varint, 2 = u8 (msg-dispatch-addenda Addendum 8).
+        // fieldType 1 = MP_MSGID, 4 = base-128 varint, 2 = u8.
         private static MessageSchema ConfiguredSkillSchema() => MessageSchema.FromChain(new[]
         {
             new FieldDefinition(1, 0x264),
@@ -24,8 +24,7 @@ namespace Gw2.Protocol.Tests
         [TestMethod]
         public void DecodesCaptured0264MessageStream()
         {
-            using var doc = JsonDocument.Parse(File.ReadAllBytes(
-                Path.Combine(AppContext.BaseDirectory, "fixtures", "0x264-wire.json")));
+            using var doc = JsonDocument.Parse(Fixtures.ReadBytes("0x264-wire.json"));
             byte[] frame = Convert.FromHexString(
                 doc.RootElement.GetProperty("transportFrameHex").GetString());
             byte[] stream = TransportFrame.Deframe(frame, out _);

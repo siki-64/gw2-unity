@@ -17,8 +17,7 @@ namespace Gw2.Protocol.Tests
         [TestMethod]
         public void Captured0x120_DecryptsAndDecodesWithTheSendChain()
         {
-            using var doc = JsonDocument.Parse(File.ReadAllBytes(
-                Path.Combine(AppContext.BaseDirectory, "fixtures", "outbound-0x120.json")));
+            using var doc = JsonDocument.Parse(Fixtures.ReadBytes("outbound-0x120.json"));
             var root = doc.RootElement;
             byte[] plaintext = Convert.FromHexString(root.GetProperty("plaintextHex").GetString());
             byte[] wire = Convert.FromHexString(root.GetProperty("wireHex").GetString());
@@ -32,10 +31,9 @@ namespace Gw2.Protocol.Tests
             Assert.AreEqual(Hex(wire), Hex(TransportCipher.Crypt(state, plaintext)));
 
             // Direction-aware: outbound uses the send corpus, which has [MP_MSGID(0x120), varint, u8].
-            string dir = Path.Combine(AppContext.BaseDirectory, "fixtures");
             var corpus = ProtocolSchemaCorpus.FromJson(
-                File.ReadAllText(Path.Combine(dir, "chains-recv.json")),
-                File.ReadAllText(Path.Combine(dir, "chains-send.json")));
+                Fixtures.ReadText("chains-recv.json"),
+                Fixtures.ReadText("chains-send.json"));
 
             var messages = MessageStreamDecoder.Decode(
                 corpus.ForDirection(TrafficDirection.ClientToServer), plaintext);

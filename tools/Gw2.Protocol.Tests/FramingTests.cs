@@ -14,8 +14,7 @@ namespace Gw2.Protocol.Tests
         [TestMethod]
         public void Deframe_Captured0264Frame_YieldsMessageStream()
         {
-            using var doc = JsonDocument.Parse(File.ReadAllBytes(
-                Path.Combine(AppContext.BaseDirectory, "fixtures", "0x264-wire.json")));
+            using var doc = JsonDocument.Parse(Fixtures.ReadBytes("0x264-wire.json"));
             byte[] frame = Convert.FromHexString(
                 doc.RootElement.GetProperty("transportFrameHex").GetString());
 
