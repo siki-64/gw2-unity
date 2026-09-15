@@ -6,7 +6,7 @@ namespace Gw2.Contracts;
 [StructLayout(LayoutKind.Explicit, Size = 0x58A8)]
 internal struct CnContext
 {
-    // Build 205.780 content lookup surface.
+    // Build 207.032 content lookup surface.
     internal const int FindByContentKeyVtableOffset = 0x68;
     internal const int FindByIdVtableOffset = 0x70;
 

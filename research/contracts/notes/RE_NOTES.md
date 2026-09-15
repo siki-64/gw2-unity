@@ -51,6 +51,6 @@ Hypothesis: health-like triplets at `+0x120..+0x128` and `+0x274..+0x27C` belong
 character-owned `ChCliHealth` object.  
 Result: the native `ChCliHealth` allocation/destruction boundary is exactly `0x88` bytes, so those
 offsets cannot belong to that object.  
-Evidence: build `205.780` constructor/destructor and allocation-size reconstruction.  
+Evidence: build `207.032` constructor/destructor and allocation-size reconstruction.  
 Implication: keep those larger-offset fields unassigned until their actual owner is independently
 recovered; do not reattach them to `ChCliHealth`.

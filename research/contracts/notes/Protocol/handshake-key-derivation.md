@@ -1,11 +1,9 @@
 # Handshake key derivation
 
-**Build:** `205.780` (Gw2-64.exe, image SHA-256
-`D2AE84876A0B93277FCCB368969046B848BB0403FD09DB420389C813D2459B23`).
+**Build:** `207.032` (Gw2-64.exe, image identity in protocol/catalog.json).
 
-**Status:** recovered statically and **confirmed live**. Evidence trail: Addenda 10-13 (location and
-seed) and Addendum 23 (the derivation) with Addendum 26 (live confirmation), all in
-[msg-dispatch-addenda.md](msg-dispatch-addenda.md).
+**Status:** recovered statically and **confirmed live**. See
+[msg-schema-207032.md](msg-schema-207032.md).
 
 This is the key material behind the [transport cipher](transport-cipher.md): it is a
 **Diffie-Hellman exchange**, not a hash — so the session key is **not derivable from the wire
@@ -54,7 +52,7 @@ transport at `*(conn+8)`.
 key[0..19] = frame[2..0x15] XOR conn[0x118..0x12b]
 conn+0x108 = 3
 MsgUtil_Rc4Ksa(conn+0x12c, 0x14, key)      // inbound cipher state
-copy 0x108 bytes conn+0x12c -> conn+0x234  // outbound state (same key: Addendum 25/28)
+copy 0x108 bytes conn+0x12c -> conn+0x234  // outbound state (same key: the recovered evidence/28)
 ```
 
 So the RC4 key = `outA XOR server_value`, where `server_value` is on the wire and `outA` is the local
@@ -78,11 +76,11 @@ discrete log.
 **Consequence:** a capture must carry per-session material — the seed, or `conn+0x118` (`outA`) /
 `conn+0x12C` (PRGA state). A pcap alone is not enough.
 
-## Live confirmation (Addendum 26)
+## Live confirmation (the recovered evidence)
 
 At the game-connection `FUN_140fede80` call, seed `0558904f44f11d2eb022eb43b0a25441b6c0d800`
 produced `conn+0x118 = 390aaf8f5e6104ebb9bc24736365c65a40124e59`, exactly the reconstruction's
-`outA[:20]`. Fixture `tools/re/fixtures/205780/handshake-kdf.json`; reference
+`outA[:20]`. Fixture `tools/re/fixtures/207032/handshake-kdf.json`; reference
 `tools/re/Gw2HandshakeKdf.py`; runtime `Gw2.Protocol.Session.HandshakeKeyExchange` (`ExpandExponent`,
 `Derive`), which reproduces the fixture's synthetic vectors and this captured vector.
 

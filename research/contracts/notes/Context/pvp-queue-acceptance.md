@@ -1,6 +1,6 @@
 # Match acceptance and queue timing
 
-Build 205780, inspected 2026-09-05 in Ghidra analysis of the client image and the
+Build 207032, inspected 2026-09-05 in Ghidra analysis of the client image and the
 running game (PID 3352 in this session). Heap addresses are session-local.
 
 `PexQueueReady.cpp` at `0x1408195A0` / `0x140819730` obtains the match through

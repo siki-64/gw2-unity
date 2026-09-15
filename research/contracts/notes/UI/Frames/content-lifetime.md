@@ -1,11 +1,11 @@
 # Frame content lifetime
 
-**Confirmed build:** 205.780.<br>
+**Confirmed build:** 207.032.<br>
 **Status:** static reconstruction of the frame content rebuild path.<br>
 **Unresolved:** live acceptance of the redraw request described below.
 
 Evidence: Ghidra analysis of the client image, image base `0x140000000`, inspected
-2026-09-05. The running game's MumbleLink reported build 205780. Static function
+2026-09-05. The running game's MumbleLink reported build 207032. Static function
 bodies and the redraw wrapper's disassembly were checked; live acceptance of the
 change below remains pending.
 

@@ -1,6 +1,6 @@
 # EfCliContext static reconstruction
 
-**Build:** 205.780  
+**Build:** 207.032  
 **Scope:** generic client effect runtime; static executable analysis only
 
 `EfCliContext` is the process-lifetime owner and factory for created client effect

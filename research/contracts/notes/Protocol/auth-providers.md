@@ -1,7 +1,6 @@
 # Auth providers (Steam / ANet Portal / Epic)
 
-**Build:** `205.780` (Gw2-64.exe, image SHA-256
-`D2AE84876A0B93277FCCB368969046B848BB0403FD09DB420389C813D2459B23`). Addresses are build-local
+**Build:** `207.032` (Gw2-64.exe, image identity in protocol/catalog.json). Addresses are build-local
 coordinates; do not carry them to another build.
 
 **Status:** **static only** — recovered from strings, tables and decompiled call sites. No capture,

@@ -1,6 +1,6 @@
 # FrApi and generic frame surface
 
-**Evidence scope:** build 205780 static RE, refreshed 2026-09-05; older imported observations are labeled separately.<br>
+**Confirmed build:** 207.032.<br>
 **Status:** partial frame layout, creation, visibility, recursive destruction, and content/cache paths recovered.<br>
 **Unresolved:** complete callback ABI, resource retention, stable locators, and live client-owned frame lifecycle validation.
 
@@ -55,7 +55,7 @@ data pointer/capacity/count at `+0x08/+0x10/+0x14`.
 `sub_141074350 @ 0x141074350` consumes that list. Type 1 calls the native device draw
 `sub_140A6D150`, which requires the active device and type-9 `GrModel*` entries; type 2 calls
 `sub_140A6DB90` with a normalized viewport rectangle. This is the first confirmed queue-to-device
-handoff, but its cache globals and render context/state are not a client-callable ABI. In a live build-205.780 trace,
+handoff, but its cache globals and render context/state are not a client-callable ABI. In a live build-207.032 trace,
 `sub_140A6D150` ran on thread `13108` from caller RVA `0x107457C` with counts `0x6C`, `1`, `0x13`,
 and `1`; the render-context/state pointer and `0x1008000` mode word were also stable across those calls.
 This confirms execution of the type-1 handoff, not that a caller outside the game may invoke the
@@ -104,7 +104,7 @@ A generic frame carries its laid-out absolute screen rectangle at:
 
 This partial view is modeled by `Gw2.Contracts.FrFrame`.
 
-Build 205780 child creation allocates `0x2E0` bytes. Additional promoted fields are:
+Build 207032 child creation allocates `0x2E0` bytes. Additional promoted fields are:
 
 | offset | field |
 |---:|---|
@@ -121,7 +121,7 @@ Build 205780 child creation allocates `0x2E0` bytes. Additional promoted fields 
 `0x108 + 0x194 = 0x29C`. Opacity belongs to the queue, not an overlapping frame declaration.
 Unlisted bytes remain unknown; the allocation size does not imply a fully recovered layout.
 
-# Build 205780 lifecycle surface
+# Build 207032 lifecycle surface
 
 Addresses below are static-image VAs (image base `0x140000000`), not live process pointers. Names are
 descriptive. Integer IDs/flags are 32-bit; pointer arguments follow Windows x64 calling conventions.

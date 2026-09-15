@@ -112,7 +112,7 @@ atomically and records the associated build.
 
 # Native font capture
 
-For the build-205.780 font investigation, a read-only font capture takes a live operation-scoped
+For the build-207.032 font investigation, a read-only font capture takes a live operation-scoped
 `GrFont` using the absolute `font=0x...` value recorded by the native text probe.
 
 The capture writes a timestamped directory with a top-level `font.json`, per-range metadata,

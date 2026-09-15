@@ -1,8 +1,7 @@
 # InfoBar native layout recovery
 
 Static audit: 2026-09-13. Source: active Ghidra analysis project, the client image,
-image base `0x140000000`, imported SHA256
-`d2ae84876a0b93277fccb368969046b848bb0403fd09db420389c813d2459b23`.
+image base `0x140000000`. The imported image's SHA-256 is recorded in protocol/catalog.json.
 The import was created September 1; its generic PE product version does not establish
 the game build. Addresses below identify this imported image, not the current running
 executable. No live attachment or rendering validation was performed in this audit.

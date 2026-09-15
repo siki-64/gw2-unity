@@ -1,12 +1,11 @@
 # Session state machine
 
-**Build:** `205.780` (Gw2-64.exe, image SHA-256
-`D2AE84876A0B93277FCCB368969046B848BB0403FD09DB420389C813D2459B23`). Addresses and offsets are
+**Build:** `207.032` (Gw2-64.exe, image identity in protocol/catalog.json). Addresses and offsets are
 build-local coordinates; do not carry them to another build.
 
 **Status:** statically recovered (instructions verified). This note also **corrects two earlier
-claims** (see "Corrections"). Evidence trail: the original note and Addenda 1, 9, 25, 26; see
-[msg-dispatch-addenda.md](msg-dispatch-addenda.md).
+claims** (see "Corrections"). Evidence trail: the original note and the recovered evidence; see
+[msg-schema-207032.md](msg-schema-207032.md).
 
 This note covers **how a game connection moves between phases and how it sends**, i.e. the layer
 *around* the codecs. The cipher and key derivation are in
@@ -102,7 +101,7 @@ outbound side. Message boundaries are recovered by the peer from the schema (mes
 exactly as the client does for inbound traffic. The only auxiliary structure is a timestamp ring at
 `conn+0xd8` updated on each flush (`FUN_140fee540`) whose purpose is unresolved.
 
-This resolves the previously open "outbound sequence/acknowledgement rules": for build `205.780`
+This resolves the previously open "outbound sequence/acknowledgement rules": for build `207.032`
 there are none at the transport layer. Message-level acknowledgements (for example the `0x1A5`
 world-entry completion) are gameplay semantics, not transport sequencing, and remain governed by the
 send corpus.
@@ -143,15 +142,15 @@ connection object lives in the global `DAT_1426632d0`:
 
 ## Runtime
 
-`Gw2.Protocol.Session` implements this machine for build 205.780:
+`Gw2.Protocol.Session` implements this machine for build 207.032:
 
 - `MsgConnMode` / `SessionPhase` — the mode word and its recovered transitions (`ApplySetMode`,
   `TryEstablish`, `CanSendEncrypted`, `BuffersHandshake`).
 - `HandshakeFrame` — `EncodeClientHello`, `TryClassify`, `TryDecodeServerKey`,
   `DeriveTransportKey`.
 - `HandshakeKeyExchange` — `ExpandExponent` and `Derive` (the 512-bit DH: seed -> `R` -> `outA` /
-  `outB`), validated against `tools/re/fixtures/205780/handshake-kdf.json`.
+  `outB`), validated against `tools/re/fixtures/207032/handshake-kdf.json`.
 
 `SessionPhase.TryEstablish` returns the transport key, which keys both `TransportCipher` directions.
 `EncodeClientHello` and the seed generator are the only static/unmodelled pieces; the mode machine,
-the key frame and the DH derivation are backed by Addendum 26 and the asserts above.
+the key frame and the DH derivation are backed by the recovered evidence and the asserts above.

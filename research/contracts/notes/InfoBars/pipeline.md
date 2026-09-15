@@ -1,6 +1,6 @@
 # InfoBar pipeline
 
-**Confirmed build(s):** `205.655` and `205.780`, scoped by the sections below.<br>
+**Confirmed build(s):** `207.032`<br>
 **Status:** build-local lifecycle and update architecture reconstructed from static and live evidence.<br>
 **Unresolved:** Stage-3 leads and meanings explicitly marked unresolved below, plus cross-build validity.
 
@@ -97,7 +97,7 @@ refer to the same logical unit in common cases.
 
 `AgentShouldHaveInfoBar(agent)` is a free function. It dispatches on `[agent+0x08]`.
 
-For builds `205.655` and `205.780`, every recovered direct creation caller prepares the eligibility call
+For builds `205.655` and `207.032`, every recovered direct creation caller prepares the eligibility call
 with the Windows x64 register state `RCX = manager`, `RDX = agent`. The same manager/agent pair is restored
 immediately before `TryCreateInfoBarForAgent` when eligibility returns nonzero. The recovered call-site
 ABI is therefore confirmed; whether `AgentShouldHaveInfoBar` semantically consumes `RCX` is not yet
@@ -260,7 +260,7 @@ The tested name-display settings therefore act **downstream of `AgentShouldHaveI
 presentation/render state are the appropriate next search area. Do not encode these UI settings into a
 Stage-1 or Stage-2 reimplementation without new evidence.
 
-## Builds `205.655` and `205.780` recovery evidence
+## Builds `205.655` and `207.032` recovery evidence
 
 The active Ghidra analyses resolve the same Stage-2 identity and caller topology in both images.
 Its prologue immediately preserves the Windows x64 arguments as:
@@ -275,7 +275,7 @@ through the unique `25,000,000.0f` datum (little-endian bytes `20 BC BE 4B`). Th
 RIP-relative `comiss` reference is followed by `ja`, confirming rejection when the squared distance is
 greater than the limit.
 
-On build `205.780`, `ResolveAvAgent` is a thin adapter around the shared wrapper table: it preserves the
+On build `207.032`, `ResolveAvAgent` is a thin adapter around the shared wrapper table: it preserves the
 incoming agent, obtains the table, and tail-calls a lookup that bounds-checks `[agent+0x0C]` before reading
 the corresponding pointer slot. This static path does not consume `[agent+0x10]`; live entry evidence for
 that field is recorded below.
@@ -288,9 +288,9 @@ makes the Stage-2 function entry the centralized post-eligibility creation bound
 caller would miss the other creation paths. The internal 5000-unit cull remains downstream of that
 boundary and should not be duplicated by an interception.
 
-## Build `205.780` entry ABI and interception boundary
+## Build `207.032` entry ABI and interception boundary
 
-The complete build-`205.780` function range is present in the image's runtime-function metadata. The
+The complete build-`207.032` function range is present in the image's runtime-function metadata. The
 entry begins with these complete instructions:
 
 ```text
@@ -318,7 +318,7 @@ The four recovered callers do not consume `EAX`; each immediately continues its 
 control-flow branch. The status remains part of the recovered callee contract and an interception must
 return the native result unchanged rather than relying on those callers continuing to ignore it.
 
-### Build `205.780` live entry observation
+### Build `207.032` live entry observation
 
 A bounded software tracepoint at `TryCreateInfoBarForAgent` captured ten unfiltered register hits followed
 by five field-aware hits. Both captures reported one breakpoint event per accepted hit and completed their
@@ -573,7 +573,7 @@ state through the agent id.
 This is a **presentation/visibility-side unit reference** used by InfoBar logic, including target/context
 comparisons and healthbar visibility/occlusion policy.
 
-Build-`205.780` disassembly of `sub_55D650` confirms that this is the value member of an intrusive
+Build-`207.032` disassembly of `sub_55D650` confirms that this is the value member of an intrusive
 tracked-reference record, not an isolated raw-pointer slot:
 
 ```text
@@ -586,7 +586,7 @@ When the update-time input changes, `sub_55D650` unlinks the old record, clears 
 the new value, and registers the new record through the pointed-to object's virtual interface. The same
 helper reads the distinct Character wrapper at `+0xB8` and maintains another resolved pointer at
 `+0xC0`. `InfoBarPresentationStateBuilder` also consumes `+0xB8` as a Character wrapper. A build-
-`205.780` live read independently confirmed this identity: the field pointed to an object whose primary
+`207.032` live read independently confirmed this identity: the field pointed to an object whose primary
 vtable was the known Character-wrapper vtable. The exact native role and lifetime contract of `+0xC0`
 remain unresolved, so it must not be treated as another interchangeable agent/unit pointer.
 
@@ -619,7 +619,7 @@ must not be assumed to equal `InfoBar.unit`.
 
 Like `InfoBar.unit`, it is the value member of an intrusive tracked-reference record: the value is at
 `+0xA8`, followed by links at `+0xB0/+0xB8`. `NameRenderCtx_SetAgent` maintains this record. A build-
-`205.780` live read linked the personal-targeted unit's matching `NameRenderCtx` record into the same
+`207.032` live read linked the personal-targeted unit's matching `NameRenderCtx` record into the same
 unit-side reference graph as its InfoBar, but that relationship does not make the two value slots
 interchangeable.
 

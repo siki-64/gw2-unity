@@ -1,6 +1,6 @@
 # PvP equipment state
 
-**Confirmed build(s):** `205.780`.<br>
+**Confirmed build(s):** `207.032`.<br>
 **Status:** read-only PvP provider, equipment, spectator graph, and entry-message reconstruction.<br>
 **Unresolved:** whether selecting a previously unpopulated spectator target causes a targeted server push.<br>
 **Address scope:** runtime access uses the discovered `ContextCollection` anchor and Native
@@ -38,7 +38,7 @@ For the local player, `ChCliContext.LocalCharacter` leads to the selected
 inline PvP loadout. `PvpCliContext` and the spectator selection are not used as
 the source of remote equipment.
 
-The recovered equipment message registrations for build `205.780` are:
+The recovered equipment message registrations for build `207.032` are:
 
 | Message id | Recovered operation |
 | ---: | --- |
@@ -77,7 +77,7 @@ The upstream `ContextCollection` relationship only supplies the `ChCliContext*`.
 `ChCliPlayer +0x74` retains the same list index, and player creation writes the newly
 constructed player into this exact `Players[index]` slot.
 
-Build `205.780` live read evidence confirms this boundary: with the spectator
+Build `207.032` live read evidence confirms this boundary: with the spectator
 panel closed, repeated walks from the global `ContextCollection` anchor found
 dozens of providers (31 in the latest pass; the preceding pass found 35) whose owner backlink matched
 `ChCliPlayer +0x97B0`, and the specialization scan found 54 player owners. A
@@ -110,7 +110,7 @@ the shared PvP provider consumed by all seven `BtEqpSlot` objects.
 ## Reconstructed provider construction and population
 
 The static `ChCliPvp.cpp` recovery gives the following update chain on build
-`205.780`; the runtime reader does not depend on these code locations:
+`207.032`; the runtime reader does not depend on these code locations:
 
 ```text
 ChCliPlayer::EnsurePvpManager
@@ -182,7 +182,7 @@ Therefore, an empty captured remote `ChCliPlayer +0x4F18` loadout must not be
 treated as proof that the player has no PvP gear. Without the decoded PvP
 update, the manager pointer is null and there is no populated remote loadout
 record to inspect directly. This is a static/runtime contract recovered for
-build `205.780`, not yet a guaranteed cross-build contract.
+build `207.032`, not yet a guaranteed cross-build contract.
 
 ## Slot discriminator
 
@@ -213,7 +213,7 @@ path intentionally does not invoke any native mutation or allocation.
 
 ### World-entry request correlation
 
-A build-`205.780` dual-boundary trace correlated the raw client-send entry
+A build-`207.032` dual-boundary trace correlated the raw client-send entry
 (`Msg::Raw`, RVA `0xFEA110`) with the inbound decoded-message-id store
 (`DispatchStream`, RVA `0xFE91E4`) on one monotonic timeline. The world-entry
 sequence sent `0x1A9`, `0x1A8`, `0x19A`, and `0x1A5`; the first entry-associated
@@ -233,7 +233,7 @@ refresh operation.
 The reusable correlator logs low-volume outbound records with their raw payload
 and caller RVA, logs only inbound `0x200..0x207` ids, and restores both
 temporary tracepoints on normal completion. It was run for a bounded window
-(180 seconds, 100000 records) against build `205.780`.
+(180 seconds, 100000 records) against build `207.032`.
 
 For payload-level inspection, a payload tracer reads the decoded `HandlerInfo`
 and payload immediately before dispatch. It arms the ordinary and
@@ -248,7 +248,7 @@ all temporary breakpoints on completion. Outbound records include their message
 id, raw bytes, and caller RVA. A lower-level `inbound-pvp-message` tracepoint
 mode remains available for isolated site testing.
 
-For build `205.780`, the four pre-dispatch sites are RVAs `0xFE9339`,
+For build `207.032`, the four pre-dispatch sites are RVAs `0xFE9339`,
 `0xFE9348`, `0xFE94F4`, and `0xFE9503`: two handler-call forms on each decode
 buffer path. The decoded 32-bit message id is stored at `MsgConn +0x40` at
 `0xFE91E4`, while the current `HandlerInfo` pointer remains at `MsgConn +0x48`.
@@ -257,7 +257,7 @@ Earlier decode-stage candidates `0xFE92CF` and
 `0xFE947C` execute for the same traffic but precede the dispatch calls and must
 not be used for payload filtering.
 
-This layout is live-confirmed on build `205.780`. One world-entry capture
+This layout is live-confirmed on build `207.032`. One world-entry capture
 processed 6,128 generic dispatches and decoded 15 `0x204`, 15 `0x203`, three
 `0x205`, and one each of `0x200`, `0x201`, and `0x202`. All matching records
 used the ordinary path in that run. The recovered handler/schema RVA pairs
@@ -300,7 +300,7 @@ broad world-load path. Neither is a safe build-refresh mechanism.
 
 The live setter trace and the adjacent `ChCliPvp.cpp` functions show that the
 client does not require the full-build routine for every remote update. Build
-`205.780` has a family of packed incremental handlers immediately before the
+`207.032` has a family of packed incremental handlers immediately before the
 combined handler:
 
 | message | observed input | resolved operation |
@@ -357,7 +357,7 @@ changing the process: each packed update's `+0x02` field resolves through the
 `ChCliContext` player lookup to a `ChCliPlayer`, whose `+0x74` value matches the
 payload field. The provider's `+0x38` owner then matches that same player. The
 field is therefore named `PlayerListIndex` in the native payload layouts for
-build `205.780`. Remote roster objects may have a null `+0x18` character link,
+build `207.032`. Remote roster objects may have a null `+0x18` character link,
 so the list index, player name, and provider owner are the reliable correlation
 fields for this path.
 
@@ -427,7 +427,7 @@ the request-`0x71` PvP Hero definition.
 Physical weapon item ids use the character/inventory world-state path:
 `ChCliPlayer +0x18 -> ChCliCharacter +0x3F0 -> ChCliInventory +0x160`, then
 ordinary equipment slots `29..32`. Contrary to the earlier local-only wording,
-live build-`205.780` provider scans found this chain populated for remote roster
+live build-`207.032` provider scans found this chain populated for remote roster
 players. One captured remote player exposed item ids `76158`, `96990`, `97581`,
 and `29174`; another exposed `26432`, `26357`, and `31022` with an empty second
 offhand. A null remote character or inventory still makes those physical item
@@ -456,7 +456,7 @@ player
 
 Native specialization ids and public `/v2/specializations` ids are different namespaces.
 `TraitDefinition.Id` is likewise a client-native id and is not a public `/v2/traits` id.
-Build 205.780 was exhaustively captured through validated
+Build 207.032 was exhaustively captured through validated
 `SpecializationDefinition.TraitDefinitions` arrays: 81 specializations with nine major traits
 each. The 729 native trait ids live in `TraitDefinition`, alongside the recovered native
 layouts/access points only. Live ContextCollection pointers and ids remain authoritative. Any
@@ -478,7 +478,7 @@ trait or specialization identity/name selection.
 
 The spectator's five configured non-weapon skills are populated through a
 separate per-player skill-state path, not through the PvP equipment provider.
-Build `205.780` message `0x264` resolves payload `+0x08` as
+Build `207.032` message `0x264` resolves payload `+0x08` as
 `PlayerListIndex`, payload `+0x02` as a skill content id, and writes slot
 `+0x06` into one of two five-entry definition-pointer arrays at
 `ChCliPlayer +0x9BD8 -> ChCliSkill +0x60/+0x88`. Payload `+0x07` selects the
@@ -503,7 +503,7 @@ agent object.
 
 ## Read-only spectator graph walk
 
-With the spectator Equipment tab open, a build `205.780` read-only walk found
+With the spectator Equipment tab open, a build `207.032` read-only walk found
 one `BtGear` object and seven `BtEqpSlot` objects. The `BtGear +0xD8` pointer
 was the inspected `ChCliPlayer*`; every equipment slot bound the same
 `PvpGearProvider` through `BtEqpSlot +0x90`. The slot discriminator at `+0x98`
@@ -528,7 +528,7 @@ fields.
 
 ## Runtime
 
-`Gw2.Protocol.State` models this family for build 205.780:
+`Gw2.Protocol.State` models this family for build 207.032:
 `PlayerStateStore` handles `0x200..0x207` (`PvpRuneUpdateMessageId` ..
 `PvpCombinedRankMessageId`), and `PlayerState.Pvp` (`PlayerPvpEquipment`) holds
 the provider presence, rune/relic/amulet, hero, four sigils, the combined and

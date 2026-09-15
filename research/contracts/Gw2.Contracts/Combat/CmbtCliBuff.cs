@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace Gw2.Contracts;
 
-// Build-205.780 receive-side combat buff state. These structures describe decoded
+// Build-207.032 receive-side combat buff state. These structures describe decoded
 // client state after a server message has been received; they are not an activation
 // or send protocol.
 internal static class CmbtCliBuffContract

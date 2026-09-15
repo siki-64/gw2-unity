@@ -1,6 +1,6 @@
 # Ranked leaderboard
 
-**Confirmed build(s):** `205.780`.  
+**Confirmed build(s):** `207.032`.  
 **Status:** static reconstruction of bind, identity refresh, color storage and render fallback;
 earlier live gray/white and notification traces retained below.
 **Unresolved:** fresh live correlation of the matching contact callback with the color write,

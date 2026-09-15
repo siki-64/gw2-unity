@@ -1,8 +1,14 @@
 # ContextCollection native access root
 
-**Confirmed build(s):** `205.780`  
+**Confirmed build(s):** `207.032`  
 **Status:** build-local reconstruction; promote individual facts to cross-build only after independent validation.  
 **Unresolved:** unnamed payload slots and whether additional client subsystems exist outside this registry.
+
+**Build 207.032:** the payload slot/offset model below is not yet revalidated on this build. Only the
+`ChCliContext` allocation size has been re-derived (it grew from `0x530` to `0x548`; see
+[`../Protocol/msg-schema-207032.md`](../Protocol/msg-schema-207032.md)); the `ContextCollection`
+`0x318` size, the TLS accessor and slot `0x13` / `+0x98` remain provisional for 207.032 and must not
+be assumed equal to the retired model until re-proved.
 
 `ContextCollection` is the primary reconstructed native access root used by this repository. More
 precisely, it is a **TLS-scoped, fixed-index registry and lifetime coordinator for independently

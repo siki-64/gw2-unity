@@ -1,6 +1,6 @@
 # Healthbar rendering (`AsHealth`)
 
-**Confirmed build(s):** `205.655` and `205.780`, scoped by the sections below.<br>
+**Confirmed build(s):** `207.032`.<br>
 **Status:** build-local rendering and record-layout reconstruction supported by static and live evidence.<br>
 **Unresolved:** gameplay names, incomplete renderer ABI details, and cross-build validity.
 
@@ -138,7 +138,7 @@ CombatTracker indexing through `[agent+0x0C]`.
 # Selected-target health panel
 
 The selected-target panel has a separate control hierarchy from the world InfoBar healthbar. The
-following correlation is confirmed for the live `205.780` process and must remain build-scoped.
+following correlation is confirmed for the live `207.032` process and must remain build-scoped.
 
 ## Target control and child frame
 
@@ -593,7 +593,7 @@ EmitDrawQuad(
 )
 ```
 
-Build `205.780` now recovers the immediate submission object as a `0x130`-byte
+Build `207.032` now recovers the immediate submission object as a `0x130`-byte
 `FrameContentParams` stack value. `EmitDrawQuad` initializes it, then
 `sub_14106A400(frameId, params)` turns it into a pooled type-`9` `GrModel` and queues that model into
 the frame content layer. The confirmed fields are layer `+0x04`, retained material `+0x08`, material
@@ -669,7 +669,7 @@ This is part of the native world-space handoff.
 # Native healthbar observer
 
 The observer hooks the native `EmitDrawQuad` entry and accepts only the three return addresses of the
-direct health-emission calls recovered from `AsHealthDraw` in build `205.780`:
+direct health-emission calls recovered from `AsHealthDraw` in build `207.032`:
 
 ```text
 EmitDrawQuad return RVAs:

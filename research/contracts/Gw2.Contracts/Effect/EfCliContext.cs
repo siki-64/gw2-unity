@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace Gw2.Contracts;
 
-// Build-205.780 client effect runtime context. Unresolved container internals
+// Build-207.032 client effect runtime context. Unresolved container internals
 // deliberately remain opaque.
 [StructLayout(LayoutKind.Explicit, Size = Size)]
 internal struct EfCliContext

@@ -1,15 +1,14 @@
 # Live capture evidence
 
-**Build:** `205.780` (Gw2-64.exe, image SHA-256
-`D2AE84876A0B93277FCCB368969046B848BB0403FD09DB420389C813D2459B23`).
+**Build:** `207.032` (Gw2-64.exe, image identity in protocol/catalog.json).
 
-**Status:** several layers are validated against private live captures. Evidence trail: Addenda
-14-22, 26, 28; see [msg-dispatch-addenda.md](msg-dispatch-addenda.md).
+**Status:** several layers are validated against private live captures. See
+[msg-schema-207032.md](msg-schema-207032.md).
 
 Live sessions used **hardware breakpoints only, no patching**. Raw captures and session keys are
 private under `captures/local/` (git-ignored); only sanitized fixtures are committed.
 
-## Committed fixtures (`tools/re/fixtures/205780/`)
+## Committed fixtures (`tools/re/fixtures/207032/`)
 
 | Fixture | Kind | What it pins |
 | --- | --- | --- |
@@ -21,7 +20,7 @@ private under `captures/local/` (git-ignored); only sanitized fixtures are commi
 
 ## What each live session established
 
-| Addendum | Result |
+| Finding | Result |
 | --- | --- |
 | 14 | the reader decodes a real 1807-byte stream (9 messages) and the live registry matches the static corpus |
 | 15 | two `0x264` decoded handler records captured |
@@ -41,7 +40,7 @@ private under `captures/local/` (git-ignored); only sanitized fixtures are commi
 - **The workable method is a handler-only breakpoint** (low frequency). At a handler the whole packet
   is still live, so `conn+0x58` (frame container) and `conn+0x80` (message stream) are readable.
 - **Set hardware breakpoints once** and remove/disable them at a paused point, or relaunch; deleting
-  a hardware breakpoint while the client runs is the prime suspect in a prior crash (Addendum 15).
+  a hardware breakpoint while the client runs is the prime suspect in a prior crash (the recovered evidence).
 
 ## Validation tiers
 

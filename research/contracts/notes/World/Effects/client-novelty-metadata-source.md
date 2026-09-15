@@ -1,6 +1,6 @@
 # Champion novelty metadata source — current static frontier
 
-**Build:** 205.780  
+**Build:** 207.032  
 **Scope:** in-world receive-side metadata resolution only. Preview-panel data is unrelated.
 
 ## New result: SkillDefinition +0x28 is the SkillId

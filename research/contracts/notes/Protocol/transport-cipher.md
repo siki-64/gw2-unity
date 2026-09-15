@@ -1,12 +1,11 @@
 # Transport cipher
 
-**Build:** `205.780` (Gw2-64.exe, image SHA-256
-`D2AE84876A0B93277FCCB368969046B848BB0403FD09DB420389C813D2459B23`).
+**Build:** `207.032` (Gw2-64.exe, image identity in protocol/catalog.json).
 
-**Status:** reconstructed and validated against live traffic. Evidence trail: Addendum 9
-(reconstruction), Addendum 16 (byte-for-byte PRGA and KSA state match), Addendum 25 (outbound state),
-Addendum 28 (cross-direction reuse). All in
-[msg-dispatch-addenda.md](msg-dispatch-addenda.md).
+**Status:** reconstructed and validated against live traffic. Evidence trail: the recovered evidence
+(reconstruction), the recovered evidence (byte-for-byte PRGA and KSA state match), the recovered evidence (outbound state),
+the recovered evidence (cross-direction reuse). All in
+[msg-schema-207032.md](msg-schema-207032.md).
 
 ## Algorithm
 
@@ -67,8 +66,8 @@ cipher is a stateful keystream and cannot be fingerprinted or replayed from a si
 ## Cross-direction reuse (two-time pad)
 
 The handshake copies the whole `conn+0x12c` state to `conn+0x234`, so both directions start on the
-same permutation from the same key (Addendum 25). Confirmed live: advancing the outbound state by
-2,795,974 bytes reproduced the inbound state exactly, `i`, `j` and the full S-box (Addendum 28).
+same permutation from the same key (the recovered evidence). Confirmed live: advancing the outbound state by
+2,795,974 bytes reproduced the inbound state exactly, `i`, `j` and the full S-box (the recovered evidence).
 Therefore the two directions are **one keystream**:
 
 ```text
@@ -82,10 +81,10 @@ direction's state at a time).
 
 | Item | Evidence |
 | --- | --- |
-| Synthetic vectors (mixed key, post-KSA S-box, keystream) | `tools/re/fixtures/205780/transport-cipher.json` |
-| PRGA byte-for-byte and KSA state match on live bytes | Addendum 16 |
-| Captured `0x264` ciphertext -> transport frame | `tools/re/fixtures/205780/0x264-wire.json`, `tools/Gw2.Protocol.Tests` |
-| Cross-direction reuse | `tools/re/fixtures/205780/keystream-reuse.json` |
+| Synthetic vectors (mixed key, post-KSA S-box, keystream) | `tools/re/fixtures/207032/transport-cipher.json` |
+| PRGA byte-for-byte and KSA state match on live bytes | the recovered evidence |
+| Captured `0x264` ciphertext -> transport frame | `tools/re/fixtures/207032/0x264-wire.json`, `tools/Gw2.Protocol.Tests` |
+| Cross-direction reuse | `tools/re/fixtures/207032/keystream-reuse.json` |
 
 References: `tools/re/Gw2TransportCipher.py`; runtime `Gw2.Protocol.Transport.TransportCipher`.
 

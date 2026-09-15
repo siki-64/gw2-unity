@@ -1,8 +1,7 @@
 # Model effect drawing inputs and ownership
 
 Static continuation, 2026-09-13. Analyzed Ghidra program: `/Gw2-64.exe`, base
-`0x140000000`, imported SHA256
-`d2ae84876a0b93277fccb368969046b848bb0403fd09db420389c813d2459b23`.
+`0x140000000`; the imported image's SHA-256 is recorded in protocol/catalog.json.
 These addresses are coordinates in that imported image. No live effect was activated,
 and this pass does not establish a complete Champion novelty replay contract.
 

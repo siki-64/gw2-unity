@@ -1,6 +1,6 @@
 # Champion novelty in-world state — AvCharEffect static decode
 
-**Build:** 205.780  
+**Build:** 207.032  
 **Scope:** in-world/receive-side effect state only.  
 **Do not use preview-panel definitions or preview-agent state here.**
 

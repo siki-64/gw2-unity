@@ -1,11 +1,10 @@
 # Outbound messages
 
-**Build:** `205.780` (Gw2-64.exe, image SHA-256
-`D2AE84876A0B93277FCCB368969046B848BB0403FD09DB420389C813D2459B23`).
+**Build:** `207.032` (Gw2-64.exe, image identity in protocol/catalog.json).
 
 **Status:** the encoder, send registry, buffer and flush are located; the cipher is confirmed on one
-captured packet. Evidence trail: Addenda 24, 26, 27, 29; see
-[msg-dispatch-addenda.md](msg-dispatch-addenda.md).
+captured packet. Evidence trail: the recovered evidence; see
+[msg-schema-207032.md](msg-schema-207032.md).
 
 ## The send encoder `FUN_140fea110(conn, rawDataBytes, rawData)`
 
@@ -65,7 +64,7 @@ conn+0xd0 = conn+0x398;
   (two-time pad; see [transport-cipher.md](transport-cipher.md)).
 - `MsgPack_WriteFields` does not bounds-check; sizes must come from `ComputeMaxSize`.
 
-## Live capture (Addendum 26)
+## Live capture (the recovered evidence)
 
 Flush `FUN_140fe96f0` sent a 6-byte packet:
 
@@ -76,7 +75,7 @@ ciphertext (flush stack temp)   5A 31 60 FB 37 DB       == Crypt(state, plaintex
 ```
 
 `0x120` decodes with the **send** chain `[MP_MSGID,varint,u8]`, not the recv chain `[1,4,4,2,4]`.
-Fixture `tools/re/fixtures/205780/outbound-0x120.json`; runtime `OutboundProtocolCodec`.
+Fixture `tools/re/fixtures/207032/outbound-0x120.json`; runtime `OutboundProtocolCodec`.
 
 ## Open
 

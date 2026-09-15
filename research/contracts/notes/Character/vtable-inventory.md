@@ -1,11 +1,11 @@
 # Native vtable inventory
 
-**Confirmed build(s):** `205.780`.<br>
+**Confirmed build(s):** `207.032`.<br>
 **Status:** build-local live vtable inventory; entries are recorded only where the object evidence supports them.<br>
 **Unresolved:** uninspected slots, remaining overlay tables, and cross-build validity.<br>
 **Address scope:** listed analysis VAs are evidence coordinates, not durable addresses; Ghidra is authoritative.
 
-Build `205.780` live captures were taken by reading live vtable pointers while the game was
+Build `207.032` live captures were taken by reading live vtable pointers while the game was
 running. The addresses below are analysis VAs (`0x140000000 + module RVA`),
 not process VAs, and are retained as build-local evidence rather than an active
 address cache. A table is recorded only when its object header or embedded

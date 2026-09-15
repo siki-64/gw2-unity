@@ -1,6 +1,6 @@
 # Name rendering
 
-**Confirmed build(s):** `205.655` and `205.780`, scoped by the sections below.<br>
+**Confirmed build(s):** `207.032`.<br>
 **Status:** build-local rendering and visibility reconstruction supported by static and controlled live evidence.<br>
 **Unresolved:** the meanings explicitly marked unresolved and behavior outside the listed builds.
 
@@ -81,7 +81,7 @@ Do not infer the presence or visibility of the ordinary name solely from the sec
 
 ## Allocation and lifecycle identity
 
-Message `10` in the name callback (`sub_1403999B0`, build `205.780`) allocates the object consumed by
+Message `10` in the name callback (`sub_1403999B0`, build `207.032`) allocates the object consumed by
 `NameRender`, `NameRenderCtx_SetAgent`, and `NamePresentationUpdate` as exactly `0x110` bytes. This is
 the concrete `NameRenderCtx` allocation, rather than a view into a framework frame.
 
@@ -155,7 +155,7 @@ component ids 6, 2, 3, 9, 11, 12, 13
 ```
 
 This establishes a concrete projection-to-child presentation handoff, but it also rules out the
-`+0x288` projection virtual itself as the friendly-name world-obstruction test. Build `205.780` confirms
+`+0x288` projection virtual itself as the friendly-name world-obstruction test. Build `207.032` confirms
 that relationship-specific visibility can enter through the category brightness gate described below;
 any actual geometry/depth handling remains later or in a separate render phase.
 
@@ -322,7 +322,7 @@ The relevant settings call is:
 g_Settings.vtbl+0x40(g_Settings, [r15+0xC0])
 ```
 
-Build `205.780` resolves this virtual to `NameCategoryUsesDistanceBrightness`. Its exact return contract
+Build `207.032` resolves this virtual to `NameCategoryUsesDistanceBrightness`. Its exact return contract
 is:
 
 ```text
@@ -355,7 +355,7 @@ Here `projectionDepth` is the homogeneous/projection-depth scalar returned by th
 
 This is **brightness attenuation**. It must not be described as visibility alpha fade.
 
-Build `205.780` also provides a controlled party A/B/A confirmation for one partially occluded Character
+Build `207.032` also provides a controlled party A/B/A confirmation for one partially occluded Character
 agent held at the same camera/depth (`projectionDepth - 50 == 2178.7207`):
 
 | party state | category | active first-group children | `control.z` |
@@ -674,7 +674,7 @@ Do not flatten these into one "name alpha" or "name brightness" field.
 
 # Name-category resolution
 
-`ResolveNameCategory` dispatches on `NameRenderCtx.agent` type. Its build-`205.780` control flow is:
+`ResolveNameCategory` dispatches on `NameRenderCtx.agent` type. Its build-`207.032` control flow is:
 
 ```text
 null agent
@@ -698,7 +698,7 @@ The type-`0x0A` return values are synthesized by `ResolveNameCategory`; they do 
 context-manager virtual. Conversely, values observed on type-0 Characters are virtual-call results,
 subject only to the explicit `2`/`3` normalization above.
 
-`NameRenderCtx_RefreshState` stores more than this presentation category. Build-`205.780` disassembly
+`NameRenderCtx_RefreshState` stores more than this presentation category. Build-`207.032` disassembly
 confirms the following contiguous integer handoff immediately before `NamePresentationUpdate`:
 
 | offset | confirmed producer |
@@ -709,12 +709,12 @@ confirms the following contiguous integer handoff immediately before `NamePresen
 | `+0xCC` | `sub_399170()` when the owning widget's property key `0x400` is active |
 | `+0xD0` | defaults to `2`, with an optional value supplied through the object cached at `NameRenderCtx+0xF0` |
 
-These are distinct inputs even when two happen to carry the same number. In the build-`205.780`
+These are distinct inputs even when two happen to carry the same number. In the build-`207.032`
 personal-target capture, the matching live context held `6` in both `+0xC0` and `+0xC4`; only `+0xC0`
 is established as `NameCategory.Neutral`. The semantic enum domains of `+0xC4/+0xC8/+0xCC/+0xD0`
 remain unresolved.
 
-Build-`205.780` disassembly and one live pre-call capture resolved a concrete type-0 virtual-slot target
+Build-`207.032` disassembly and one live pre-call capture resolved a concrete type-0 virtual-slot target
 to `sub_11B0DE0`. Static disassembly bounds that function's direct outputs to
 `{0,1,2,3,4,5,6,7,8,9,10}`. Its final four-way classification switch maps inputs as follows after
 earlier override paths have failed:
@@ -783,14 +783,14 @@ The `FriendlyPlayer` value is produced by `ResolveNameCategory` for the type-0 r
 path rather than being a client-only classification. Category-specific through-wall behavior belongs in
 [`occlusion.md`](occlusion.md).
 
-Build `205.780` custom-arena spectator captures found no separate blue/red name category for the
+Build `207.032` custom-arena spectator captures found no separate blue/red name category for the
 camera-followed player. A blue-side followed Character produced final `FriendlyPlayer` (`4`) in 50
 filtered NameRender samples. A different red-side followed Character produced raw and resolved category
 `4` in 50 wrapper-filtered provider samples; its final NameRender context was not observed during the
 bounded filtered capture. Both team sides used the same spectator-follow slots in `AsContext`, so team
 color is not encoded by this category or by a distinct observed target slot.
 
-Build `205.780` live A/B/A captures confirmed `GroupedPlayer` (`3`) as an additional render category for
+Build `207.032` live A/B/A captures confirmed `GroupedPlayer` (`3`) as an additional render category for
 the same friendly Character while that Character was in squad; the grouped render disappeared after
 leaving squad while the ordinary `FriendlyPlayer` render remained. A separate party join/leave/rejoin
 capture tracked the same agent and wrapper and switched its grouped context and child presentation with
@@ -798,20 +798,20 @@ party membership. Together these controlled squad and party captures confirm the
 Static disassembly confirms that `ResolveNameCategory(NameRenderCtx.agent)` supplies
 the value stored at `NameRenderCtx.category +0xC0`. For type-0 Characters, the helper first resolves a
 raw relationship/category through the game-context manager and then consults a separate presentation
-state bit before returning it. Build `205.780` resolves that normalization gate to
+state bit before returning it. Build `207.032` resolves that normalization gate to
 `NameCategoryPresentationState+0x18 bit 14` via vtable `+0xB8` (`NameCategoryPreserveRelationshipVariants`): when the bit is clear,
 raw values `2` and `3` are normalized to `FriendlyPlayer` (`4`); when the bit is set, those raw values
 are preserved. The presentation-state updater derives bit 14 inversely from a query reached through
 `PvpCliContextAccessor` and a PvP-context virtual at `+0x130`. The exact semantic name
 of that PvP query remains unresolved.
 
-A later build-`205.780` live capture observed `GroupedPlayer` while the player was in a party rather than a
+A later build-`207.032` live capture observed `GroupedPlayer` while the player was in a party rather than a
 squad. Two `NameRenderCtx` instances alternated for the same Character agent: one submitted child `1`,
 and the other submitted children `4`, `5`, and `10`. Both contexts retained category `3`. Together with
 the earlier squad capture and the subsequent same-agent party A/B/A, this supports the promoted
 `GroupedPlayer` name.
 
-Category `3` is not restricted to player agents. In build `205.780`, a user-spawned and selected minion
+Category `3` is not restricted to player agents. In build `207.032`, a user-spawned and selected minion
 was a distinct type-0 Character agent and produced raw category `3` in 66 wrapper-filtered provider
 samples with relationship variants preserved; five exact final NameRender samples also returned
 `GroupedPlayer` (`3`). The spawning player was in neither a party nor a squad, so category `3` does not
@@ -829,7 +829,7 @@ spawned minion instead used raw and final category `3`, so entity kind alone doe
 `5`; the local owner/relationship case can select the category-`3` presentation. The exact native
 relationship predicate remains unresolved.
 
-A build-`205.780` live capture additionally confirmed the native source boundaries above. In one
+A build-`207.032` live capture additionally confirmed the native source boundaries above. In one
 current scene, type-0 Character wrappers produced raw values `4` and `5` with presentation-state bit
 14 set. A filtered capture correlated one raw-`5` wrapper back to the exact
 `NameRenderCtx.agent`, agent id, and `NameRenderCtx.category`; the render category remained `5`.
@@ -839,7 +839,7 @@ correlation identified one of them as a user-selected named Gadget: its selectio
 observations confirm the numeric values and their data flow, but not the shared presentation semantics of
 category `5`; those captures alone did not establish the later-promoted broad `Neutral` semantic for `8`.
 
-A second build-`205.780` selection correlated a user-identified object with a visible healthbar to a
+A second build-`207.032` selection correlated a user-identified object with a visible healthbar to a
 different type-`0x0A` Gadget agent. Its exact selected-unit pointer matched `NameRenderCtx.agent`, and
 50 filtered final-render samples all returned category `8`. The healthbar is an additional presentation
 property of this Gadget example; it does not narrow the shared category-`8` semantic by itself.
@@ -849,25 +849,25 @@ support the broad name `Neutral` for category `8`. The name deliberately does no
 `Object`: the confirmed native bucket spans both Character and Gadget agent types, and the resolver can
 also synthesize `8` on null/default paths.
 
-Build `205.780` live captures also correlated `FriendlyNpc` (`6`) with two exact user-identified friendly
+Build `207.032` live captures also correlated `FriendlyNpc` (`6`) with two exact user-identified friendly
 NPCs. The first was static; the second moved and was held through the personal-target slot. They had
 distinct agent ids and were captured in separate process lifecycles. In each case the selection/target
 unit pointer exactly matched `NameRenderCtx.agent`, and wrapper-filtered outer-resolver captures repeatedly
 confirmed raw category `6` reaching final category `6`. Movement therefore does not distinguish the two
 confirmed category-`6` examples.
 
-Build-`205.780` captures confirmed `Critter` (`9`) using two distinct user-identified critters. For each,
+Build-`207.032` captures confirmed `Critter` (`9`) using two distinct user-identified critters. For each,
 the selection/call-target unit pointer exactly matched a type-0 Character `NameRenderCtx.agent`; eight
 filtered render events returned final category `9`, and five outer-resolver events for the exact wrapper
 returned raw and resolved category `9`. The independent agent identities (`0xC88` and `0x126B`) confirm
 the critter role rather than a one-unit correlation.
 
-A build-`205.780` exact target correlation confirmed `Hostile` (`7`) on a user-identified hostile NPC.
+A build-`207.032` exact target correlation confirmed `Hostile` (`7`) on a user-identified hostile NPC.
 The selection/target pointer matched a type-0 Character `NameRenderCtx.agent`; four filtered render
 events returned final category `7`, and three outer-resolver events for its exact wrapper returned raw
 and resolved category `7`. This disproves the earlier player-specific `EnemyPlayer` interpretation. The
 category is relationship/presentation-level and is not restricted to player agents. A second exact
-build-`205.780` correlation extended the same bucket to a user-identified enemy pet: its distinct type-0
+build-`207.032` correlation extended the same bucket to a user-identified enemy pet: its distinct type-0
 Character agent produced raw and resolved category `7` in five provider samples and retained final
 category `7` in five NameRender samples.
 
@@ -905,7 +905,7 @@ visibility fade, projection/occlusion, and native submission as separate stages 
 
 # Native text submission boundary
 
-The build-`205.780` static path now identifies the name text handoff far enough to separate it from
+The build-`207.032` static path now identifies the name text handoff far enough to separate it from
 the direct quad path. `NamePresentationUpdate` (`0x14039C4F0`) updates its child controls through
 the generic frame messages:
 
@@ -935,7 +935,7 @@ font/layout, world-space presentation, and frame-content submission path.
 
 Font coverage is resolved below the `FrText` layer: `sub_140AD67F0` selects a `GrFont` range by the
 original UTF-16 code unit, `sub_140AD7AA0` lazy-loads the range asset, and `sub_140AD6A80` consumes
-the resulting glyph records. Build 205.780 has fixed native registration slots for Greek/Cyrillic and
+the resulting glyph records. Build 207.032 has fixed native registration slots for Greek/Cyrillic and
 kana as well as Han. A null glyph lookup only advances the pen and emits no pixels, so the tested
 unsupported UTF-16 characters appear as blank spaces rather than fallback squares. Literal `U+25A1`
 is a separate non-null square glyph. The full proof and descriptor table are maintained in

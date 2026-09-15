@@ -1,4 +1,4 @@
-# Champion novelty in-world receive path — CmbtCliMsg/CmbtCliBuff — build 205.780
+# Champion novelty in-world receive path — CmbtCliMsg/CmbtCliBuff — build 207.032
 
 > **IN-WORLD RECEIVE PATH ONLY.** This note describes decoded combat Buff state after messages have been received by the client. Receive registration ids below are diagnostic/static metadata; they are not a novelty activation or send protocol.
 

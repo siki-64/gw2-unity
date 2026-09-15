@@ -1,4 +1,4 @@
-# Champion novelty preview path — build 205.780
+# Champion novelty preview path — build 207.032
 
 > **PREVIEW PANEL ONLY.** This note describes the Hero/Equipment toy preview path. None of the preview `IEffectDef` pointers or preview timing/placement fields are substitutes for the in-world Buff/`SkillDefinition` path.
 

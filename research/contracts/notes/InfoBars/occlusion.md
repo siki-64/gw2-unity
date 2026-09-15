@@ -1,6 +1,6 @@
 # InfoBar occlusion
 
-**Confirmed build(s):** `205.655` and `205.780`, scoped by the sections below.<br>
+**Confirmed build(s):** `207.032`.<br>
 **Status:** build-local occlusion and category behavior reconstructed from controlled live observations.<br>
 **Unresolved:** later draw/pass/effect decisions and behavior outside the listed builds.
 
@@ -156,7 +156,7 @@ semantic switch.
 # Friendly-player and hostile categories
 
 `NameCategory.FriendlyPlayer` is confirmed as numeric value `4`; `NameCategory.Hostile` is `7`.
-Both values are produced by the native type-0 relationship/category resolver. Build `205.780` live
+Both values are produced by the native type-0 relationship/category resolver. Build `207.032` live
 capture confirms that `Hostile` includes hostile NPCs and is not a player-only category.
 
 Build `205.655` live behavior shows that a friendly PvP name may remain visible through geometry while
@@ -237,7 +237,7 @@ inputs; current static evidence does not justify collapsing it into a single `oc
 
 ## GroupedPlayer name presentation boundary
 
-Build `205.780` controlled visible/occluded captures followed a `GroupedPlayer` party-member name through the
+Build `207.032` controlled visible/occluded captures followed a `GroupedPlayer` party-member name through the
 first `NameRender` child group and into `sub_A857E0`. The category-dependent virtual returned `1` in
 both states. The active `CtlText` child set, concrete vtable, name material, and material byte count were
 also unchanged.
@@ -256,7 +256,7 @@ boundary or in a separate render phase.
 
 ## Party category A/B/A presentation switch
 
-Build `205.780` captured one partially occluded Character through joined -> left -> rejoined party state
+Build `207.032` captured one partially occluded Character through joined -> left -> rejoined party state
 without changing the camera or projection depth. The same native agent and Character wrapper used
 `GroupedPlayer` (`3`), child `1`, and `control.z == 0.46595776` while joined. Leaving selected
 `FriendlyPlayer` (`4`), children `4/5/10`, and `control.z == 0`; rejoining restored the original grouped

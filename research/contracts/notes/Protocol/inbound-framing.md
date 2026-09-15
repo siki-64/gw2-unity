@@ -1,10 +1,9 @@
 # Inbound framing
 
-**Build:** `205.780` (Gw2-64.exe, image SHA-256
-`D2AE84876A0B93277FCCB368969046B848BB0403FD09DB420389C813D2459B23`).
+**Build:** `207.032` (Gw2-64.exe, image identity in protocol/catalog.json).
 
 **Status:** recovered and validated against captured wire. Evidence trail: the original note and
-Addenda 1, 19, 20, 22, 25; see [msg-dispatch-addenda.md](msg-dispatch-addenda.md).
+the recovered evidence; see [msg-schema-207032.md](msg-schema-207032.md).
 
 ## Connection modes (`conn+0x108`)
 
@@ -81,7 +80,7 @@ slot. See [handshake-key-derivation.md](handshake-key-derivation.md) and
 
 ## Validation
 
-- `tools/re/fixtures/205780/0x264-wire.json`: a captured ciphertext frame deframes/decodes to two
+- `tools/re/fixtures/207032/0x264-wire.json`: a captured ciphertext frame deframes/decodes to two
   `0x264` messages.
 - `tools/re/Gw2TransportDecode.py` implements deframe + LZ4, with truncation and bad-offset checks.
 
