@@ -25,6 +25,14 @@ Per `research/contracts/methodology/tooling.md`, before adding tooling:
 | `ghidra/export_anchors.py` | Ghidra script (Ghidra 10/11, Jython). Reads the analyzed image in-process and writes the anchor/vtable seed JSON that the catalog stamp consumes. |
 | `schema/catalog.schema.json` | JSON Schema for `protocol/catalog.json` and each `protocol/messages/<build>/<id>.json`. |
 | `pipelines/taxonomy.json` | Decoder-pipeline identifiers. The catalog records only pipeline ids; defaults step order is documentation, not a claim until a build-specific pipeline documents it. |
+| `re/Gw2TransportCipher.py` | Reference transport cipher (key schedule + PRGA). |
+| `re/Gw2TransportDecode.py` | Offline inbound decoder: cipher -> deframe/LZ4 -> schema; fixture verifier. |
+| `re/Gw2HandshakeKdf.py` | Reference handshake key derivation (DH exchange). |
+| `re/MaxSizeWalk.py` | `MsgPack` size walk over the schema corpus. |
+| `re/ExtractSchemaCorpus.py` | Emits the recv/send schema corpora (`chains-recv.json`, `chains-send.json`). |
+| `re/Sweep2.java`, `re/BulkWalk.java`, `re/Extract-MsgRegistry.ps1` | Ghidra/PowerShell schema-registry sweep helpers. |
+| `re/fixtures/<build>/` | Sanitized captured/synthetic byte fixtures (cipher, KDF, inbound, outbound, keystream reuse). |
+| `Gw2.Protocol.Tests/` | Offline net10.0/MSTest harness that compiles the `Gw2.Protocol` runtime sources and validates them against the fixtures. |
 | `README.md` | This file. |
 
 Generated or reviewed outputs are checked in; private inputs (captures, dumps, exported JSON) are not.
