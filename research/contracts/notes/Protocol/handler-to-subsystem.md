@@ -166,6 +166,37 @@ So the family populates four distinct `ChCliSkill` storages:
 Every method ends by notifying the `ChCliSkill+0xB0` observer list, and most also notify the owned
 `ChCliSkillbar` (through `ChCliPlayer`'s character link).
 
+### `ChCliSkill` storage, from the setter bodies
+
+| Storage | Offset | Shape | Written by |
+| --- | --- | --- | --- |
+| current skill key | `+0x20` | 12-byte key (`FUN_140317e60`) | `0x25D`, `0x265` |
+| bitmap | `+0x28` (+0x30 size, +0x34 word count) | bit-word array; bit = `key & 0x1f`, word = `key >> 5` | cleared by `0x261`; cleared by `0x25E` |
+| keyed map | `+0x08` (entries `+0x10`, count `+0x0C`) | 12-byte entries `{key, value, ?}` | insert/reset by `0x25F`, `0x260`, `0x263` |
+| container | `+0x40` (+0x48) | 24-byte entries | add by `0x261`/`0x265`; reset by `0x25E` (`FUN_1412234b0`) |
+| scalars | `+0x58`, `+0x5C` | `u32` each | `0x25B` (`FUN_141224f70`) |
+| configured skills | `+0x60`/`+0x88` | five keys each | `0x264` |
+| notifier | `+0xB0` | observer list | every setter |
+
+Per message, from the setter disassembly:
+
+| Msg | Setter | Write |
+| --- | --- | --- |
+| `0x25B` | `FUN_141224f70` | `+0x58 = rec+2`, `+0x5C = rec+6` |
+| `0x25D` | `FUN_141224bb0` | `+0x20 = skillDef + 0x28` |
+| `0x25E` | `FUN_141224c00` | clears `+0x28`/`+0x30`, resets `+0x40` |
+| `0x25F` | `FUN_141224c40` | `+0x08` map insert `{skillDef+0x28, rec+0x0A}` |
+| `0x260` | `FUN_141224d90` | resets `+0x08`, then per element inserts `{defKey, requestId}` |
+| `0x261` | `FUN_141224ec0` | `+0x40` add; clears bit(`skillDef+0x28`) in `+0x28` |
+| `0x263` | `FUN_141224fb0` | `+0x08` map insert/remove `{keyA, keyB}`; also `ChCliPlayer + 0x618` |
+| `0x264` | `FUN_141225160` | `+0x60`/`+0x88` configured slot |
+| `0x265` | `FUN_141225220` | `+0x40` add; `+0x20 = skillDef+0x28`; notify with two flags |
+
+The map key is `skillDef + 0x28` — the **native skill content key**, not the wire content id
+(see [../UI/Widgets/remote-equipped-skills.md](../UI/Widgets/remote-equipped-skills.md)). The
+*semantics* of the keyed map, the container and the bitmap are still unresolved; only their shape and
+writers are recovered.
+
 ## Captured-stream families
 
 The message ids actually observed in the private captures (Addenda 14, 20), traced to their
