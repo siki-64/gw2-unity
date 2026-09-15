@@ -2364,3 +2364,78 @@ The live session can be restarted; the following are on disk under the git-ignor
    message.
 3. Re-derive `maxsize.csv` and the catalog chains from `live_ids.csv` where ids collide.
 
+---
+
+# Addendum 20: the inbound wire decodes end to end
+
+**Status:** the frame header and payload codec are pinned; the full inbound pipeline
+(RC4 -> deframe/LZ4 -> message stream -> schema) decodes captured wire bytes into messages; this
+closes Addendum 19 next steps 1 and 2
+
+## The frame container (`FUN_140fe8ef0`)
+
+Read from the instructions (not the earlier ambiguous decompile). Each frame is a **4-byte header
+plus payload**:
+
+```text
+u16 compLen     // 0 = raw; otherwise the LZ4 block length
+u16 decodedLen  // the decoded payload length
+payload         // compLen bytes of LZ4, or decodedLen raw bytes
+```
+
+Frame size = `(compLen ? compLen : decodedLen) + 4`. In the raw case (`compLen == 0`) the payload is
+`decodedLen` raw bytes; otherwise it is an LZ4 block that expands to `decodedLen` bytes. Each decoded
+payload is appended to `conn+0x80`, and `conn+0x58` is advanced by `frameSize + 4`.
+
+## The payload codec is LZ4 block
+
+`FUN_141574a00` -> `FUN_141574a30` is **LZ4 block decompression**:
+
+- a token byte `(literalLen << 4) | matchLen`;
+- literal-length extension when the high nibble is `0xF` (0xFF-continued);
+- a little-endian `u16` match offset;
+- match-length extension when the low nibble is `0xF`;
+- the standard overlapping match copy with the 16-byte wildcopy and the `inc32table`/`dec64table`
+  constants (`DAT_1423007c0`/`DAT_1423007e0`).
+
+An LZ4 block requires no external dictionary, so it is fully reproducible offline.
+
+## The first end-to-end decode
+
+Three consecutive captured inbound packets were RC4-decrypted with the validated cipher, then
+concatenated: 1725 bytes. Deframing consumed 1696 bytes (the last frame is partial - the capture cut
+mid-frame) and produced 1937 bytes of message stream (17 LZ4 frames). Decoding with
+`live_ids.csv` gave **52 messages, no error**:
+
+```text
+0x21 0x23 0x2de 0x2df 0x2e2 0x2e3 0x312 0x315 0x33 0x34 0x39 0x47 0x4f 0x54
+```
+
+`0x2DE/0x2DF/0x2E2/0x2E3` are the channel-`0xd` ids from Addendum 2, so the decode is consistent
+with the static registry.
+
+## Tooling
+
+`tools/re/Gw2TransportDecode.py` gains `deframe()` and `lz4_decompress()` and a `--deframe` option;
+the self-test now covers a raw frame, a hand-built LZ4 block, and a bad-offset rejection.
+
+## What this establishes
+
+- the inbound frame header layout and that the payload codec is LZ4 block;
+- the complete inbound pipeline decodes captured wire bytes into messages: RC4 -> deframe/LZ4 ->
+  message stream -> `MsgPack_ReadFields`;
+- 52 real messages decoded from captured inbound wire bytes.
+
+## What this does not establish
+
+- A **catalog** wire fixture with a specific message's bytes: the decoded stream is real but the
+  capture is private; a sanitized fixture is a follow-up.
+- Outbound framing/codec (outbound RC4 state is `conn+0x234`, unexamined).
+- Whether the frame container is identical across all channels/connections.
+
+## Next steps
+
+1. Capture a `0x264` on the wire and promote a sanitized fixture (the first `wireVerified` message).
+2. Re-derive `maxsize.csv` and any colliding catalog chains from `live_ids.csv`.
+3. Examine the outbound path (`conn+0x234`) and its framing/LZ4 for encoders.
+

@@ -16,6 +16,9 @@ Framing and schema decoding mirror the recovered reader, MsgPack_ReadFields
 
   * a mode-3 message stream is a concatenation of messages with no per-message
     length;
+  * the *wire* stream is first a frame container (FUN_140fe8ef0):
+    [u16 compLen][u16 decodedLen][payload], compLen 0 = raw, else an LZ4 block
+    that expands to decodedLen. Use --deframe on wire captures.
   * each message starts with a u16 little-endian message id that the schema
     chain's first field (fieldType 1) consumes;
   * the remaining fields follow the MsgPackFieldDef chain for that id, read from
@@ -255,6 +258,77 @@ def decode_fields(pe, chain, data, off, end, depth=0):
     return out, off
 
 
+def lz4_decompress(src, dst_len):
+    """LZ4 block decompression (mirrors FUN_141574a30)."""
+    dst = bytearray()
+    i = 0
+    n = len(src)
+    while i < n:
+        token = src[i]
+        i += 1
+        lit = token >> 4
+        if lit == 15:
+            while True:
+                if i >= n:
+                    raise DecodeError("lz4: literal length overrun")
+                b = src[i]
+                i += 1
+                lit += b
+                if b != 255:
+                    break
+        if i + lit > n:
+            raise DecodeError("lz4: literal overrun")
+        dst += src[i:i + lit]
+        i += lit
+        if i >= n:
+            break
+        if i + 2 > n:
+            raise DecodeError("lz4: offset overrun")
+        offset = src[i] | (src[i + 1] << 8)
+        i += 2
+        if offset == 0 or offset > len(dst):
+            raise DecodeError("lz4: bad offset")
+        matchlen = token & 0xF
+        if matchlen == 15:
+            while True:
+                if i >= n:
+                    raise DecodeError("lz4: match length overrun")
+                b = src[i]
+                i += 1
+                matchlen += b
+                if b != 255:
+                    break
+        matchlen += 4
+        start = len(dst) - offset
+        for k in range(matchlen):
+            dst.append(dst[start + k])
+    if len(dst) != dst_len:
+        raise DecodeError(f"lz4: got {len(dst)} want {dst_len}")
+    return bytes(dst)
+
+
+def deframe(data):
+    """Decode the inbound frame container (FUN_140fe8ef0).
+
+    Frame = [u16 compLen][u16 decodedLen][payload]. compLen == 0 means the
+    payload is `decodedLen` raw bytes; otherwise the payload is an LZ4 block
+    (`compLen` bytes) that expands to `decodedLen` bytes. Concatenated decoded
+    payloads are the message stream Msg_DispatchStream parses.
+    """
+    out = bytearray()
+    off = 0
+    while off + 4 <= len(data):
+        comp = struct.unpack_from("<H", data, off)[0]
+        dec = struct.unpack_from("<H", data, off + 2)[0]
+        size = comp if comp else dec
+        if off + 4 + size > len(data):
+            break
+        payload = data[off + 4:off + 4 + size]
+        out += payload if comp == 0 else lz4_decompress(payload, dec)
+        off += 4 + size
+    return bytes(out), off
+
+
 def decode_stream(pe, id_map, data, limit=0x2000):
     """Decode a mode-3 message stream into messages."""
     chains = {}
@@ -356,6 +430,23 @@ def selftest():
     if cipher.crypt_stream(st1, bytes(48)) != cipher.crypt_stream(st2, bytes(48)):
         errors.append("serialized state did not reload identically")
 
+    # 6. The frame container: raw frame, and a hand-built LZ4 block.
+    raw_frame = bytes([0, 0, 3, 0, 0xAA, 0xBB, 0xCC])
+    stream, used = deframe(raw_frame)
+    if stream != bytes([0xAA, 0xBB, 0xCC]) or used != 7:
+        errors.append(f"raw frame deframe wrong: {stream.hex()} used {used}")
+    # LZ4 block for "AAAAA": token 0x10 (1 literal, match ext 0), literal 'A',
+    # offset 1, match length 0+4.
+    lz4_frame = bytes([4, 0, 5, 0, 0x10, 0x41, 0x01, 0x00])
+    stream, _ = deframe(lz4_frame)
+    if stream != b"AAAAA":
+        errors.append(f"lz4 frame deframe wrong: {stream!r}")
+    try:
+        lz4_decompress(bytes([0x10, 0x41, 0x02, 0x00]), 5)
+        errors.append("lz4 accepted an out-of-range offset")
+    except DecodeError:
+        pass
+
     return errors
 
 
@@ -373,6 +464,8 @@ def main():
                          "conn+0x12C; decrypts a mid-session capture with no KSA")
     ap.add_argument("--out", metavar="PATH",
                     help="write the decrypted stream bytes here")
+    ap.add_argument("--deframe", action="store_true",
+                    help="decode the inbound frame container (LZ4) before parsing")
     ap.add_argument("--ids", metavar="CSV",
                     default=os.path.join("protocol", "schema", "205780",
                                          "sweep2.csv"))
@@ -385,7 +478,7 @@ def main():
             print("FAIL", e)
         if errors:
             return 1
-        print("OK Gw2TransportDecode selftest (5 groups)")
+        print("OK Gw2TransportDecode selftest (6 groups)")
         return 0
 
     if not (args.decrypted or args.capture):
@@ -418,6 +511,9 @@ def main():
     else:
         with open(args.decrypted, "rb") as f:
             data = f.read()
+
+    if args.deframe:
+        data, _ = deframe(data)
 
     if args.out:
         with open(args.out, "wb") as f:
