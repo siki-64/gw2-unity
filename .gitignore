@@ -126,6 +126,10 @@ InitTestScene*.unity*
 **/obj/
 *.pcap
 *.pcapng
+
+# Python bytecode from the offline reverse-engineering tools
+__pycache__/
+*.pyc
 # The game archive file only. Not a bare `Gw2.dat` pattern, which would also
 # match the Gw2.Dat decoder source directory on case-insensitive filesystems.
 /Gw2.dat

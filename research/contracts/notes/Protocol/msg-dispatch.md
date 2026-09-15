@@ -1347,3 +1347,147 @@ struct is `0x0C`; the wire frame is at most `0x0E`.
    `sweep2.csv` in a debugger session.
 4. Extend `MaxSizeWalk.py` to also emit the nested `refTypeDef` tree so the per-field wire widths
    are machine-readable for codec work.
+
+
+---
+
+# Addendum 9: the transport key schedule reconstructed, and dispatch kind 0 closed
+
+**Status:** the key schedule is reconstructed from the instruction stream and a synthetic
+reference vector is emitted; the PRGA is confirmed; dispatch kind 0 is identified;
+**still no wire fixture**
+
+This addendum closes Addendum 8 next steps 1 and the original note's next step 3. All addresses
+are build-local coordinates inside build 205.780.
+
+## 1. Correction: `MsgUtil_Rc4Ksa` is the key schedule only
+
+The original note described `MsgUtil_Rc4Ksa` (`140feea50`) as doing an identity permutation, a
+"standard RC4 swap loop ... using a 20-byte key", and "a 256-byte PRGA". The third phase is not
+a PRGA. The function:
+
+1. builds 20 bytes of key material from the 20-byte connection key;
+2. mixes those 20 bytes; and
+3. runs **one** standard RC4 KSA over the identity permutation.
+
+The keystream is produced by `MsgUtil_CryptStream` (`140fee7c0`), which is a separate function
+and is unchanged from the Addendum description. The 256-iteration loop at `140feebf0` that the
+note called a PRGA is the KSA.
+
+## 2. Step 1: key material
+
+`FUN_1409b9dc0(RSP+0x20, 0x14)` zeroes a 20-byte buffer. Up to 20 key bytes are then XORed in
+(a qword loop at `140feead0` and a byte tail at `140feeb10`). A key longer than `0x14` trips the
+assert at `MsgUtil.cpp:0x1ce` and is clamped. The buffer is five little-endian `u32` words
+`w0..w4`.
+
+## 3. Step 2: the five-word mixing (`140feeb20`..`140feebd6`)
+
+The mixing is **not** standard MD5. It is four dependent steps over five words, with `ROL` of 5
+and 30 bits and bespoke constants. Read directly from the instructions, with `ROL(x,n)` a
+32-bit rotate-left:
+
+```text
+A0 = w0 + 0x9fb498b3
+A1 = w1 + 0x66b0cd0d + ROL(A0, 5)
+B0 = ROL(A0, 30)
+B1 = ROL(A1, 30)
+A2 = ROL(A1, 5) + w2 + (~(A0 & 0x22222222) & 0x7bf36ae2) + 0xf33d5697
+B2 = ROL(A2, 30)
+A3 = ROL(A2, 5) + w3 + (((B0 ^ 0x59d148c0) & A1) ^ 0x59d148c0) + 0xd675e47b
+
+K'0 = w0 + w4 + ROL(A3, 5) + 0xb453c259 + (((B0 ^ B1) & A2) ^ B0)
+K'1 = w1 + A3
+K'2 = w2 + B2
+K'3 = w3 + B1
+K'4 = w4 + B0
+```
+
+Note the fourth boolean term uses **`A2`, not `B2`**: the `AND EAX,R9D` at `140feebb0` executes
+before `ROL R9D,0x1e` at `140feebb3`. A reconstruction that rotates first will disagree. The
+first constant is the `LEA ESI,[R11-0x604b674d]` immediate (`-0x604b674d == 0x9fb498b3 mod 2^32`).
+
+The constants do not match the MD5, SHA-1 or SHA-2 round tables, so the earlier "MD5-family"
+label is dropped. The structure is four steps over five words, not MD5's four 16-step rounds
+over a 16-word block.
+
+## 4. Step 3: RC4 KSA
+
+`K'` (20 bytes) is the RC4 key. The routine writes the identity permutation (`S[i] = i`) at
+`state+8` and then runs
+
+```text
+j = 0
+for i in 0..255:
+    j = (j + S[i] + K'[i mod 20]) & 0xff
+    swap(S[i], S[j])
+```
+
+The key index wraps at 20 (the magic multiply at `140feec45`..`140feec5c` is an unsigned modulo
+by 20). `state+0` (i) and `state+4` (j) are zeroed at `140feeb3f`.
+
+## 5. `MsgUtil_CryptStream` state layout
+
+Confirmed from the instructions: `state[0] = i`, `state[1] = j`, `S[256]` at `state+8`. The
+routine is a textbook RC4 PRGA applied in place to the caller's buffer, and `i`/`j`/`S` persist
+across calls, so a connection's keystream cannot be fingerprinted from one frame.
+
+## 6. The reference implementation and its vector
+
+`tools/re/Gw2TransportCipher.py` implements the schedule and PRGA and emits
+`tools/re/fixtures/205780/transport-cipher.json`. The self-test checks four things:
+
+| Check | What it catches |
+| --- | --- |
+| expression form vs mutation form of the mixing | an algebra slip such as using `B2` where the asm uses `A2` |
+| KSA/PRGA vs an independent textbook RC4 over the derived key | a mistake in the RC4 half |
+| key-length edge cases (0, 1, 7, 8, 19, 20, 25) | the clamp and short-key path |
+| two half-streams vs one whole stream | losing carried cipher state across calls |
+
+The fixture is **synthetic**. It is produced by the reconstruction, so it can catch a
+transcription error in a *reimplementation*; it cannot confirm the client's output. There is
+still no captured frame, so `wireVerified` remains false for every message.
+
+## 7. Dispatch kind 0 is `Msg::Raw::RecvInvalid`
+
+Addendum 2 left dispatch-table entry 0 as "not yet defined as a function". The body at
+`140fec590` fills the 0x28 result record with:
+
+| Offset | Value |
+| --- | --- |
+| `+0x00` | `142109a10` -> `"RecvInvalid"` |
+| `+0x08` | `142109a20` -> `"Msg::Raw::RecvInvalid"` |
+| `+0x10` | `1421095d8` -> `...\Services\Msg\MsgConn.cpp` |
+| `+0x18` | `0xc61` (assert line) |
+| `+0x1c`, `+0x20` | copies of `conn+0x40`, `conn+0x44` |
+| `+0x24` | `0` (failure status) |
+
+So frame kind 0 is an explicit invalid-frame error path, not a data frame. With kinds 1 and 2
+already defined (`ClientRecvEncrypt`, `ClientRecvError`), the three-kind table is entirely
+handshake/control, which is consistent with Addendum 1's finding that mode-3 traffic bypasses it.
+
+## What this establishes
+
+- the exact transport key schedule: 20-byte XOR buffer, four-step five-word mixing, RC4 KSA;
+- that the earlier "MD5" and "PRGA phase" descriptions of `140feea50` were wrong;
+- the PRGA state layout and carried-state behaviour;
+- a runnable reference with four self-tests and a synthetic vector;
+- that dispatch kind 0 is `Msg::Raw::RecvInvalid`.
+
+## What this does not establish
+
+- **Still no wire fixture.** The reference vector is synthetic. The key schedule and PRGA are
+  static reconstructions, not observed against captured bytes.
+- How the 20-byte connection key at `conn+0x118` is obtained from the handshake. That is the
+  session-state prerequisite and remains unrecovered.
+- Whether inbound and outbound use the same schedule and key, or independent RC4 states.
+- Any association between a frame and a catalog message id end to end.
+
+## Next steps
+
+1. Recover how `conn+0x118` is populated in `MsgRaw_ClientRecvEncrypt` (the handshake key
+   derivation), which is the remaining blocker before a captured frame can be decrypted.
+2. When a capture is available, decode a frame with this reference and compare the `0x264`
+   payload against the schema in Addendum 8.
+3. Recover the KSA call site for the send side and confirm whether it reuses the same key state.
+
