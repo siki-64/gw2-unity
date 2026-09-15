@@ -2121,3 +2121,67 @@ XOR buffer, the five-word mixing, and the RC4 KSA — is reproduced as well.
    the first real wire fixture and set `wireVerified`.
 2. Extend the same capture method to the outbound path to confirm whether it shares the cipher.
 
+---
+
+# Addendum 17: wire decryption works; the id map needs the live registry
+
+**Status:** the wire cipher is confirmed (Addendum 16); decoding the decrypted wire stream exposed
+that message ids **collide across registration sites**, so a global `sweep2.csv` map is not the
+connection's schema
+
+## The wire decrypts
+
+Two consecutive game-connection inbound packets were captured with their states
+(`CryptStream`, `RCX = conn+0x12C`). Decrypting each and concatenating gives a contiguous 265-byte
+plaintext stream, and the second packet's captured pre-state equals the first's state advanced by
+the first packet's length, so the two are provably consecutive.
+
+The ciphertext therefore decrypts correctly. The remaining problem is decoding, not transport.
+
+## The id map is wrong for a specific connection
+
+`0x48` exists at two registration sites with different schemas:
+
+| Site | Channel | defArray | Chain |
+| --- | --- | --- | --- |
+| `140204fb1` | other | `1425ae2e0` | `1,3` |
+| `14020a031` | `0x14` | `1425ba7d0` | `1,2,4,4,0x11,0x11` |
+
+`Gw2TransportDecode.py`'s `load_id_map` takes the **first** `OK` row per id, so it used the `1,3`
+chain for `0x48`, produced a 4-byte "message", and desynced on the next bytes. Restricting to site
+`14020a031` gave a long message that ran past the 265-byte capture — consistent with the stream
+being a prefix of a large `0x48` message.
+
+Also, `0x40F` (which the live registry resolved to `142605480` in Addendum 14) lives at site
+`14021ea81`, not `14020a031`, so the game connection's registry aggregates **more than one**
+registration site. A single-site filter is not sufficient either.
+
+## Consequence
+
+- Message ids are **not globally unique** across registration sites; the naive first-row map can
+  pick a different message's schema. Session 1 happened to decode because those ids did not
+  collide.
+- The authoritative schema is the **live registry** the connection dispatches through:
+  `Msg_RegistryLookupById([conn+0x18], msgId)`, record stride `0x20`, `defArray` at record `+0x08`.
+- An attempt to read that registry live (`[conn+0x18]+0x70`/`+0x7c`) was not readable at the
+  captured pointer, so the registry object's actual location/offset still needs to be pinned down
+  (the Addendum-2 `+0x70`/`+0x7c` offsets may be from a different object).
+
+## What this establishes
+
+- the two captured inbound packets are consecutive and decrypt to a contiguous plaintext stream;
+- wire decryption is confirmed (consistent with Addendum 16);
+- `0x48` is a concrete id collision proving the flat map is unsafe.
+
+## What this does not establish
+
+- The correct per-connection schema map (live registry location or the game connection's site set).
+- Any wire message decode. No artifact is promoted.
+
+## Next steps
+
+1. Pin down the live registry object from the connection (re-read the lookup path, not the Addendum
+   2 offsets) and read `count`/`base`, then use it as the decoder's schema source.
+2. With the live map, decode the captured wire stream to messages and promote the first real wire
+   fixture.
+
