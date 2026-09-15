@@ -2185,3 +2185,75 @@ registration site. A single-site filter is not sufficient either.
 2. With the live map, decode the captured wire stream to messages and promote the first real wire
    fixture.
 
+---
+
+# Addendum 18: the live recv registry, read in process
+
+**Status:** the game connection's recv registry object is located and read; `count` and one record
+verified; the wire-stream parse still does not complete cleanly, so the framing question is open
+
+## Location
+
+The lookup instruction is `MOV RCX,[RBX+0x18]` at `140fe91dd` (inside `Msg_DispatchStream`), so
+
+```text
+registry = [conn+0x18]
+count    = *(u32*)(registry + 0x7c)
+base     = *(qword*)(registry + 0x70)
+record   = base + msgId * 0x20          // direct index, stride 0x20
+defArray = *(qword*)(record + 0x08)
+dispatch = *(u32*)(record + 0x10)
+handler  = *(qword*)(record + 0x18)
+```
+
+The Addendum-2 `+0x70`/`+0x7c` offsets are correct; the earlier "not readable" result was a
+mis-decoded pointer (`0x24767230590` instead of `0x24723670590`).
+
+Live values for the captured game connection:
+
+| Item | Value |
+| --- | --- |
+| `conn+0x18` | `0x24723670590` |
+| `base` (`+0x70`) | `0x247236EC3A0` |
+| `count` (`+0x7c`) | `0x53C` (1340) |
+| record `0x48` | defArray `0x1425AE2E0`, dispatchType `1`, handler RVA `0x102F900` |
+
+`count 1340` is close to the static corpus's 1256 distinct recv ids, which is consistent with the
+static sweep describing the live install.
+
+## The collision did not cause the desync
+
+The live record for `0x48` is `1425AE2E0` — the **first-row** defArray, i.e. exactly what the naive
+`load_id_map` picks. So `0x48` was not mis-mapped; the wire chunk simply does not begin on a
+message boundary.
+
+## The wire stream still does not parse end to end
+
+Scanning every offset of the 265-byte combined stream, the best run consumed 135 of 149 remaining
+bytes (3 messages: `0x16B`, `0x1`, `0x9`). But the 14-byte remainder then starts with msgid
+`0x712`, which is beyond the live `count` (1340 indices, `0x00..0x53B`) and so is not a registered
+id. The run is therefore **not** confirmed as a real boundary — it may be coincidental — and the
+combined stream does not decode from any offset cleanly.
+
+`Msg_DispatchStream` copies bytes through `FUN_140fee3b0` before `MsgPack_ReadFields`, so the reader
+may re-frame (or prepend/consume) the decrypted bytes before the schema walk. That path was not
+analysed and is the leading explanation.
+
+## What this establishes
+
+- the live recv registry object and lookup layout, read in process;
+- the live `count` (1340) and a record verified against the static corpus;
+- that the `0x48` collision resolves to the naive first row, so it is not the wire-parse cause.
+
+## What this does not establish
+
+- Why the combined wire stream does not decode from a boundary (reader re-framing not analysed).
+- Any wire message decode; no artifact is promoted.
+
+## Next steps
+
+1. Analyse `FUN_140fee3b0` / the pre-`ReadFields` copy to see whether the reader re-frames the
+   decrypted bytes, and align the offline parser accordingly.
+2. Emit the live registry as a schema map (read `count` records) and use it as the decoder's
+   source instead of `sweep2.csv`.
+
