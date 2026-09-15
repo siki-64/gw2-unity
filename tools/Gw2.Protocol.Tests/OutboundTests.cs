@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text.Json;
+using Gw2.Protocol;
 using Gw2.Protocol.MsgPack;
 using Gw2.Protocol.Schema;
 using Gw2.Protocol.Transport;
@@ -30,20 +31,24 @@ namespace Gw2.Protocol.Tests
             var state = TransportCipherState.FromCapturedState(i, j, sbox);
             Assert.AreEqual(Hex(wire), Hex(TransportCipher.Crypt(state, plaintext)));
 
-            // Outbound uses the send-side chain (table A): [MP_MSGID(0x120), varint, u8].
-            var schema = MessageSchema.FromChain(new[]
-            {
-                new FieldDefinition(1, 0x120),
-                new FieldDefinition(4),
-                new FieldDefinition(2),
-            });
-            var messages = MessageStreamDecoder.Decode(new MessageSchemaSet(new[] { schema }), plaintext);
+            // Direction-aware: outbound uses the send corpus, which has [MP_MSGID(0x120), varint, u8].
+            string dir = Path.Combine(AppContext.BaseDirectory, "fixtures");
+            var corpus = ProtocolSchemaCorpus.FromJson(
+                File.ReadAllText(Path.Combine(dir, "chains-recv.json")),
+                File.ReadAllText(Path.Combine(dir, "chains-send.json")));
+
+            var messages = MessageStreamDecoder.Decode(
+                corpus.ForDirection(TrafficDirection.ClientToServer), plaintext);
 
             Assert.AreEqual(1, messages.Count);
             Assert.AreEqual(0x120, messages[0].MessageId);
             Assert.AreEqual(6, messages[0].WireLength);
             Assert.AreEqual(0x4788UL, (ulong)messages[0].Fields[1].Value);
             Assert.AreEqual(1UL, (ulong)messages[0].Fields[2].Value);
+
+            // The recv corpus has a different 0x120 chain that does not fit this packet.
+            Assert.ThrowsExactly<FormatException>(
+                () => MessageStreamDecoder.Decode(corpus.ForDirection(TrafficDirection.ServerToClient), plaintext));
         }
     }
 }

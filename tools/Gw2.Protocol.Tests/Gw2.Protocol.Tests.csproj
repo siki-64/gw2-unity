@@ -26,6 +26,6 @@
 
   <ItemGroup>
     <None Include="..\re\fixtures\205780\*.json" LinkBase="fixtures" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="..\..\protocol\schema\205780\chains.json" LinkBase="fixtures" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\protocol\schema\205780\chains-*.json" LinkBase="fixtures" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

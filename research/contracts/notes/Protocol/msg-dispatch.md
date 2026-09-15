@@ -2999,8 +2999,8 @@ ciphertext (flush stack temp)   5A 31 60 FB 37 DB
 | send (table A) | `1,4,2` | msgid `0x120`, varint `0x4788`, u8 `1` |
 
 So inbound and outbound have **different chains for the same id**. A decoder needs the send corpus
-(table A, 16-byte records, `defArray +0x08`) for outbound; the runtime's `chains.json` is the recv
-corpus and does not apply to the outbound direction.
+(table A, 16-byte records, `defArray +0x08`) for outbound; the runtime's `chains-recv.json` is the
+recv corpus and does not apply to the outbound direction (see Addendum 27 for `chains-send.json`).
 
 This also confirms the Addendum-25 result empirically: the flush encrypts the raw
 `[u16 msgid][fields]` stream — no `[compLen][decodedLen]` and no LZ4 on the outbound side — and hands
@@ -3022,8 +3022,63 @@ This also confirms the Addendum-25 result empirically: the flush encrypts the ra
 
 ## Next steps
 
-1. Extract the send schema corpus (table A) as a build artifact, analogous to `chains.json`, and
-   extend the runtime decoder to take a direction-specific corpus.
+1. Extract the send schema corpus (table A) as a build artifact, analogous to `chains-recv.json`,
+   and extend the runtime decoder to take a direction-specific corpus. (Done — Addendum 27.)
+2. Capture an inbound and an outbound state at a common offset to test the two-time-pad inference.
+
+---
+
+# Addendum 27: the send schema corpus, and a direction-aware decoder
+
+**Status:** the send corpus is extracted and the runtime selects the corpus by direction
+
+## Extracting table A without re-deriving the registrar arguments
+
+The live send array sits in the **same registry object** as the recv array (`conn+0x18`): send at
+`+0x50/+0x5c` (stride `0x10`), recv at `+0x70/+0x7c` (stride `0x20`). A live read gave send
+`count = 0x20D` (525, the array size, not the populated count) and recv `0x53C` (1340).
+
+Rather than re-derive the registrar call arguments, the static split reuses `registrars3.csv`: for
+every `RegisterTablePair` / `RegisterBidirectional` site, `countA` is the number of leading col-0
+rows of that site in `sweep2.csv` that belong to the **flat table A** (send); the rest are table B
+(recv). `ExtractSchemaCorpus.py --direction send` walks those pointers and emits
+`protocol/schema/205780/chains-send.json`:
+
+| Corpus | File | Messages |
+| --- | --- | --- |
+| recv | `chains-recv.json` | 1241 (from `live_ids.csv`) |
+| send | `chains-send.json` | 481 |
+
+`0x120` is `[MP_MSGID(0x120), varint, u8]` in the send corpus and `[MP_MSGID, varint, varint, u8,
+varint]` in the recv corpus — the send chain is the one that decodes the captured outbound packet
+(Addendum 26). `0x264` is present only in recv, consistent with it being inbound.
+
+The 481 distinct send ids against the live array size of 525 is expected: the send array is
+direct-indexed by id (`FUN_140fed3d0`), so unpopulated slots (null `defArray`) are holes, not
+messages.
+
+## The runtime is direction-aware
+
+`Schema/ProtocolSchemaCorpus` holds both `MessageSchemaSet`s and `ForDirection(...)` selects one;
+`TrafficDirection.Unknown` is rejected. Tests decode the captured `0x264` with the recv corpus, the
+captured outbound `0x120` with the send corpus, and assert that the recv `0x120` chain does **not**
+fit the outbound packet.
+
+## What this establishes
+
+- the send corpus as a build artifact (`chains-send.json`), split from table A;
+- that the outbound decoder needs the send corpus and now gets it.
+
+## What this does not establish
+
+- that the static table-A split recovers every populated send id (the array is sparse; only the live
+  registry is authoritative);
+- the same for the recv corpus beyond the live map;
+- any outbound behaviour beyond the one captured packet.
+
+## Next steps
+
+1. Re-read the live send array's populated slots (not just `count`) to confirm the 481 ids.
 2. Capture an inbound and an outbound state at a common offset to test the two-time-pad inference.
 
 ---

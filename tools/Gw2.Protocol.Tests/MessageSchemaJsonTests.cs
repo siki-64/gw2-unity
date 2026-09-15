@@ -12,7 +12,7 @@ namespace Gw2.Protocol.Tests
     public class MessageSchemaJsonTests
     {
         private static string CorpusJson =>
-            File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "fixtures", "chains.json"));
+            File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "fixtures", "chains-recv.json"));
 
         private static string WireJson =>
             File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "fixtures", "0x264-wire.json"));

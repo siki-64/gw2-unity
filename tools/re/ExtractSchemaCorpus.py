@@ -1,28 +1,33 @@
 #!/usr/bin/env python3
-"""Emit the build 205.780 message-schema corpus as JSON.
+"""Emit a build 205.780 message-schema corpus (recv or send) as JSON.
 
-For every message id in the live per-connection recv registry map
-(protocol/schema/205780/live_ids.csv), read its MsgPackFieldDef chain from
-Gw2-64.exe and emit the field tree, including nested refTypeDef chains:
+Inbound and outbound have different chains per id (msg-dispatch Addendum 26), so
+each direction gets its own corpus:
+
+  recv  every id in the live per-connection recv registry map
+        (protocol/schema/205780/live_ids.csv);
+  send  the flat table-A entries across the TablePair / Bidirectional
+        registration sites (registrars3.csv `countA` fixes how many leading
+        col-0 rows of each site belong to table A; sweep2.csv lists them).
+
+Each id's MsgPackFieldDef chain is read from Gw2-64.exe, including nested
+refTypeDef chains:
 
   {
     "build": 205780,
-    "messages": {
-      "0x264": [ {"t":1,"p":612}, {"t":4}, {"t":2}, {"t":2}, {"t":4} ],
-      ...
-    }
+    "direction": "recv",
+    "messages": { "0x264": [ {"t":1,"p":612}, {"t":4}, ... ] }
   }
 
-Field keys: t = fieldType, p = param, r = nested refTypeDef chain (only for the
-composite types). The terminal marker (fieldType 0 / 0x18) is not emitted; the
-reader treats the end of the array as the end of the chain.
+Field keys: t = fieldType, p = param, r = nested refTypeDef chain. The terminal
+marker (fieldType 0 / 0x18) is not emitted.
 
 Read-only. Addresses are build-local; the output is build-stamped so a consumer
 cannot carry it to another build.
 
 Usage
-  python tools/re/ExtractSchemaCorpus.py
-  python tools/re/ExtractSchemaCorpus.py --ids live_ids.csv --out chains.json
+  python tools/re/ExtractSchemaCorpus.py --direction recv
+  python tools/re/ExtractSchemaCorpus.py --direction send
 """
 
 import argparse
@@ -31,14 +36,18 @@ import json
 import os
 import struct
 import sys
+from collections import defaultdict
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
 IMAGE = r"C:\Program Files (x86)\Steam\steamapps\common\Guild Wars 2\Gw2-64.exe"
-DEFAULT_IDS = os.path.join(ROOT, "protocol", "schema", "205780", "live_ids.csv")
-DEFAULT_OUT = os.path.join(ROOT, "protocol", "schema", "205780", "chains.json")
+SCHEMA_DIR = os.path.join(ROOT, "protocol", "schema", "205780")
+DEFAULT_IDS = os.path.join(SCHEMA_DIR, "live_ids.csv")
+DEFAULT_SWEEP = os.path.join(SCHEMA_DIR, "sweep2.csv")
+DEFAULT_REGISTRARS = os.path.join(SCHEMA_DIR, "registrars3.csv")
 
 DESC_STRIDE = 0x28
 MAX_DEPTH = 16
+PAIR_REGISTRARS = ("RegisterTablePair", "RegisterBidirectional")
 
 
 class PE:
@@ -89,7 +98,6 @@ def read_chain(pe, va, depth, active):
         if param:
             field["p"] = param
         ref = pe.u64(va + 0x18)
-        # Only composite types carry a nested chain; guard cycles and depth.
         if ref and depth < MAX_DEPTH and ref not in active:
             try:
                 active.add(ref)
@@ -104,46 +112,83 @@ def read_chain(pe, va, depth, active):
     return fields
 
 
+def recv_id_map(ids_path):
+    m = {}
+    with open(ids_path, newline="") as f:
+        for r in csv.DictReader(f):
+            if r.get("tag") == "OK" and r.get("ptr"):
+                m.setdefault(int(r["id"], 16), r["ptr"])
+    return m
+
+
+def send_id_map(registrars_path, sweep_path):
+    counts = {}
+    with open(registrars_path, newline="") as f:
+        for r in csv.DictReader(f):
+            if r["registrar"] in PAIR_REGISTRARS and (r.get("countA") or "").isdigit():
+                counts[r["callAddr"]] = int(r["countA"])
+
+    by_site = defaultdict(list)
+    with open(sweep_path, newline="") as f:
+        for r in csv.DictReader(f):
+            by_site[r["callAddr"]].append(r)
+
+    m = {}
+    for site, rows in by_site.items():
+        n = counts.get(site)
+        if n is None:
+            continue  # RecvOnly / unknown: no send table
+        col0 = [r for r in rows if r["col"] == "0"]
+        for r in col0[:n]:  # table A is emitted before table B
+            if r["tag"] == "OK" and r["ptr"]:
+                m.setdefault(int(r["id"], 16), r["ptr"])
+    return m
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--direction", choices=["recv", "send"], default="recv")
     ap.add_argument("--image", default=IMAGE)
     ap.add_argument("--ids", default=DEFAULT_IDS)
-    ap.add_argument("--out", default=DEFAULT_OUT)
+    ap.add_argument("--sweep", default=DEFAULT_SWEEP)
+    ap.add_argument("--registrars", default=DEFAULT_REGISTRARS)
+    ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
-    pe = PE(args.image)
-    id_map = {}
-    with open(args.ids, newline="") as f:
-        for r in csv.DictReader(f):
-            if r.get("tag") == "OK" and r.get("ptr"):
-                id_map.setdefault(int(r["id"], 16), r["ptr"])
+    if args.direction == "recv":
+        id_map = recv_id_map(args.ids)
+        source = "protocol/schema/205780/live_ids.csv (live game-connection recv registry)"
+    else:
+        id_map = send_id_map(args.registrars, args.sweep)
+        source = ("protocol/schema/205780/sweep2.csv table A (flat send tables) split by "
+                  "registrars3.csv countA across TablePair/Bidirectional sites")
+    out = args.out or os.path.join(SCHEMA_DIR, f"chains-{args.direction}.json")
 
+    pe = PE(args.image)
     messages = {}
     unreadable = 0
     for mid in sorted(id_map):
         try:
-            chain = read_chain(pe, int(id_map[mid], 16), 0, set())
+            messages[f"0x{mid:x}"] = read_chain(pe, int(id_map[mid], 16), 0, set())
         except KeyError:
             unreadable += 1
             continue
-        messages[f"0x{mid:x}"] = chain
 
     body = {
         "build": 205780,
         "buildLabel": "205.780",
+        "direction": args.direction,
         "imageSha256": "d2ae84876a0b93277fccb368969046b848bb0403fd09db420389c813d2459b23",
-        "source": "protocol/schema/205780/live_ids.csv (live game-connection recv registry) "
-                  "plus MsgPackFieldDef chains read from Gw2-64.exe",
+        "source": source,
         "fieldKeys": {"t": "fieldType", "p": "param", "r": "nested refTypeDef chain"},
         "provenance": "Generated by tools/re/ExtractSchemaCorpus.py (msg-dispatch Addendum 8 offsets).",
         "messages": messages,
     }
-    with open(args.out, "w", newline="\n") as f:
+    with open(out, "w", newline="\n") as f:
         json.dump(body, f, indent=1, sort_keys=True)
         f.write("\n")
-    size = os.path.getsize(args.out)
-    print(f"wrote {args.out}: {len(messages)} messages, {size} bytes, "
+    print(f"wrote {out}: {len(messages)} messages, {os.path.getsize(out)} bytes, "
           f"{unreadable} unreadable chains")
 
 
