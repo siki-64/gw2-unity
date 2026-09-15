@@ -48,6 +48,7 @@ schema encode (Msg::WriteMsg -> FUN_140fea110)   send registry (conn+0x18, +0x50
 | [schema-registry.md](schema-registry.md) | channels, registry records, `MsgPack` schema format, direction-specific corpora |
 | [outbound-messages.md](outbound-messages.md) | send encoder, send registry, buffer, flush |
 | [live-capture-evidence.md](live-capture-evidence.md) | captures, fixtures, validation status, operational cautions |
+| [handler-to-subsystem.md](handler-to-subsystem.md) | control flow from a decoded message through its handler into the native subsystems |
 
 ## Evidence levels
 

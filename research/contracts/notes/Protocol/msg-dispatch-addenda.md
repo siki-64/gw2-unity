@@ -8,7 +8,8 @@ for the current state; use this file for provenance and the reasoning trail.
 Topic notes: [msg-dispatch](msg-dispatch.md), [inbound-framing](inbound-framing.md),
 [schema-registry](schema-registry.md), [transport-cipher](transport-cipher.md),
 [handshake-key-derivation](handshake-key-derivation.md),
-[outbound-messages](outbound-messages.md), [live-capture-evidence](live-capture-evidence.md).
+[outbound-messages](outbound-messages.md), [live-capture-evidence](live-capture-evidence.md),
+[handler-to-subsystem](handler-to-subsystem.md).
 
 Addenda referenced as "msg-dispatch-addenda Addendum N" elsewhere resolve here.
 
