@@ -191,9 +191,50 @@ Context accessors confirmed so far: `ctx+0x28` -> `+0x30` definition registry; `
 `ctx+0x98` `ChCliContext`; `ctx+0xb8` combatant manager; `ctx+0xe0` `CnContext`; `ctx+0x1c8` WvW/match
 object.
 
+## The `*(ctx+0x28)+0x30` registry is the agent world (`AgWorld`)
+
+`FUN_141029e20()` returns `*(ctx+0x28) + 0x30`; `ctx` is the thread-local client context
+(`FUN_1409b4820`). The registrar chain shows what it is:
+
+```text
+FUN_14102aac0(registry, 0, key = u16@rec+2, seqArg = u32@rec+4/+5, obj):
+  existing = registry+0xd0[ key ]   (count registry+0xdc, guarded)
+  FUN_1410344b0(obj, registry, existing)   // obj+0x58 = registry, obj+0x20 = existing
+  ...
+  FUN_14101e7c0(obj, key, registry+0x1bc, flag)   // obj+0x18 = id (clamped), obj+0x1c = flag|seq
+     -> if obj+0x8 == 0: FUN_14102ad20(registry, obj)   // insert
+  ...
+  FUN_14101e7c0 also drives FUN_14101e4a0 (list remove) / FUN_14102ad20 (list insert)
+```
+
+`FUN_14102ad20(registry, obj)` asserts from `AgWorld.cpp:0x532` and inserts `obj` into the list at
+`registry+0x150` (`FUN_14101e080`). So the registry is the **agent world (`AgWorld`)**; the messages
+insert typed objects into an `AgWorld` list. Every object carries a network id (`+0x18`), a sequence
+and flag word (`+0x1c`), a registry back-link (`+0x58`) and a related-object link (`+0x20`).
+
+The per-message builders turn the decoded record into a typed object:
+
+| Msg | Builder | Kind / type bits | vtable |
+| --- | --- | --- | --- |
+| `0x21` | `FUN_141030410` | kind `0`, `(rec+8) \| 0x8810800` | `PTR_FUN_142114dc8` |
+| `0x23` | `FUN_141030750` | kind `3`, `(rec+8) \| 0x8801000` | `PTR_FUN_142114ea8` |
+
+`FUN_141030750` reads a placement: two `i16` at `rec+0x1e`/`rec+0x20` as angles
+(`value * π / 32766`, `0x7fff` = infinity), a sub-record at `rec+0x16`, and a count/list at
+`rec+0x0d`/`rec+0x0e` — i.e. a world transform/placement definition.
+
+Reliability/ordering lives in `FUN_14102ad80(registryWindow, seq, base)`, a `/0x28`-sized sliding
+window with reorder/late-handling, and `FUN_14102aac0` can emit an outbound message through
+`FUN_140fea110` for `dispatchType == 1` — the client requests/acks content rather than only
+consuming it.
+
+Observed `AgWorld` fields (build-local): `+0x10`, key table `+0xd0`/count `+0xdc`, insert list
+`+0x150`, `+0x178`, counter `+0x1bc`, `+0x1cc`, `+0x1d0`, `+0x1d4`, `+0x1f8`, `+0x20c`.
+
 ## Open
 
-- The `*(ctx+0x28)+0x30` definition registry layout, and the `FUN_141030xxx` builders.
+- The `AgWorld` object kinds/vtables and the full list at `+0x150`.
+- The identity of `*(ctx+0x28)` (the `AgWorld` owner).
 - The `CmbtCli` combatant and buff layouts behind `FUN_1412c0470`/`0530`.
 - Which subsystem `FUN_141345bd0` is (`0x312`/`0x315`).
 - What selects `ChCliPlayer +0x18` vs `+0x20`.
