@@ -31,10 +31,13 @@ continuity.
 Confidence and limits
   * The instruction-to-code mapping is recorded step by step in the note
     research/contracts/notes/Protocol/msg-dispatch.md (Addendum 9).
-  * The reference vector this tool emits is SYNTHETIC: it is produced by the
-    reconstruction, so it can catch a transcription error but cannot confirm
-    the client's wire output. Byte-exact confirmation requires a captured
-    frame; none exists in the repository.
+  * Validated against live traffic (msg-dispatch Addendum 16): the PRGA
+    reproduces the client's CryptStream output byte-for-byte for a captured
+    game-connection packet, and advancing key_schedule from the captured key
+    matches the client's live state (j, S[256]) exactly. The key and capture
+    that proved this are private and uncommitted.
+  * The reference vector this tool emits is SYNTHETIC and remains a regression
+    check only; it is not the evidence of wire correctness.
 
 Usage
   python tools/re/Gw2TransportCipher.py --selftest

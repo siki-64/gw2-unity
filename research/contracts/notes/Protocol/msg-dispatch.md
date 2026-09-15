@@ -2054,3 +2054,70 @@ relaunch before re-arming, rather than adding and deleting hardware slots during
 2. Promote a sanitized `0x264` fixture (the 12-byte decoded record) once the wire bytes are also
    captured and the cipher is confirmed.
 
+---
+
+# Addendum 16: the transport cipher is validated on real wire data
+
+**Status:** the KSA and PRGA are reproduced against a live game-connection capture, byte-for-byte
+and state-for-state; this closes the cipher gap left open since Addendum 9
+
+Addendum 15 next step 1 is done. A hardware execution breakpoint at `MsgUtil_CryptStream`
+(`base+0xfee7c0`) was used to capture one game-connection packet.
+
+## Capture
+
+At the `CryptStream` entry for the game connection (`RCX == conn+0x12C`, `conn = DAT_1426632d0`):
+
+| Item | Value (private) |
+| --- | --- |
+| state before the call | `i = 70`, `j = 246`, `S[256]` (0x108 bytes at `conn+0x12C`) |
+| `RDX` | `0x1C` (28 bytes) |
+| `R8` = source (ciphertext) | 28 bytes, captured |
+| `R9` = destination | 28 bytes, read after the call |
+
+Note the decompiler header's "end pointer" wording is wrong: `param_3` is the **source start**, so
+the ciphertext is `[R8, R8+RDX)`, not `[R8-RDX, R8)`.
+
+## PRGA: byte-for-byte
+
+Running our `MsgUtil_CryptStream` reimplementation from the captured state over the captured
+ciphertext produced the client's destination **exactly**:
+
+```text
+18 00 18 00 90 00 01 E9 01 00 48 0F 46 00 01 00 B0 01 E5 05 00 A0 1C 46 00 00 00 00
+```
+
+So the PRGA index/swap/XOR sequence and the `state = {i, j, S[256]}` layout are confirmed on real
+data. (The plaintext is not a message start — the reader buffers across packets, so no `msgid` is
+expected at offset 0.)
+
+## KSA: state match
+
+The captured state sits mid-stream, so `i = 70` only means 70 **mod 256** bytes have been
+processed. Advancing our `key_schedule(key)` output by one byte at a time and comparing the full
+`(j, S[256])` to the captured state found a match at **1,922,118 total bytes** (≡ 70 mod 256). A
+full 256-byte S-box coinciding by chance is not credible, so the key schedule — the 20-byte
+XOR buffer, the five-word mixing, and the RC4 KSA — is reproduced as well.
+
+## What this establishes
+
+- the transport cipher is reproduced on real wire bytes: `crypt_stream(captured_state, ciphertext)`
+  equals the client's `CryptStream` output exactly;
+- our `key_schedule(key)` is the client's KSA (1,922,118-byte state match);
+- a mid-session capture is decryptable two ways: advance from the key, or start directly from a
+  captured `conn+0x12C` state (`Gw2TransportDecode.py --state`).
+
+## What this does not establish
+
+- A **catalog wire fixture** still needs the key that produced a specific message on the wire; the
+  capture and key are private and uncommitted, so no artifact is promoted here.
+- The `0x264` varint wire encoding is still only statically inferred (the `0x264` samples came from
+  the client's decoded buffer).
+- Outbound (client-to-server) encryption was not examined; this is the inbound path.
+
+## Next steps
+
+1. Capture a `0x264` on the wire (encrypted) and decrypt it with the validated cipher, then promote
+   the first real wire fixture and set `wireVerified`.
+2. Extend the same capture method to the outbound path to confirm whether it shares the cipher.
+
