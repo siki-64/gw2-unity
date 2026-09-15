@@ -1,0 +1,293 @@
+#!/usr/bin/env python3
+"""Compute MsgPack defSize/maxSize per defArray chain across the 205.780 corpus.
+
+Reads Gw2-64.exe directly (PE VA->file mapping), walks every descriptor chain
+referenced by the schema corpus, and computes per chain:
+
+  maxSize  exactly as MsgPack_ComputeMaxSize (140fe98b0) does;
+  defSize  exactly as MsgPack_ComputeDefSize (140fe9830) does;
+  ok       maxSize <= MSG_MAX_BUFFER_SIZE (0x2000), the validator's bound.
+
+The default corpus is protocol/schema/205780/live_ids.csv, the live per-connection
+recv schema map dumped from the game connection's registry. It supersedes
+sweep2.csv as a schema map because sweep2.csv has 469 ids with more than one
+candidate defArray and its first-row choice is often wrong (msg-dispatch
+Addendum 18). Pass --corpus sweep2.csv to reproduce the older static sweep.
+
+Read-only: never writes to the image. Run offline from the repository root.
+
+Output columns:
+  ptr,ids,maxSize,defSize,fieldCount,fields,ok
+
+where ids is a semicolon-joined list of the message ids that reference this
+chain, fields is a comma-joined list of fieldType hex values (including the
+terminal marker), and ok is True iff maxSize <= 0x2000.
+
+With --compare OLDCSV, also emits --collisions OUTCSV: for every id present in
+both corpora whose chain pointer differs, the old (first-OK-row) chain and the
+live chain, so colliding catalog chains can be re-derived.
+
+The defSize column is the size of the decoded struct the reader writes
+(MsgPack_ReadFields output), i.e. the sum of the size-table entry per field.
+It is not the wire length; maxSize is the worst-case wire length.
+"""
+
+import argparse
+import csv
+import os
+import struct
+import sys
+
+ROOT = os.path.join(os.path.dirname(__file__), "..", "..")
+
+IMAGE = r"C:\Program Files (x86)\Steam\steamapps\common\Guild Wars 2\Gw2-64.exe"
+CORPUS = os.path.join(ROOT, "protocol", "schema", "205780", "live_ids.csv")
+OUT = os.path.join(ROOT, "protocol", "schema", "205780", "maxsize.csv")
+COLLISIONS = os.path.join(ROOT, "protocol", "schema", "205780",
+                          "collisions.csv")
+
+MSG_MAX_BUFFER_SIZE = 0x2000
+SIZE_TABLE_VA = 0x142109500
+DESC_STRIDE = 0x28
+
+
+class PE:
+    def __init__(self, path):
+        with open(path, "rb") as f:
+            self.blob = f.read()
+        dos = struct.unpack_from("<I", self.blob, 0x3C)[0]
+        assert self.blob[dos:dos + 4] == b"PE\x00\x00", "not a PE"
+        nsec = struct.unpack_from("<H", self.blob, dos + 6)[0]
+        opt_size = struct.unpack_from("<H", self.blob, dos + 20)[0]
+        opt = dos + 24
+        magic = struct.unpack_from("<H", self.blob, opt)[0]
+        if magic == 0x10B:  # PE32
+            self.image_base = struct.unpack_from("<I", self.blob, opt + 28)[0]
+        else:  # PE32+
+            self.image_base = struct.unpack_from("<Q", self.blob, opt + 24)[0]
+        sec_base = opt + opt_size
+        self.sections = []
+        for i in range(nsec):
+            off = sec_base + i * 40
+            name = self.blob[off:off + 8].rstrip(b"\x00").decode("latin1")
+            vaddr, vsize, rawptr, rawsize = struct.unpack_from("<IIII",
+                                                               self.blob,
+                                                               off + 8)
+            # PE section header fields at off+8: VirtualSize, VirtualAddress,
+            # SizeOfRawData, PointerToRawData -- swap to (vsize, vaddr, ...).
+            vsize, vaddr, rawsize, rawptr = vaddr, vsize, rawptr, rawsize
+            self.sections.append((name, vaddr, vsize, rawptr, rawsize))
+
+    def read_va(self, va, size):
+        rva = va - self.image_base
+        for name, vaddr, vsize, rawptr, rawsize in self.sections:
+            if vaddr <= rva < vaddr + max(vsize, rawsize):
+                off = rawptr + (rva - vaddr)
+                return self.blob[off:off + size]
+        raise KeyError(f"VA 0x{va:x} not in any section")
+
+    def read_u8(self, va):
+        return self.read_va(va, 1)[0]
+
+    def read_u16(self, va):
+        return struct.unpack_from("<H", self.read_va(va, 2))[0]
+
+    def read_u32(self, va):
+        return struct.unpack_from("<I", self.read_va(va, 4))[0]
+
+    def read_u64(self, va):
+        return struct.unpack_from("<Q", self.read_va(va, 8))[0]
+
+
+def load_id_map(path):
+    """msgId -> defArray pointer, taking the first OK row per id (as the
+    offline decoder's load_id_map does)."""
+    m = {}
+    with open(path, newline="") as f:
+        for r in csv.DictReader(f):
+            if r.get("tag") == "OK" and r.get("ptr"):
+                m.setdefault(int(r["id"], 16), r["ptr"])
+    return m
+
+
+def chain_fields(pe, ptr):
+    fields = []
+    va = int(ptr, 16)
+    for _ in range(4096):
+        ft = pe.read_u32(va)
+        fields.append(ft)
+        if ft == 0 or ft == 0x18:
+            break
+        va += DESC_STRIDE
+    return fields
+
+
+def compare_collisions(pe, live, old, out_path):
+    """Emit ids whose live chain differs from the old first-row chain."""
+    rows = []
+    for mid in sorted(live):
+        lp, op = live[mid], old.get(mid)
+        if op is None or lp == op:
+            continue
+        rows.append((f"{mid:x}", op, ",".join(f"{x:x}" for x in
+                    chain_fields(pe, op)), lp,
+                    ",".join(f"{x:x}" for x in chain_fields(pe, lp))))
+    with open(out_path, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["id", "oldPtr", "oldFields", "livePtr", "liveFields"])
+        w.writerows(rows)
+    return rows
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--image", default=IMAGE)
+    ap.add_argument("--corpus", default=CORPUS,
+                    help="schema CSV (default: live_ids.csv)")
+    ap.add_argument("--out", default=OUT, help="maxSize CSV to write")
+    ap.add_argument("--compare", metavar="OLDCSV",
+                    help="second corpus to diff against (e.g. sweep2.csv)")
+    ap.add_argument("--collisions", default=COLLISIONS,
+                    help="collision report CSV written with --compare")
+    args = ap.parse_args()
+
+    pe = PE(args.image)
+    # Size table: 27 entries of {size:dword, flags:dword} indexed by fieldType*8.
+    # Verified byte-for-byte against the binary at 0x142109500 (indices 0x00..0x1a).
+    # flags != 0 means a fixed-size scalar (size is its output size); flags == 0
+    # means a composite whose maxSize is computed by MsgPack_ComputeMaxSize.
+    # The earlier note transcription of this table is inconsistent with these bytes.
+    size = []
+    flags = []
+    for i in range(27):
+        base = SIZE_TABLE_VA + i * 8
+        size.append(pe.read_u32(base))
+        flags.append(pe.read_u32(base + 4))
+    print("size table:", size)
+    print("flags table:", flags)
+
+    rows = list(csv.DictReader(open(args.corpus, newline="")))
+    seen = {}
+    for r in rows:
+        if r["tag"] == "OK" and r["ptr"]:
+            seen.setdefault(r["ptr"], set()).add(r["id"])
+
+    results = []
+    violations = 0
+    for ptr, ids in sorted(seen.items()):
+        va = int(ptr, 16)
+        fields = []
+        total = 0
+        defsize = 0
+        guard = 0
+        while True:
+            guard += 1
+            if guard > 4096:
+                raise RuntimeError(f"unbounded chain at 0x{va:x}")
+            ft = pe.read_u32(va)
+            fields.append(ft)
+            if ft == 0 or ft == 0x18:
+                break
+            # ComputeDefSize sums the size-table entry of every field; the
+            # recursion it performs only fills the nested defSize cache.
+            defsize += size[ft]
+            if flags[ft] != 0:
+                total += size[ft]
+            else:
+                param = pe.read_u32(va + 0x10)
+                ref = pe.read_u64(va + 0x18)
+                if ft == 4:
+                    total += 5
+                elif ft == 10:
+                    total += 0x11
+                elif ft in (0xD, 0xE, 0x13):
+                    total += param + 8
+                elif ft == 0xF:
+                    total += _maxsize(pe, size, flags, ref) + 8
+                elif ft == 0x10:
+                    total += _maxsize(pe, size, flags, ref) * param + 8
+                elif ft == 0x11:
+                    total += _maxsize(pe, size, flags, ref) * param + 9
+                elif ft == 0x12:
+                    total += _maxsize(pe, size, flags, ref) * param + 10
+                elif ft == 0x14:
+                    total += pe.read_u16(va + 0x10) + 9
+                elif ft == 0x15:
+                    total += pe.read_u16(va + 0x10) + 10
+                elif ft == 0x16:
+                    pass  # MP_SRV_ALIGN: no data
+            va += DESC_STRIDE
+        ok = total <= MSG_MAX_BUFFER_SIZE
+        if not ok:
+            violations += 1
+        results.append((ptr, ";".join(sorted(ids, key=lambda x: int(x, 16))),
+                        total, defsize, len(fields), ",".join(
+                            f"{x:x}" for x in fields), ok))
+
+    with open(args.out, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["ptr", "ids", "maxSize", "defSize", "fieldCount",
+                    "fields", "ok"])
+        w.writerows(results)
+
+    ok_count = sum(1 for x in results if x[6])
+    print(f"corpus: {args.corpus}")
+    print(f"chains: {len(results)}  ok<=0x2000: {ok_count}  "
+          f"violations: {violations}")
+    for r in results:
+        if not r[6]:
+            print("  VIOLATION", r)
+
+    if args.compare:
+        live = load_id_map(args.corpus)
+        old = load_id_map(args.compare)
+        rows = compare_collisions(pe, live, old, args.collisions)
+        shared = len(set(live) & set(old))
+        print(f"compare: {args.compare}")
+        print(f"ids: live={len(live)} old={len(old)} shared={shared}  "
+              f"differing chains={len(rows)} -> {args.collisions}")
+
+    return 0 if violations == 0 else 1
+
+
+def _maxsize(pe, size, flags, va):
+    total = 0
+    guard = 0
+    while True:
+        guard += 1
+        if guard > 4096:
+            raise RuntimeError(f"unbounded ref chain at 0x{va:x}")
+        ft = pe.read_u32(va)
+        if ft == 0 or ft == 0x18:
+            return total
+        if flags[ft] != 0:
+            total += size[ft]
+        else:
+            param = pe.read_u32(va + 0x10)
+            ref = pe.read_u64(va + 0x18)
+            if ft == 4:
+                total += 5
+            elif ft == 10:
+                total += 0x11
+            elif ft in (0xD, 0xE, 0x13):
+                total += param + 8
+            elif ft == 0xF:
+                total += _maxsize(pe, size, flags, ref) + 8
+            elif ft == 0x10:
+                total += _maxsize(pe, size, flags, ref) * param + 8
+            elif ft == 0x11:
+                total += _maxsize(pe, size, flags, ref) * param + 9
+            elif ft == 0x12:
+                total += _maxsize(pe, size, flags, ref) * param + 10
+            elif ft == 0x14:
+                total += pe.read_u16(va + 0x10) + 9
+            elif ft == 0x15:
+                total += pe.read_u16(va + 0x10) + 10
+            elif ft == 0x16:
+                pass
+        va += DESC_STRIDE
+
+
+if __name__ == "__main__":
+    sys.exit(main())

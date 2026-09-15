@@ -1,0 +1,22 @@
+{
+  "kind": "sanitized-capture",
+  "build": 205780,
+  "buildLabel": "205.780",
+  "imageSha256": "d2ae84876a0b93277fccb368969046b848bb0403fd09db420389c813d2459b23",
+  "connectionRole": "game",
+  "finding": "cross-direction keystream reuse (two-time pad)",
+  "inboundState": {
+    "i": "0xeb",
+    "j": "0x6e",
+    "sboxHex": "5fd75735efe6499ffbde954dae8d076ecb682ea73610fca160a00e76e74bf130bcc6d4782512cd6a9bea3f711f826db581be323a7cc800b05a967ba2c27a465065e192a33897613c805e79149ad008e48ae217d233f6dc0b6bd1ec864a1a72f385944e26e80c87e0d9628fb8eeb4a46f3e437df852156729090f04038bab77535ddbcee9e31eac90486324918ef48827afb918a6eb28cad605dfc50116709c3dc4add840aac05931b1c9a5b634f789bd2fba37cf11bbfec3205cd5392d56419ec1fd66f906020db3b21993232ba89d836cbff27564f0541c2a58dd1d55c744e53bf547cc8c515b6922d31b74730a4c4599212c13da4fa9847e4298edb7faff7f"
+  },
+  "outboundState": {
+    "i": "0x25",
+    "j": "0x57",
+    "sboxHex": "9d996c7ddb175b3641bc306287d23eeff56f31a64381eafee60d0c9ad73534886e443be84ead2cff1e6611f9e32d2421f785488fa8e4dd78541d7ca9c8ba18c24beb828c15572b010873b4c0a3cef226984de5c98be05a68bf74f09260ae1bbbb516453c96f8e16bf6c6697ee738e2c7b3acd85822fd7f5c776d9ba0fcc17b2764807aee0a709c94463ddc65670ba55297dfc3421f4732497986d1edd420c46a400095079e8ad9e9cab6a133c5938902d076715525fbcd902950092f8d8eb09f0e04cbaaa2841cf4ccf3d51ab85edef12e234fbd724ccfd3b913287506055956b7915fb13f8353faaf145d1251da3739a7190f2ad63ab2bea4ab4a616310ec03"
+  },
+  "outboundToInboundAdvance": 2795974,
+  "meaning": "Advancing the outbound PRGA (conn+0x234) by 2795974 bytes reproduces the inbound state (conn+0x12C) exactly, so both directions use the same keystream; the inbound had processed that many more bytes.",
+  "provenance": "Live game connection, build 205.780, one paused snapshot (msg-dispatch-addenda Addendum 28). Session key not retained.",
+  "noClaim": "One connection. It confirms the code-level inference (Addendum 25) that the outbound state is a copy of the inbound KSA state; it does not make a bare capture decryptable."
+}

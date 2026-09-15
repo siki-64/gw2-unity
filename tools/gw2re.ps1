@@ -64,6 +64,39 @@ $ErrorActionPreference = 'Stop'
 # The operator wrapper must work both in Windows PowerShell 5.1 (no '??', no -AsHashtable) and in
 # PowerShell 7, so it sticks to syntax both understand.
 
+# A JSON array is a distinct type so an empty or one-element list cannot be confused with a
+# scalar. PowerShell flattens an Object[] of length 1 to its single element when it crosses a
+# pipeline or a return, which is how "messages": [ {...} ] previously round-tripped out as
+# "messages": { ... }. Wrapping the list keeps the array shape explicit and unambiguous.
+if (-not ('gw2re.JsonArray' -as [type])) {
+    Add-Type -TypeDefinition @'
+namespace gw2re {
+    // Wraps a JSON array so its list shape survives a round-trip. Implements IEnumerable and an
+    // indexer so existing code that does `foreach ($x in $arr)` or `$arr[0]` keeps working.
+    public sealed class JsonArray : System.Collections.Generic.IEnumerable<object> {
+        private readonly object[] _items;
+        public JsonArray(object[] items) { _items = items ?? new object[0]; }
+        public object[] Items { get { return _items; } }
+        public int Count { get { return _items.Length; } }
+        public object this[int index] { get { return _items[index]; } }
+        public System.Collections.Generic.IEnumerator<object> GetEnumerator() {
+            foreach (object item in _items) { yield return item; }
+        }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+            return _items.GetEnumerator();
+        }
+    }
+
+    // OrderedDictionary preserves insertion (on-disk) key order, but unlike Hashtable it has no
+    // ContainsKey. The rest of this script calls ContainsKey throughout, so this subclass adds it
+    // rather than rewriting every call site.
+    public sealed class OrderedMap : System.Collections.Specialized.OrderedDictionary {
+        public bool ContainsKey(object key) { return this.Contains(key); }
+    }
+}
+'@
+}
+
 $script:ExitCode = 0
 $script:Errors = [System.Collections.Generic.List[string]]::new()
 $script:Warnings = [System.Collections.Generic.List[string]]::new()
@@ -139,23 +172,30 @@ function ConvertTo-Hashtable {
     param($InputObject)
     if ($null -eq $InputObject) { return $null }
     if ($InputObject -is [System.Collections.IDictionary]) {
-        $result = @{}
+        # OrderedMap preserves the on-disk key order. A plain @{} enumerates in an
+        # implementation-defined order, which reorders top-level keys such as schemaVersion
+        # and template on every write and produces a large spurious diff.
+        $result = [gw2re.OrderedMap]::new()
         foreach ($key in $InputObject.Keys) {
             $result[[string] $key] = ConvertTo-Hashtable -InputObject $InputObject[$key]
         }
         return $result
     }
     if ($InputObject -is [System.Management.Automation.PSCustomObject]) {
-        $result = @{}
+        $result = [gw2re.OrderedMap]::new()
         foreach ($property in $InputObject.PSObject.Properties) {
             $result[$property.Name] = ConvertTo-Hashtable -InputObject $property.Value
         }
         return $result
     }
     if ($InputObject -is [System.Collections.IEnumerable] -and $InputObject -isnot [string]) {
-        $items = @()
-        foreach ($item in $InputObject) { $items += , (ConvertTo-Hashtable -InputObject $item) }
-        return $items
+        # A JSON array must round-trip as an array even when it holds zero or one element.
+        # Returning a bare Object[] here is ambiguous: the pipeline flattens it, so a
+        # one-element list reaches Write-JsonValue as a scalar and is emitted as an object.
+        # That turned "messages": [ {...} ] into "messages": { ... }, which is not an array
+        # and violates catalog.schema.json. Wrap it so the list shape survives.
+        $items = @($InputObject | ForEach-Object { ConvertTo-Hashtable -InputObject $_ })
+        return , ([gw2re.JsonArray]::new($items))
     }
     return $InputObject
 }
@@ -165,10 +205,12 @@ function Read-JsonFile {
     $raw = Get-Content -LiteralPath $FilePath -Raw
     $parsed = $raw | ConvertFrom-Json
     $node = ConvertTo-Hashtable -InputObject $parsed
-    if ($null -eq $node) { $node = @{} }
-    # ConvertFrom-Json yields $null for an empty array literal; restore the list shape.
+    if ($null -eq $node) { $node = [gw2re.OrderedMap]::new() }
+    # ConvertFrom-Json yields $null for an empty array literal; restore the list shape explicitly.
     foreach ($listKey in @('buildStamps', 'messages', 'researchLeads', 'supportedWireBuilds', 'fields', 'sourceReferences', 'sessionPrerequisites', 'wireFixtures', 'unresolved', 'stages', 'entries', 'records', 'tags', 'kind')) {
-        if ($node.ContainsKey($listKey) -and $null -eq $node[$listKey]) { $node[$listKey] = @() }
+        if ($node.ContainsKey($listKey) -and $null -eq $node[$listKey]) {
+            $node[$listKey] = [gw2re.JsonArray]::new(@())
+        }
     }
     return @{ Raw = $raw; Node = $node }
 }
@@ -221,6 +263,10 @@ function Write-JsonValue {
     }
     if ($Value -is [System.Collections.IDictionary]) {
         Write-JsonObject -Builder $Builder -Map $Value -Indent $Indent
+        return
+    }
+    if ($Value -is [gw2re.JsonArray]) {
+        Write-JsonArray -Builder $Builder -Items @($Value.Items) -Indent $Indent
         return
     }
     if ($Value -is [string]) {
@@ -731,7 +777,7 @@ function Invoke-CatalogStamp {
 
     $catalog = (Read-JsonFile -FilePath $catalogFull).Node
     if (-not $catalog.ContainsKey('buildStamps') -or $null -eq $catalog['buildStamps']) {
-        $catalog['buildStamps'] = @()
+        $catalog['buildStamps'] = [gw2re.JsonArray]::new(@())
     }
 
     $stamp = [ordered]@{
@@ -776,7 +822,8 @@ function Invoke-CatalogStamp {
         $stamps.Add($existing)
     }
     $stamps.Add($stamp)
-    $catalog['buildStamps'] = @($stamps | Sort-Object { [int] $_['build'] })
+    # Wrap so a single-element stamp list stays a JSON array rather than collapsing to an object.
+    $catalog['buildStamps'] = [gw2re.JsonArray]::new(@($stamps | Sort-Object { [int] $_['build'] }))
 
     Write-Utf8NoBom -FilePath $catalogFull -Content (ConvertTo-StableJson -InputObject $catalog)
     Add-Info "catalog stamp :: build $BuildNumber stamped in '$CatalogPath'"
@@ -865,7 +912,7 @@ function New-EvidenceEntry {
     }
     $kinds = @(Get-EvidenceKinds -FileName $File.Name)
     $entry = [ordered]@{
-        kind     = $kinds
+        kind     = [gw2re.JsonArray]::new($kinds)
         bytes    = $File.Length
         sha256   = Get-Sha256Hex -FilePath $File.FullName
         relative = $relative
@@ -934,7 +981,7 @@ function Invoke-EvidenceImport {
     if ($Process) { $bundle['processName'] = $Process }
     if ($Size) { $bundle['imageSize'] = $Size }
     if ($CapturedAt) { $bundle['capturedAtUtc'] = $CapturedAt }
-    if ($TagList) { $bundle['tags'] = @($TagList) }
+    if ($TagList) { $bundle['tags'] = [gw2re.JsonArray]::new(@($TagList)) }
 
     $entries = [System.Collections.Generic.List[object]]::new()
     foreach ($file in @(Get-EvidenceFileList -SourceFull $sourceFull -RelativeBase $relativeBase -ExcludeList $ExcludeList | Sort-Object FullName)) {
@@ -949,7 +996,7 @@ function Invoke-EvidenceImport {
         Add-Error 'evidence import :: refusing to write a manifest for an import that reported errors'
         return
     }
-    $bundle['entries'] = @($entries)
+    $bundle['entries'] = [gw2re.JsonArray]::new(@($entries))
 
     Write-Utf8NoBom -FilePath $manifestFull -Content (ConvertTo-StableJson -InputObject $bundle)
     Add-Info "evidence import :: $($entries.Count) entries written to '$ManifestPath' for build $BuildNumber"
