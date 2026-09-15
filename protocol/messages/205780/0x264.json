@@ -26,7 +26,7 @@
       {
         "name": "decoded-record-shape",
         "state": "static",
-        "note": "Applying MsgPack_ReadFields (140febc30) to the chain: u16 msgid -> decoded+0x00; fieldType 4 base-128 varint (1..5 wire bytes, MSB group first) -> u32 at decoded+0x02; fieldType 2 u8 -> decoded+0x06; fieldType 2 u8 -> decoded+0x07; fieldType 4 varint -> u32 at decoded+0x08. defSize 0x0C, maxSize 0x0E (tools/re/MaxSizeWalk.py, protocol/schema/205780/maxsize.csv). This independently corroborates the packed record in research/contracts/notes/UI/Widgets/remote-equipped-skills.md and refines the two u32 members as varint-encoded on the wire."
+        "note": "Applying MsgPack_ReadFields (140febc30) to the chain: u16 msgid -> decoded+0x00; fieldType 4 base-128 varint (1..5 wire bytes, little-endian LSB group first) -> u32 at decoded+0x02; fieldType 2 u8 -> decoded+0x06; fieldType 2 u8 -> decoded+0x07; fieldType 4 varint -> u32 at decoded+0x08. defSize 0x0C, maxSize 0x0E (tools/re/MaxSizeWalk.py, protocol/schema/205780/maxsize.csv). This independently corroborates the packed record in research/contracts/notes/UI/Widgets/remote-equipped-skills.md and refines the two u32 members as varint-encoded on the wire."
       }
     ]
   },
@@ -56,7 +56,7 @@
       "offset": 2,
       "kind": "compressed-int",
       "confidence": "static",
-      "note": "fieldType 4: base-128 varint, 1..5 wire bytes, most-significant group first; decodes into a u32 slot. The handler resolves it through the skill-definition lookup. Wire length is not fixed at 4."
+      "note": "fieldType 4: base-128 varint, 1..5 wire bytes, little-endian (least-significant group first); decodes into a u32 slot. The handler resolves it through the skill-definition lookup. Wire length is not fixed at 4."
     },
     {
       "id": "configuredSkillSlot",
@@ -98,7 +98,7 @@
     {
       "question": "What are the concrete wire bytes for this message, and is the varint bit order confirmed by data?",
       "kind": "framing",
-      "note": "The recv registry slot, defArray chain, decoded record shape and handler are statically located (msg-dispatch Addendum 7-8), but no capture decodes end to end. The schema-directed parse (defSize 0x0C, maxSize 0x0E) is static; a captured frame is still required, and a skill id or player index above 0x7F would confirm the base-128 varint's most-significant-group-first order from data."
+      "note": "The recv registry slot, defArray chain, decoded record shape and handler are statically located (msg-dispatch Addendum 7-8), but no capture decodes end to end. The schema-directed parse (defSize 0x0C, maxSize 0x0E) is static; a captured frame is still required, and a skill id or player index above 0x7F would exercise the base-128 varint's little-endian (LSB-first) continuation from data."
     },
     {
       "question": "What selects this build's schema variant, and does the runtime registry match the static tables?",

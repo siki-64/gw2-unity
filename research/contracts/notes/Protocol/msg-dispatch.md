@@ -1268,15 +1268,19 @@ variable-length integer** from the wire cursor:
 
 ```text
 scan 1..5 bytes for the first with the high bit clear;
-decode from the terminator back to the first byte:
+decode the accumulated value by walking from the terminator back to the first byte:
     value = (value << 7) | (byte & 0x7f)
-write the 32-bit value to the output slot (+4 bytes);
-advance the cursor past the terminator.
 ```
 
-So the first wire byte is the **most significant** 7-bit group (a big-endian base-128 varint),
-not the little-endian order of the protobuf varint. It fails closed: >5 bytes without a
-terminator, or end-of-payload, returns 0 and sets the error flag.
+Walking back with `value << 7` means the **first** byte is the least-significant group and the
+**terminator** byte (high bit clear, read last in the scan) ends up the most significant. That is
+the ordinary **little-endian base-128 varint** (LSB group first), the same order as protobuf. The
+earlier "most-significant first" wording in this addendum was wrong; worked example: bytes
+`B4 24` decode to `(0x24) << 7 | (0x34) = 0x1234`, i.e. the first byte carries the low 7 bits.
+
+The reader then writes the 32-bit value to the output slot (`+4` bytes) and advances the cursor
+past the terminator. It fails closed: >5 bytes without a terminator, or end-of-payload, returns 0
+and sets the error flag.
 
 `MsgPack_ReadFields` calls it for `fieldType 4` directly, and for `fieldType 0x0a` after copying
 a `0xc`-byte array header. In both cases the decoded value lands in a `u32` output slot, which
@@ -1319,7 +1323,7 @@ struct is `0x0C`; the wire frame is at most `0x0E`.
   output widths, and a correction of the Addendum-2/6 transcription;
 - the corrected `MsgPackFieldDef` offsets (`param +0x10`, `refTypeDef +0x18`, `defSize +0x20`,
   `maxSize +0x24`, `nextDef +0x28`);
-- that `fieldType 4`/`0x0a` carry a 1..5-byte base-128 varint (MSB group first);
+- that `fieldType 4`/`0x0a` carry a 1..5-byte base-128 varint (little-endian, LSB group first);
 - the decoded layout of `0x264` (`defSize 0x0C`, `maxSize 0x0E`) and its agreement with the
   hand-recovered handler record.
 
