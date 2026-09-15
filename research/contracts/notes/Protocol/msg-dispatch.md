@@ -71,6 +71,11 @@ schema encode (Msg::WriteMsg -> FUN_140fea110)   send registry (conn+0x18, +0x50
 The engine-independent `Gw2.Protocol` package implements this pipeline for build 205.780
 (`TransportCipher`, `TransportFrame`/`Lz4Block`, `MsgPackReader`/`MsgPackWriter`,
 `MessageStreamDecoder`, `ProtocolCodec`, `OutboundProtocolCodec`, `SessionPhase`/`HandshakeFrame`,
-`HandshakeKeyExchange`)
+`HandshakeKeyExchange`, `PlayerStateStore`)
 with a direction-aware `ProtocolSchemaCorpus`. See
 [msg-dispatch-addenda Addendum 29](msg-dispatch-addenda.md).
+
+`Gw2.Protocol.State` is the first semantic layer above decoding: `PlayerStateStore` applies decoded
+messages (`0x264` configured-skill updates) to a minimal per-player state keyed by `PlayerListIndex`,
+porting the reviewed `Gw2.Contracts` (`ChCliSkill` / `ChCliConfiguredSkillUpdate`, `SkillEnums`) and
+[../UI/Widgets/remote-equipped-skills.md](../UI/Widgets/remote-equipped-skills.md).
