@@ -61,14 +61,15 @@ schema encode (Msg::WriteMsg -> FUN_140fea110)   send registry (conn+0x18, +0x50
 - **Resolved (negative):** there are no transport-layer outbound sequence/acknowledgement rules for
   this build; outbound is a plain concatenated encrypted stream (see
   [session-state.md](session-state.md)).
-- **Open:** the server side of the handshake; whether a real connection uses mode `1`; the runtime
-  does not implement the 512-bit DH modexp; Unity EditMode tests (the package is compiled-validated
-  only).
+- **Open:** the server side of the handshake; whether a real connection uses mode `1`; the
+  platform-specific seed generator is not modelled; Unity EditMode tests (the package is
+  compiled-validated only).
 
 ## Runtime
 
 The engine-independent `Gw2.Protocol` package implements this pipeline for build 205.780
 (`TransportCipher`, `TransportFrame`/`Lz4Block`, `MsgPackReader`/`MsgPackWriter`,
-`MessageStreamDecoder`, `ProtocolCodec`, `OutboundProtocolCodec`, `SessionPhase`/`HandshakeFrame`)
+`MessageStreamDecoder`, `ProtocolCodec`, `OutboundProtocolCodec`, `SessionPhase`/`HandshakeFrame`,
+`HandshakeKeyExchange`)
 with a direction-aware `ProtocolSchemaCorpus`. See
 [msg-dispatch-addenda Addendum 29](msg-dispatch-addenda.md).

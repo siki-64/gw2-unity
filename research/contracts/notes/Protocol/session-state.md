@@ -138,14 +138,20 @@ connection object lives in the global `DAT_1426632d0`:
 - Whether a real game connection enters mode `1` or remains in mode `2` until keyed.
 - The purpose of the `conn+0xd8` timestamp ring.
 - The server side of the handshake and of the key delivery frame.
-- The DH modexp (512-bit) is not implemented in the runtime, so the client cannot yet compute `outA`
-  / `outB` from a seed; the runtime models the mode machine and the handshake frames only.
+- The seed generator (`FUN_140fdf2d0`) is platform-specific client entropy and is not modelled; the
+  runtime derives `R` / `outA` / `outB` from a supplied seed.
 
 ## Runtime
 
-`Gw2.Protocol.Session` implements this machine for build 205.780: `MsgConnMode` / `SessionPhase`
-(the mode word and its recovered transitions, including `ApplySetMode` and `TryEstablish`) and
-`HandshakeFrame` (`EncodeClientHello`, `TryClassify`, `TryDecodeServerKey`, `DeriveTransportKey`).
+`Gw2.Protocol.Session` implements this machine for build 205.780:
+
+- `MsgConnMode` / `SessionPhase` — the mode word and its recovered transitions (`ApplySetMode`,
+  `TryEstablish`, `CanSendEncrypted`, `BuffersHandshake`).
+- `HandshakeFrame` — `EncodeClientHello`, `TryClassify`, `TryDecodeServerKey`,
+  `DeriveTransportKey`.
+- `HandshakeKeyExchange` — `ExpandExponent` and `Derive` (the 512-bit DH: seed -> `R` -> `outA` /
+  `outB`), validated against `tools/re/fixtures/205780/handshake-kdf.json`.
+
 `SessionPhase.TryEstablish` returns the transport key, which keys both `TransportCipher` directions.
-`EncodeClientHello` is a static reconstruction with no captured frame; everything else is backed by
-Addendum 26 and the asserts above.
+`EncodeClientHello` and the seed generator are the only static/unmodelled pieces; the mode machine,
+the key frame and the DH derivation are backed by Addendum 26 and the asserts above.
