@@ -1737,3 +1737,90 @@ recorded when the private capture is imported.
 3. When importing the private capture, include the runtime `conn+0x118` (or `obj+0x7c`) so the
    transport layer can be exercised at all.
 
+
+---
+
+# Addendum 12: the writer search stops at the GcSrv/login message layer
+
+**Status:** the writer of `obj+0x7c` was **not** isolated; the search did locate the login/GcSrv
+message registry and rule out the login handlers; **still no wire fixture**
+
+This addendum is the Addendum 11 next step 1 result. It is a bounded negative, recorded so the
+work is not repeated.
+
+## What was searched
+
+The connect request that carries the seed is `payload+0x10` where `payload` is the event-0x23
+payload `obj+0x38` (Addendum 11). Reading the offsets: the seed at `request+0x34` is `obj+0x7c`.
+The writers that could fill it are the handlers that populate `obj` before the event fires.
+
+`obj` is an entry in a request list rooted at `DAT_1426630c0` / `DAT_1426630b0`. The login
+handlers find it by `*(int*)(entry+0x30) == id` and act only when `*(int*)(entry+0x20) == 3`.
+Fields written by the handlers that were read:
+
+| Handler | Sink | Writes |
+| --- | --- | --- |
+| `140240250` | `FUN_14023a8d0` | `entry+0x24` |
+| `1402402a0` | `FUN_14023a4e0` | `entry+0x1f0`, `entry+0x1f4`, `entry+0x24` |
+| `1402402f0` | `FUN_14023b0c0` | `entry+0x20`, `entry+0x24` |
+| `140240350` | `FUN_14023a270` (type `7`) | `entry+0x1a4`..`entry+0x244` (two `0x20`-byte blobs at `+0x200`, `+0x220`) |
+| `140240350` | `FUN_14023a270` (type `0x15`) | `entry+0x68`, `entry+0x70` |
+| `1402404c0` | `FUN_14023a3f0` | `DAT_142663100`/`108` (a 16-byte-record list), fires `0x1d` |
+| `140240490`, `140240550`, `140240600` | `FUN_14023a140`, `FUN_14023a670`, `FUN_14023a9f0` | not `+0x7c` |
+
+**None writes `entry+0x7c`.** So the seed is not set by the login message handlers examined. The
+writers were not exhausted (the registry has more entries than were read), but the shape is
+consistent with the seed being placed by the connect-initiating (game/UI) code rather than by a
+login response.
+
+## What the search did find: a login/GcSrv `{blob, handler}` registry
+
+A `{blob, handler}` pair table sits at `141921fc0` (and continues past it). The blobs are
+formatted **comparably** to `MsgPackFieldDef` chains: at `1425a7a50` the first dwords are `1`
+then, at `+0x28`, `4`, then `4`, then `0xc` — the same `0x28`-stride, `fieldType`-first format as
+the game corpus, and the shared value `0x141922a88` appears at `+0x08` of both the `0x264` chain
+(`1425cd320`) and these chains.
+
+Example pairs:
+
+| Blob | Handler |
+| --- | --- |
+| `1425a7a50` | `140240250` |
+| `1425a82e0` | `1402404c0` (a count + 16-byte records, fires `0x1d`) |
+| `1425a8240` | `140240490` |
+| `1425a8850` | `140240550` |
+| `1425a85c0` | `140240600` |
+
+**Caveat:** the handlers read *packed* byte offsets (`param_2 + 2`, `+ 6`, `+ 10`, pointer at
+`+ 3`), which a schema-decoded struct would not produce. So whether these blobs are decoded
+schemas, or the handlers parse a raw packed frame against some other table, is a **lead to
+verify**, not established. If they are schemas, the login/platform protocol is also schema-driven
+and its id space can be walked like `sweep2.csv`; it is not the game connection's registry
+(`DAT_1426632d0` / `140fed3b0`).
+
+## What this establishes
+
+- `obj` is an entry in a request list at `DAT_1426630c0`/`DAT_1426630b0` with state at `+0x20`,
+  subtype at `+0x24`, id at `+0x30`, response data at `+0x1a4`..`+0x244`;
+- the login/GcSrv handlers read do not write `+0x7c`, so the seed is not one of their fields;
+- the login/GcSrv connection has its own `{blob, handler}` registry at `141921fc0`, distinct from
+  the game message registry (the blob format resembles `MsgPackFieldDef`, to be verified).
+
+## What this does not establish
+
+- **The writer of `obj+0x7c` remains unlocated.** The negative above is bounded by the handlers
+  that were read, not by exhausting the registry.
+- Whether the `141921fc0` blobs are decoded schemas, and the login registry's ids, size and
+  handler set (not enumerated).
+- Whether the seed is a login-session key, an account token, or a game/UI-provided value.
+- **Still no wire fixture.**
+
+## Next steps
+
+1. Establish whether the `141921fc0` blobs are schemas (walk one as a `MsgPackFieldDef` chain and
+   check `fieldType 1` / the id read against the handler's fields). If so, enumerate the login
+   registry as a separate corpus.
+2. Search specifically for a writer of `+0x7c` across the *game/UI* modules rather than the login
+   handlers, or for a copy of the login `MsgConn`'s `conn+0x118` into the connect request.
+3. Keep the capture requirement from Addendum 11: include `conn+0x118` (or `obj+0x7c`).
+
