@@ -6,7 +6,7 @@
   "connectionRole": "game",
   "direction": "server-to-client",
   "messageId": "0x264",
-  "representation": "decoded-handler-record",
+  "representation": "wire-bytes",
   "evidenceLevel": "observed",
   "pipeline": {
     "id": "msgpack-schema",
@@ -55,8 +55,8 @@
       "id": "skillContentId",
       "offset": 2,
       "kind": "compressed-int",
-      "confidence": "static",
-      "note": "fieldType 4: base-128 varint, 1..5 wire bytes, little-endian (least-significant group first); decodes into a u32 slot. The handler resolves it through the skill-definition lookup. Wire length is not fixed at 4."
+      "confidence": "observed",
+      "note": "fieldType 4: base-128 varint, 1..5 wire bytes, little-endian (least-significant group first); decodes into a u32 slot. The handler resolves it through the skill-definition lookup. Wire length is not fixed at 4. Confirmed from a live capture (msg-dispatch Addendum 22): 0x11DC encodes as DC 23, 0x1206 as 86 24, 0x122B as AB 24."
     },
     {
       "id": "configuredSkillSlot",
@@ -76,8 +76,8 @@
       "id": "playerListIndex",
       "offset": 8,
       "kind": "compressed-int",
-      "confidence": "static",
-      "note": "fieldType 4: base-128 varint, 1..5 wire bytes; decodes into a u32 slot. Passed to LookupPlayerById. Wire length is not fixed at 4."
+      "confidence": "observed",
+      "note": "fieldType 4: base-128 varint, 1..5 wire bytes; decodes into a u32 slot. Passed to LookupPlayerById. Wire length is not fixed at 4. Confirmed from a live capture (msg-dispatch Addendum 22): player index 1 encodes as a single byte 01."
     }
   ],
   "priorNativeSlotSketch": [
@@ -93,13 +93,20 @@
   "sessionPrerequisites": [
     "A game connection exists and the handler record was produced by the client's own decoder."
   ],
-  "wireFixtures": [],
-  "unresolved": [
+  "wireFixtures": [
     {
-      "question": "What are the concrete wire bytes for this message, and is the varint bit order confirmed by data?",
-      "kind": "framing",
-      "note": "The recv registry slot, defArray chain, decoded record shape and handler are statically located (msg-dispatch Addendum 7-8), and the inbound wire pipeline now decodes captured frames end to end (Addendum 20: RC4 -> deframe/LZ4 -> schema). No captured frame is a 0x264, however: decoding the on-disk capture yields 52 messages and none is 0x264 (Addendum 21). The schema-directed parse (defSize 0x0C, maxSize 0x0E) is still static for this id; a captured 0x264 with a skill id or player index above 0x7F would exercise the base-128 varint's little-endian (LSB-first) continuation from data."
-    },
+      "kind": "sanitized-capture",
+      "direction": "server-to-client",
+      "build": 205780,
+      "sha256": "644ef0306404828e2dc7bf0acdad02e4508a06cfc7eb0097d2cd52613f08441d",
+      "length": 19,
+      "provenance": "Live game connection, build 205.780, captured at the 0x264 handler in x64dbg (msg-dispatch Addendum 22); fixture at tools/re/fixtures/205780/0x264-wire.json. The pre-packet cipher state was recovered by rewinding conn+0x12C by the frame length, and the derived ciphertext was independently located in the process's network buffer.",
+      "sanitization": "Only the 19-byte wire frame and its pre-packet cipher state are retained; the session key and player identity are not.",
+      "expectedDecode": "RC4 -> transport frame 0f000e00e0640286240200016402ab24010001 -> LZ4 -> two 0x264: skill 0x1206 slot 2 ctx 0 player 1; skill 0x122B slot 1 ctx 0 player 1.",
+      "unknownFields": []
+    }
+  ],
+  "unresolved": [
     {
       "question": "Does the live per-connection registry resolve 0x264 to the same defArray, and would another build or connection do the same?",
       "kind": "schema-variant",
@@ -129,7 +136,21 @@
       "rawHex": "6402DC11000000014E000000",
       "decoded": { "msgId": "0x264", "skillContentId": "0x11DC", "slot": 0, "context": 1, "playerListIndex": "0x4E" },
       "note": "Same skill and player as the first sample, other context. Two-array selection, per remote-equipped-skills.md."
+    },
+    {
+      "kind": "wire-bytes",
+      "build": 205780,
+      "capturedAtLayer": "network buffer / MsgUtil_CryptStream input",
+      "rawHex": "165f0756e2efc19fdf875229568aa1b7bc89ff",
+      "decoded": {
+        "transportFrame": "0f000e00e0640286240200016402ab24010001",
+        "messages": [
+          { "msgId": "0x264", "skillContentId": "0x1206", "slot": 2, "context": 0, "playerListIndex": 1 },
+          { "msgId": "0x264", "skillContentId": "0x122B", "slot": 1, "context": 0, "playerListIndex": 1 }
+        ]
+      },
+      "note": "Live capture, 2026-09-15, build 205.780. Pre-packet RC4 state i=0xAB j=0x6C. The ciphertext was confirmed by locating the identical bytes in the process network buffer at 0x25032B52658. See msg-dispatch Addendum 22."
     }
   ],
-  "noClaim": "Records static registry-location, schema-shape and handler evidence for one build only. The decoded field layout is schema-directed static evidence, not a captured wire fixture; it does not establish wire compatibility, an encoder, or current server support."
+  "noClaim": "Records registry-location, schema-shape and handler evidence for one build only, plus one captured wire frame. The 0x264 varint byte order and the transport frame layout are captured evidence; a general encoder/decoder is not established and build 205780 is not declared server-supported."
 }

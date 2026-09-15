@@ -2554,3 +2554,100 @@ is consistent with the live chain's `defSize 39` (`0x27`) and `maxSize 66` (`0x4
 
 ---
 
+# Addendum 22: the first wire-bytes fixture, and the varint confirmed from data
+
+**Status:** a live 19-byte inbound packet carrying two `0x264` messages is captured end to end
+(RC4 ciphertext -> transport frame -> LZ4 -> message stream -> schema decode); the base-128 varint
+is confirmed from real data; a second live session re-confirms the pipeline
+
+This closes Addendum 20 next step 1 (promote a `0x264` wire fixture) for one message, and the
+`0x264` artifact's open varint question. All work is read-only: hardware breakpoints, no patching.
+
+## Method, and three operational findings
+
+1. Pausing at the game-connection KSA (`MsgUtil_Rc4Ksa`) **crashed the client** (session 2): the
+   handshake is timing-critical and resuming from the breakpoint faulted a worker thread. The key
+   does not need that breakpoint anyway - `conn+0x118` holds it once in-world.
+2. Breaking on every `MsgUtil_CryptStream` call stalls the client on every packet and, held long
+   enough, caused a server-side **network timeout** (session 3). It is not usable interactively.
+3. The workable method is a **handler-only** hardware breakpoint (here the `0x264` handler, which
+   fired six times in one burst). At the handler the whole inbound packet is still live.
+
+## New connection-layout result
+
+| Offset | Field |
+| --- | --- |
+| `conn+0x58` | decrypted transport **frame container**; `{...; data ptr +0x08; capacity +0x10; length +0x14}` |
+| `conn+0x80` | message stream (post-deframe); same struct shape |
+
+For this packet `conn+0x58`'s length was `0x13` (19) and `conn+0x80`'s was `0x0E` (14): one frame,
+two 14-byte messages.
+
+## The capture
+
+Connection `conn = 0x2503D11B170` (game, mode 3), key material at `conn+0x118`
+`779a225ab787cadaae5b4f298ab221dfa350110a` (session-private, not committed).
+
+At the `0x264` handler the frame container held:
+
+```text
+0F 00 0E 00  E0  64 02 86 24 02 00 01  64 02 AB 24 01 00 01
+comp dec  LZ4   msgid skill(varint) slot ctx pl   msgid skill ...
+```
+
+deframe -> `64 02 86 24 02 00 01 64 02 AB 24 01 00 01` (two messages), schema decode -> two `0x264`:
+skill `0x1206` slot 2 ctx 0 player 1, and skill `0x122B` slot 1 ctx 0 player 1. The handler's decoded
+record for the first was `64 02 06 12 00 00 02 00 01 00 00 00`.
+
+## The ciphertext: rewind, then confirm against the network buffer
+
+`conn+0x58`'s length fixes how many bytes the RC4 state advanced for this packet, so the **pre-packet
+state is the post state at `conn+0x12C` rewound by 19 bytes**. Rewinding (undo the swap, un-add `j`,
+decrement `i`) gave `i=0xAB, j=0x6C`. Re-encrypting the frame with that state yields the ciphertext.
+Searching process memory for those 19 bytes located the **actual network source buffer** at
+`0x25032B52658`, whose length field was also `0x13`:
+
+```text
+wire bytes (19): 16 5F 07 56 E2 EF C1 9F DF 87 52 29 56 8A A1 B7 BC 89 FF
+```
+
+The derived ciphertext matching a live buffer is what makes this a **captured** fixture rather than a
+re-encryption of the plaintext. The frame bytes and the ciphertext round-trip under the state.
+
+## `0x264` varint confirmed from data
+
+`0x11DC -> DC 23`, `0x1206 -> 86 24`, `0x122B -> AB 24`, `0x11D4 -> D4 23`, `0x11CA -> CA 23`,
+`0x1206 -> 86 24`. Every value above `0x7F` is a two-byte varint with the low 7 bits in the first
+byte - the little-endian (LSB-group-first) order Addendum 8 inferred but could not confirm. Both
+`unresolved` entries in `protocol/messages/205780/0x264.json` are now answered for this id.
+
+## Also captured (session 3): two unrelated packets
+
+`pkt1` (1325 B) and `pkt2` (1072 B) were captured at `CryptStream` with their pre-packet states and
+decrypt/deframe with the reconstructed cipher, independently re-validating the transport on fresh
+live bytes (`captures/local/205780/s3/`).
+
+## What this establishes
+
+- a complete inbound **wire-bytes** fixture for `0x264`: ciphertext, pre-state, frame, message bytes,
+  and decoded record, all from one live packet;
+- the base-128 varint's byte order from real data;
+- the `conn+0x58` frame-container and `conn+0x80` message-stream layouts and lengths.
+
+## What this does not establish
+
+- outbound anything; the send path (`conn+0x234`) is unexamined;
+- that another build or connection uses the same frame container (one build, two sessions);
+- the session key is not committed. The committed fixture
+  (`tools/re/fixtures/205780/0x264-wire.json`) retains the 19-byte wire frame and the pre-packet
+  cipher state needed to decrypt it, and excludes the 20-byte key and player identity.
+
+## Next steps
+
+1. (Done.) The sanitized fixture is at `tools/re/fixtures/205780/0x264-wire.json`, is referenced by
+   the `0x264` artifact, and is checked by `Gw2TransportDecode.py --selftest`.
+2. Examine the outbound path (`conn+0x234`) for encoders.
+3. Reuse the handler-only method for other messages without stalling the client.
+
+---
+

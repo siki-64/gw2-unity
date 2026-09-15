@@ -52,6 +52,8 @@ import Gw2TransportCipher as cipher  # noqa: E402
 IMAGE = r"C:\Program Files (x86)\Steam\steamapps\common\Guild Wars 2\Gw2-64.exe"
 DESC_STRIDE = 0x28
 MSG_MAX_BUFFER_SIZE = 0x2000
+FIXTURE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                       "fixtures", "205780", "0x264-wire.json")
 
 
 class PE:
@@ -375,6 +377,29 @@ def synthetic_chain_0x264():
     ]
 
 
+def verify_fixture(path):
+    """Verify a captured inbound fixture: RC4 wire bytes -> transport frame.
+
+    Returns (errors, message stream). Needs no image/ids.
+    """
+    errors = []
+    with open(path) as f:
+        fx = json.load(f)
+    ct = bytes.fromhex(fx["wireHex"])
+    st = [int(fx["cipherState"]["i"], 16),
+          int(fx["cipherState"]["j"], 16),
+          list(bytes.fromhex(fx["cipherState"]["sboxHex"]))]
+    frame = bytes(cipher.crypt_stream(st, ct))
+    if frame != bytes.fromhex(fx["transportFrameHex"]):
+        errors.append("fixture: RC4(wire) != transportFrame")
+    stream, used = deframe(frame)
+    if used != len(frame):
+        errors.append("fixture: deframe did not consume the whole frame")
+    if not stream:
+        errors.append("fixture: empty message stream")
+    return errors, stream
+
+
 def selftest():
     errors = []
     chain = synthetic_chain_0x264()
@@ -447,6 +472,13 @@ def selftest():
     except DecodeError:
         pass
 
+    # 7. The captured inbound fixture, if present: ciphertext -> frame -> 0x264.
+    if os.path.exists(FIXTURE):
+        ferr, stream = verify_fixture(FIXTURE)
+        errors += ferr
+        if not stream.startswith(bytes.fromhex("6402")):
+            errors.append("fixture: message stream does not start with 0x264")
+
     return errors
 
 
@@ -478,7 +510,7 @@ def main():
             print("FAIL", e)
         if errors:
             return 1
-        print("OK Gw2TransportDecode selftest (6 groups)")
+        print("OK Gw2TransportDecode selftest (7 groups)")
         return 0
 
     if not (args.decrypted or args.capture):

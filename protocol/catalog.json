@@ -20,13 +20,13 @@
       "connectionRole": "game",
       "direction": "server-to-client",
       "messageId": "0x264",
-      "representation": "decoded-handler-record",
+      "representation": "wire-bytes",
       "evidenceLevel": "observed",
       "pipeline": { "id": "msgpack-schema", "state": "static-located", "opcodeEncoding": "unknown" },
       "artifact": "protocol/messages/205780/0x264.json",
-      "wireVerified": false,
+      "wireVerified": true,
       "supported": false,
-      "note": "Static registry location resolved (msg-dispatch Addendum 7): channel 0x14 recv table B entry 513, defArray 1425cd320, handler FUN_141257a20 (ChCliMsg.cpp). Table B is proven recv from the FUN_140fecd10 installer. Addendum 8 resolves the chain to a decoded record shape (u16 msgid, two base-128 varints, two u8; defSize 0x0C, maxSize 0x0E), independently corroborating the packed record in research/contracts/notes/UI/Widgets/remote-equipped-skills.md. wireVerified stays false and build 205780 stays out of supportedWireBuilds; pipeline state is static-located because no captured frame is a 0x264 (the inbound pipeline itself now decodes captured frames end to end; msg-dispatch Addendum 20-21)."
+      "note": "Static registry location resolved (msg-dispatch Addendum 7): channel 0x14 recv table B entry 513, defArray 1425cd320, handler FUN_141257a20 (ChCliMsg.cpp). Addendum 8 resolves the chain to a decoded record shape (u16 msgid, two base-128 varints, two u8; defSize 0x0C, maxSize 0x0E). Addendum 22 captures the wire bytes: a live 19-byte game-connection packet RC4-decrypts to transport frame 0f000e00e0640286240200016402ab24010001, which deframes/decodes to two 0x264; the base-128 varint's little-endian order is confirmed from data (0x1206 -> 86 24) and the ciphertext was located in the process network buffer. wireVerified is true for this captured frame; build 205780 stays out of supportedWireBuilds and supported stays false because no general codec is implemented and one captured message is not a supported build."
     }
   ],
   "researchLeads": [
