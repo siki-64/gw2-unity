@@ -30,6 +30,11 @@ One object holds both arrays; `FUN_140fed3d0` (send) and `FUN_140fed3b0` (recv) 
 id (no hashing). A live read gave: send `base +0x50 / count +0x5c / stride 0x10`; recv
 `base +0x70 / count +0x7c / stride 0x20`.
 
+**Mapping an id to its handler:** the *live* registry is id-indexed, but the *static* installation
+table in the image (e.g. the `{defArray, handler}` pairs at `142168b60`) is written in source order,
+**not** id order. Resolve an id by matching the entry's defArray pointer to `live_ids.csv`, never by
+the entry's position in the array.
+
 ### It is a shared, refcounted global — not per-connection
 
 `conn+0x18` is not allocated per connection. The constructor binds it from

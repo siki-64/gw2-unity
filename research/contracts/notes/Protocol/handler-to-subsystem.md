@@ -166,6 +166,65 @@ So the family populates four distinct `ChCliSkill` storages:
 Every method ends by notifying the `ChCliSkill+0xB0` observer list, and most also notify the owned
 `ChCliSkillbar` (through `ChCliPlayer`'s character link).
 
+### `ChCliSkill` storage, from the setter bodies
+
+| Storage | Offset | Shape | Written by |
+| --- | --- | --- | --- |
+| current skill key | `+0x20` | 12-byte key (`FUN_140317e60`) | `0x25D`, `0x265` |
+| bitmap | `+0x28` (+0x30 size, +0x34 word count) | bit-word array; bit = `key & 0x1f`, word = `key >> 5` | cleared by `0x261`; cleared by `0x25E` |
+| keyed map | `+0x08` (entries `+0x10`, count `+0x0C`) | 12-byte entries `{key, value, ?}` | insert/reset by `0x25F`, `0x260`, `0x263` |
+| container | `+0x40` (+0x48) | 24-byte entries | add by `0x261`/`0x265`; reset by `0x25E` (`FUN_1412234b0`) |
+| scalars | `+0x58`, `+0x5C` | `u32` each | `0x25B` (`FUN_141224f70`) |
+| configured skills | `+0x60`/`+0x88` | five keys each | `0x264` |
+| notifier | `+0xB0` | observer list | every setter |
+
+Per message, from the setter disassembly:
+
+| Msg | Setter | Write |
+| --- | --- | --- |
+| `0x25B` | `FUN_141224f70` | `+0x58 = rec+2`, `+0x5C = rec+6` |
+| `0x25D` | `FUN_141224bb0` | `+0x20 = skillDef + 0x28` |
+| `0x25E` | `FUN_141224c00` | clears `+0x28`/`+0x30`, resets `+0x40` |
+| `0x25F` | `FUN_141224c40` | `+0x08` map insert `{skillDef+0x28, rec+0x0A}` |
+| `0x260` | `FUN_141224d90` | resets `+0x08`, then per element inserts `{defKey, requestId}` |
+| `0x261` | `FUN_141224ec0` | `+0x40` add; clears bit(`skillDef+0x28`) in `+0x28` |
+| `0x263` | `FUN_141224fb0` | `+0x08` map insert/remove `{keyA, keyB}`; also `ChCliPlayer + 0x618` |
+| `0x264` | `FUN_141225160` | `+0x60`/`+0x88` configured slot |
+| `0x265` | `FUN_141225220` | `+0x40` add; `+0x20 = skillDef+0x28`; notify with two flags |
+
+The map key is `skillDef + 0x28` — the **native skill content key**, not the wire content id
+(see [../UI/Widgets/remote-equipped-skills.md](../UI/Widgets/remote-equipped-skills.md)). The
+*semantics* of the keyed map, the container and the bitmap are still unresolved; only their shape and
+writers are recovered.
+
+### `ChCliSkill` readers (vtable `PTR_FUN_142164318`)
+
+The consumers are the object's own virtual methods (the handler-facing setters above are free
+functions). Recovered slots:
+
+| Slot | Method | Role |
+| --- | --- | --- |
+| `+0x00` | `FUN_141223520` | enumerate a skill's content entries and match via `FUN_14120f100` |
+| `+0x08` | `FUN_141223330` | availability against a content table (bit masks, mode checks) |
+| `+0x10` | `FUN_141223240` | search three content kinds for a key |
+| `+0x18` | `FUN_141223440` | **bitmap predicate**: key `>> 5` word / `& 0x1f` bit in `+0x28`; true when the bit is clear (or word index `>= +0x34`) |
+| `+0x20` | `FUN_141223770` | resolve a skillDef key through `CnContext` `+0x80`/`+0x230` |
+| `+0x28` | `FUN_141223820` | `+0x08` map lookup by `skillDef+0x28`; resolve the stored value through `CnContext +0x230` |
+| `+0x38` | `FUN_1412238f0` | `+0x58` plus the sum of the `+0x08` map entries' `+0x8` field |
+| `+0x48` | `FUN_141223b40` | `ChCliContext +0x390` entry -> `+0x14` |
+| `+0x58` | `FUN_141223c10` | **`GetConfiguredSkill(slot, context)`** -> `+0x60`/`+0x88` at `slot*8`; asserts `slot <= 4 \|\| slot == 0x15` |
+| `+0x68` | `FUN_141223c90` | forwards to vtable `+0x60` |
+| `+0x70` | `FUN_141223d10` | count entries whose `+0xC` equals a value |
+| `+0x88` | `FUN_141223ff0` | `ChCliContext +0x390` entry -> sub-object |
+| `+0x98` | `FUN_141224090` | enumerate the continent/region/content tree, collect via `FUN_141222c00` |
+| `+0xa0` | `FUN_141224390` | compare vtable `+0x78` against an entry's `+0xC` |
+| `+0xa8` | `FUN_141224430` | **availability classifier**: combines the `+0x28` bitmap bit, a parent-chain definition, continent/world checks (`FUN_14140dd90`) and a `FUN_141284870` table; returns a flag and writes a `0..4` status |
+
+Conclusion: the consumers of the `+0x08` map and the `+0x40` container are skill **availability,
+enumeration and selection** logic, and the `+0x60`/`+0x88` getter is the confirmed configured-skill
+reader (`0x264`). The exact meaning of the map/container *values* is still not nameable from this
+pass, so the family remains unmodelled in the runtime.
+
 ## Captured-stream families
 
 The message ids actually observed in the private captures (Addenda 14, 20), traced to their
@@ -327,8 +386,74 @@ writes. `FUN_141416670` is an **event handler** (`MsCliGame.cpp`) switching on a
 not message id `0x100` (`0x100` is a two-float update on `ChCliContext+0x60[id]`). The remaining link is
 the wire message that produces those mission sub-events.
 
+## Message `0x1AB` / `0x1AD` - player roster lifecycle
+
+`ChCliContext` (slot `0x13` / `+0x98`) owns the player roster: `Players +0x80`, capacity `+0x88`,
+count `+0x8C`. `GetPlayerByListIndex` (vtable `+0x110`) bounds-checks the index and returns
+`Players[index]`; each `ChCliPlayer` stores its own index at `+0x74`.
+
+| Msg | Handler | Resolve | Effect |
+| --- | --- | --- | --- |
+| `0x1AB` | `FUN_141251040` | asserts `!PlayerFind(rec+2)` | `ChCliContext::PlayerCreate` `FUN_1411b2b30(rec+2, rec+6 name, rec+0x0e key, rec+0x1e flag)` |
+| `0x1AD` | `FUN_141251120` | `GetPlayerByListIndex(rec+2)` (assert player) | `ChCliContext::PlayerRemove` `FUN_1411b2cd0` (clears `Players[index]`, destroys the player) |
+
+Records (corpus chains; `t` values are decimal):
+
+```text
+0x1AB  [msgid, varint playerId, 0x0d utf-16 name, 0x0b 16-byte key, varint flags]
+0x1AD  [msgid, varint playerId]
+```
+
+`PlayerCreate` (`ChCliContext.cpp:0x600`) asserts the slot is empty
+(`m_playerArray.Count() <= playerId || !m_playerArray[playerId]`), allocates `0xA178` bytes, and
+constructs `ChCliPlayer` (`FUN_1411b5530`): it stores the index at `+0x74`, copies the 16-byte key to
+`+0x78`/`+0x80`, copies the UTF-16 name into `+0x60`, and sets a status at `+0x20` from flag bit 0
+(`2` when set, `3` otherwise). It then grows `Players` to `playerId + 1` and publishes the pointer,
+registering the object in an auxiliary map at `+0x2f8`/`+0x300`.
+
+`PlayerRemove` reads the player's own index (vtable `+0xe8`), asserts `m_playerArray[playerId]`,
+clears the slot, removes the auxiliary-map entry, and destroys the object.
+
+**Identifier mapping:** `PlayerListIndex` (`rec+2`) is the roster index domain. It is distinct from
+the character-list index and `Agent.agentId`
+(see [../Context/context-and-health.md](../Context/context-and-health.md)). The 16-byte key copied
+into the player is an **unresolved** identity field; it is preserved, not named.
+
+Runtime: `Gw2.Protocol.State.PlayerStateStore` handles `0x1AB`/`0x1AD` (`PlayerAddMessageId` /
+`PlayerRemoveMessageId`) to create/remove players and set `PlayerState.Name`/`Key`/`AddFlags`.
+
+## Player-subsystem message map (`0x1A5`..`0x1B0`)
+
+`ctx = FUN_1409b4820()`. Ids are resolved by **matching the defArray pointer to
+[`live_ids.csv`](../../../protocol/schema/205780/live_ids.csv)**, because the static registration
+table is stored in source order, not id order (see [schema-registry.md](schema-registry.md)).
+
+| Msg | Handler | Record (corpus) | Effect |
+| --- | --- | --- | --- |
+| `0x1A5` | `FUN_141250e70` | `u8, u8, u32 x4` | loader/map manager (`FUN_14094bf80`) vtable `+0xB0`; a non-zero flag also drives `FUN_1409908a0` vtable `+0x1A0` |
+| `0x1A6` | `FUN_141250f10` | `12-byte vec3, u8` | owned player (`ctx+0x98` vtable `+0x68`) -> vtable `+0x78` sub-object, `FUN_1411d0260(vec3, u8)` |
+| `0x1A7` | `FUN_141250dc0` | `varint` | `FUN_1409908a0` vtable `+0xC0`; if set, vtable `+0x198(0)` |
+| `0x1A8` | `FUN_141250e00` | `varint` | content resolve `ctx+0xe0` vtable `+0x58` type `0x88`, then `FUN_1409908a0` vtable `+0x198(def)` |
+| `0x1A9` | `FUN_141250fa0` | `u8` | owned player, `FUN_1411b7560(player, u8)` |
+| `0x1AA` | `FUN_141251000` | `u32, u32` | `ctx+0x98` vtable `+0x60` object, `+0x570(u32, u32)` |
+| `0x1AB` | `FUN_141251040` | `varint, utf-16 name, 16-byte key, varint` | **`ChCliContext::PlayerCreate`** (roster add) |
+| `0x1AC` | `FUN_1412510b0` | `varint x4` | player by index, `FUN_1411b7a00(player, rec)` |
+| `0x1AD` | `FUN_141251120` | `varint` | **`ChCliContext::PlayerRemove`** (roster remove) |
+| `0x1AE` | `FUN_141251190` | - | `FUN_1411b2fb0(ChCliContext, ...)` (no record fields) |
+| `0x1AF` | `FUN_141251210` | `varint, 0x10 array` | player by index, `FUN_141231050(player + 0x9308, vec3)` |
+| `0x1B0` | `FUN_1412511b0` | `varint` | player by index, `FUN_14122f4d0(player + 0x9308)` |
+
+Distinctions:
+
+- Roster lifecycle is `0x1AB`/`0x1AD` only.
+- `0x1A6`/`0x1A9` act on the **owned** player (`ctx+0x98` vtable `+0x68`), not a roster index.
+- `0x1AF`/`0x1B0` update a player sub-object at `+0x9308` (a transform); its identity is unresolved.
+- `0x1A5`/`0x1A7`/`0x1A8` are loader/content paths, not player state.
+
 ## Open
 
+- The meaning of the `0x1AB` 16-byte key and its trailing flag word.
+- The identity of the `ChCliPlayer + 0x9308` sub-object (`0x1AF`/`0x1B0`) and the `0x1AC` setter.
 - The wire message that produces the `MsCliGame` sub-events `0x23`/`0x25` (the world-load trigger).
 - The identity of `*(ctx+0x28)` (the `AgWorld` owner) and the `+0xd0` key-table semantics.
 - The `CmbtCli` combatant and buff layouts behind `FUN_1412c0470`/`0530`.

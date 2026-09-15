@@ -525,3 +525,14 @@ set 2 second). No additional `BtEqpSlot` type or physical weapon item
 definition was present in the panel. Physical weapons therefore come from the
 character/inventory slots, not an eighth `BtEqpSlot` or the provider's PvP-rank
 fields.
+
+## Runtime
+
+`Gw2.Protocol.State` models this family for build 205.780:
+`PlayerStateStore` handles `0x200..0x207` (`PvpRuneUpdateMessageId` ..
+`PvpCombinedRankMessageId`), and `PlayerState.Pvp` (`PlayerPvpEquipment`) holds
+the provider presence, rune/relic/amulet, hero, four sigils, the combined and
+incremental PvP-rank ids, and the provider flag bits. The runtime stores the wire
+content ids; the native resolver request codes (0x23/0x36/0x71) are content types,
+and each gear kind is a distinct id type (`PvpRuneId`, `PvpRelicId`, `PvpAmuletId`,
+`PvpSigilId`, `PvpHeroId`, `PvpRankId`).
