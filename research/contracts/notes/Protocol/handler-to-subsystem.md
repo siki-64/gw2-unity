@@ -166,8 +166,36 @@ So the family populates four distinct `ChCliSkill` storages:
 Every method ends by notifying the `ChCliSkill+0xB0` observer list, and most also notify the owned
 `ChCliSkillbar` (through `ChCliPlayer`'s character link).
 
+## Captured-stream families
+
+The message ids actually observed in the private captures (Addenda 14, 20), traced to their
+subsystem accessors. `ctx = FUN_1409b4820()`.
+
+| Msg(s) | Handler(s) | Subsystem | Effect |
+| --- | --- | --- | --- |
+| `0x21 0x23 0x33 0x34 0x39 0x47 0x4F 0x54` | `FUN_14102e150`/`290`/`ec50`/`ecf0`/`f010`/`f860`/`f9d0`/`fdc0` | `*(ctx+0x28)+0x30` | allocate a fixed-size object (`0x70..0xe0`), build it with a per-message `FUN_141030xxx`, then register via `FUN_14102aac0` keyed by `u16 @rec+2` in the table at `+0xd0`; `FUN_14102aac0` can emit outbound via `FUN_140fea110` |
+| `0x2DE..0x2E3` | `FUN_1412c19a0`/`1a10`/`1c00`/`1c90` | `*(ctx+0xb8)` (combatant, `CmbtCliMsg.cpp`) | resolve combatant via `FUN_1412bd1f0`, then apply combat state (`FUN_1412c0470`), buff (`FUN_1412c0530`, content `0x40`), or agent-target ops (`FUN_1412c0b20`/`0cc0`); agents via `FUN_14101ee40(rec+6)` |
+| `0x312` | `FUN_1413582c0` | `FUN_141345bd0()` | lookup `FUN_141346370(rec+2)`, then vtable `+0x30 (..., rec+6 != 0)` |
+| `0x315` | `FUN_141357f20` | `FUN_141345bd0()` | `FUN_141345740(manager, rec)` |
+| `0x40F 0x410 0x415 0x417 0x428` | `FUN_1414107d0`/`810`/`ba0`/`e40`/`11620` | `*(ctx+0x1c8)` | WvW/match config: scalar fields (`+0x30`, `+0x1d0`, `+0x1f0`, `+0x22c`, flag word `+0x150`), and keyed string tables at `+0x118` (stride `0x38`) and `+0x130` (stride `0x28`) |
+| `0x00B` | `FUN_1417ec460` | `*(ctx+0x60)` | `FUN_1417ec210(*(ctx+0x60)+8)` |
+| `0x010` | `FUN_1417ec5f0` | - | no-op handler (only reads the context) |
+| `0x264` (triggered) | `FUN_141257a20` | `ChCliPlayer + 0x9BD8` | `ChCliSkill + 0x60/+0x88` (see above) |
+
+So the **observed inbound stream is dominated by content-definition registration
+(`*(ctx+0x28)+0x30`), combat/buff state (`*(ctx+0xb8)`) and WvW match configuration
+(`*(ctx+0x1c8)`)**, not the character skill/equipment subsystems. Those are reached only for the
+specifically triggered `0x264`.
+
+Context accessors confirmed so far: `ctx+0x28` -> `+0x30` definition registry; `ctx+0x60` -> object;
+`ctx+0x98` `ChCliContext`; `ctx+0xb8` combatant manager; `ctx+0xe0` `CnContext`; `ctx+0x1c8` WvW/match
+object.
+
 ## Open
 
+- The `*(ctx+0x28)+0x30` definition registry layout, and the `FUN_141030xxx` builders.
+- The `CmbtCli` combatant and buff layouts behind `FUN_1412c0470`/`0530`.
+- Which subsystem `FUN_141345bd0` is (`0x312`/`0x315`).
 - What selects `ChCliPlayer +0x18` vs `+0x20`.
 - The `ChCliSkillbar` internal layout (slots, selected skill) behind `FUN_1411f6d20`.
 - The observer-list helpers (`FUN_141222650`, `FUN_1411cce60`, `FUN_1411ef3b0`) and who watches them.
