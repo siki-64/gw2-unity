@@ -39,6 +39,9 @@ namespace Gw2.Protocol.State
         /// <summary>The roster message's trailing flag word (<c>0x1AB</c> field 4), semantics unresolved.</summary>
         public uint AddFlags { get; private set; }
 
+        /// <summary>PvP gear provider state (<c>ChCliPlayer +0x97B0</c>, messages <c>0x200..0x207</c>).</summary>
+        public PlayerPvpEquipment Pvp { get; } = new PlayerPvpEquipment();
+
         /// <summary>Apply a roster identity; returns true when the stored identity changed.</summary>
         internal bool SetIdentity(string name, ReadOnlySpan<byte> key, uint addFlags)
         {

@@ -67,6 +67,68 @@ namespace Gw2.Protocol.Tests
             return b;
         }
 
+        private static DecodedMessage PvpIncremental(int id, uint index, uint gearId) =>
+            new DecodedMessage(id, 0, 0, new List<DecodedField>
+            {
+                new DecodedField(1, true, (ulong)id),
+                new DecodedField(4, true, (ulong)index),
+                new DecodedField(4, true, (ulong)gearId),
+            });
+
+        private static DecodedMessage PvpHero(uint index, uint heroId, byte flag) =>
+            new DecodedMessage(PlayerStateStore.PvpHeroUpdateMessageId, 0, 0, new List<DecodedField>
+            {
+                new DecodedField(1, true, (ulong)PlayerStateStore.PvpHeroUpdateMessageId),
+                new DecodedField(4, true, (ulong)index),
+                new DecodedField(4, true, (ulong)heroId),
+                new DecodedField(2, true, (ulong)flag),
+            });
+
+        private static DecodedMessage PvpFull(uint index, uint rank06, uint rank0A, byte flag,
+            uint rune, uint relic, uint amulet, uint[] sigils)
+        {
+            var items = new List<DecodedField[]>(sigils.Length);
+            foreach (uint s in sigils) items.Add(new[] { new DecodedField(4, true, (ulong)s) });
+            return new DecodedMessage(PlayerStateStore.PvpFullUpdateMessageId, 0, 0, new List<DecodedField>
+            {
+                new DecodedField(1, true, (ulong)PlayerStateStore.PvpFullUpdateMessageId),
+                new DecodedField(4, true, (ulong)index),
+                new DecodedField(4, true, (ulong)rank06),
+                new DecodedField(4, true, (ulong)rank0A),
+                new DecodedField(2, true, (ulong)flag),
+                new DecodedField(4, true, (ulong)rune),
+                new DecodedField(4, true, (ulong)relic),
+                new DecodedField(4, true, (ulong)amulet),
+                new DecodedField(0x10, true, items),
+                new DecodedField(4, true, 0UL),
+            });
+        }
+
+        private static DecodedMessage PvpDestroy(uint index) =>
+            new DecodedMessage(PlayerStateStore.PvpDestroyMessageId, 0, 0, new List<DecodedField>
+            {
+                new DecodedField(1, true, (ulong)PlayerStateStore.PvpDestroyMessageId),
+                new DecodedField(4, true, (ulong)index),
+            });
+
+        private static DecodedMessage PvpRank(int id, uint index, uint rank) =>
+            new DecodedMessage(id, 0, 0, new List<DecodedField>
+            {
+                new DecodedField(1, true, (ulong)id),
+                new DecodedField(4, true, (ulong)index),
+                new DecodedField(4, true, (ulong)rank),
+            });
+
+        private static DecodedMessage PvpCombinedRank(uint index, uint rank06, uint rank0A, byte flag) =>
+            new DecodedMessage(PlayerStateStore.PvpCombinedRankMessageId, 0, 0, new List<DecodedField>
+            {
+                new DecodedField(1, true, (ulong)PlayerStateStore.PvpCombinedRankMessageId),
+                new DecodedField(4, true, (ulong)index),
+                new DecodedField(4, true, (ulong)rank06),
+                new DecodedField(4, true, (ulong)rank0A),
+                new DecodedField(2, true, (ulong)flag),
+            });
+
         // Full pipeline: captured wire -> cipher -> frame -> schema -> state.
         [TestMethod]
         public void Replay_CapturedWire_UpdatesConfiguredSkills()
@@ -202,6 +264,101 @@ namespace Gw2.Protocol.Tests
             Assert.ThrowsExactly<FormatException>(() => store.Apply(empty));
             // The key must be exactly 16 bytes.
             Assert.ThrowsExactly<FormatException>(() => store.Apply(PlayerAdd(1, "N", new byte[15], 0)));
+        }
+
+        [TestMethod]
+        public void Pvp_IncrementalGear_SetsProvider()
+        {
+            var store = new PlayerStateStore();
+            store.Apply(PvpIncremental(PlayerStateStore.PvpRuneUpdateMessageId, 5, 21194));
+            store.Apply(PvpIncremental(PlayerStateStore.PvpRelicUpdateMessageId, 5, 106573));
+            store.Apply(PvpIncremental(PlayerStateStore.PvpAmuletUpdateMessageId, 5, 34));
+
+            Assert.IsTrue(store.TryGet(new PlayerListIndex(5), out PlayerState player));
+            Assert.IsTrue(player.Pvp.HasProvider);
+            Assert.AreEqual(new PvpRuneId(21194), player.Pvp.Rune);
+            Assert.AreEqual(new PvpRelicId(106573), player.Pvp.Relic);
+            Assert.AreEqual(new PvpAmuletId(34), player.Pvp.Amulet);
+        }
+
+        [TestMethod]
+        public void Pvp_Hero_SetsFlagBit()
+        {
+            var store = new PlayerStateStore();
+            store.Apply(PvpHero(7, 9, 1));
+
+            Assert.IsTrue(store.TryGet(new PlayerListIndex(7), out PlayerState player));
+            Assert.AreEqual(new PvpHeroId(9), player.Pvp.Hero);
+            Assert.AreEqual(PlayerPvpEquipment.HeroFlagBit, player.Pvp.Flags & PlayerPvpEquipment.HeroFlagBit);
+        }
+
+        [TestMethod]
+        public void Pvp_Full_AppliesRanksGearAndSigils()
+        {
+            var store = new PlayerStateStore();
+            int changes = store.Apply(PvpFull(
+                2, 42, 18, 1, 70651, 106573, 34, new uint[] { 21152, 21150, 81207, 81268 }));
+            Assert.AreEqual(11, changes);
+
+            Assert.IsTrue(store.TryGet(new PlayerListIndex(2), out PlayerState player));
+            PlayerPvpEquipment pvp = player.Pvp;
+            Assert.IsTrue(pvp.HasProvider);
+            Assert.AreEqual(new PvpRankId(42), pvp.CombinedRank06);
+            Assert.AreEqual(new PvpRankId(18), pvp.CombinedRank0A);
+            Assert.AreEqual(PlayerPvpEquipment.CombinedFlagBit, pvp.Flags & PlayerPvpEquipment.CombinedFlagBit);
+            Assert.AreEqual(new PvpRuneId(70651), pvp.Rune);
+            Assert.AreEqual(new PvpRelicId(106573), pvp.Relic);
+            Assert.AreEqual(new PvpAmuletId(34), pvp.Amulet);
+            Assert.AreEqual(new PvpSigilId(21152), pvp.GetSigil(0));
+            Assert.AreEqual(new PvpSigilId(81268), pvp.GetSigil(3));
+        }
+
+        [TestMethod]
+        public void Pvp_Destroy_ClearsProvider()
+        {
+            var store = new PlayerStateStore();
+            store.Apply(PvpIncremental(PlayerStateStore.PvpRuneUpdateMessageId, 5, 21194));
+            Assert.AreEqual(1, store.Apply(PvpDestroy(5)));
+
+            Assert.IsTrue(store.TryGet(new PlayerListIndex(5), out PlayerState player));
+            Assert.IsFalse(player.Pvp.HasProvider);
+            Assert.IsTrue(player.Pvp.Rune.IsNone);
+        }
+
+        [TestMethod]
+        public void Pvp_Ranks()
+        {
+            var store = new PlayerStateStore();
+            store.Apply(PvpRank(PlayerStateStore.PvpIncrementalRankMessageId, 1, 29));
+            store.Apply(PvpCombinedRank(1, 45, 6, 0));
+
+            Assert.IsTrue(store.TryGet(new PlayerListIndex(1), out PlayerState player));
+            Assert.AreEqual(new PvpRankId(29), player.Pvp.IncrementalRank);
+            Assert.AreEqual(new PvpRankId(45), player.Pvp.CombinedRank06);
+            Assert.AreEqual(new PvpRankId(6), player.Pvp.CombinedRank0A);
+        }
+
+        [TestMethod]
+        public void Pvp_Malformed_Throws()
+        {
+            var store = new PlayerStateStore();
+            var bad = new DecodedMessage(PlayerStateStore.PvpRuneUpdateMessageId, 0, 0, new List<DecodedField>());
+            Assert.ThrowsExactly<FormatException>(() => store.Apply(bad));
+            Assert.ThrowsExactly<FormatException>(() =>
+                store.Apply(PvpFull(1, 1, 2, 0, 3, 4, 5, new uint[] { 1, 2, 3 })));
+        }
+
+        [TestMethod]
+        public void Pvp_SharesTheRosterPlayer()
+        {
+            var store = new PlayerStateStore();
+            store.Apply(PlayerAdd(4, "Arena.9", new byte[16], 0));
+            store.Apply(PvpIncremental(PlayerStateStore.PvpRuneUpdateMessageId, 4, 21194));
+
+            Assert.AreEqual(1, store.PlayerCount);
+            Assert.IsTrue(store.TryGet(new PlayerListIndex(4), out PlayerState player));
+            Assert.AreEqual("Arena.9", player.Name);
+            Assert.AreEqual(new PvpRuneId(21194), player.Pvp.Rune);
         }
 
         [TestMethod]
