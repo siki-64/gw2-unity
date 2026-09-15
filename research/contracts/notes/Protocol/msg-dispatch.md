@@ -1911,3 +1911,92 @@ the absence of a write at the additive offset `+0x7c` and is wrong: the generati
    that decides whether one seed covers both connections.
 3. Keep the capture requirement: include `conn+0x118` (simplest) or the seed.
 
+
+---
+
+# Addendum 14: first live capture - the reader decodes real traffic
+
+**Status:** a live session captured the game-connection handshake and a decoded message stream;
+the reader and static corpus are **validated against live data**; the transport **cipher is still
+not** validated; **wireVerified stays false**
+
+This is the first non-static evidence in the whole note. The client was launched under x64dbg
+(hardware breakpoints only, no patching). Raw bytes and the per-session key were kept private
+under `captures/local/205780/` and are not committed.
+
+## Setup
+
+- Hardware execution breakpoint at `MsgUtil_Rc4Ksa` (`base+0xfeea50`) to catch each handshake.
+- Hardware execution breakpoint at `MsgPack_ReadFields` (`base+0xfebc30`) to capture the decoded
+  reader buffer.
+
+## Game-connection handshake
+
+Two key-schedule hits fired, both returning to `MsgRaw::ClientRecvEncrypt` (`base+0xfe89e6`):
+
+| Hit | `conn` (RCX-0x12C) | `DAT_1426632d0` | Attribution |
+| --- | --- | --- | --- |
+| 1 | `0x28AC2AB5520` | `0` | auth connection |
+| 2 | `0x29A9BDD2540` | `0x29A9BDD2540` | **game connection** |
+
+So `DAT_1426632d0` distinguishes the two: it is null for the auth handshake and equal to the
+connection for the game handshake, confirming Addendum 10's attribution. Both keys are 20 bytes
+and were captured to files (private).
+
+## The live registry matches the static corpus
+
+At the first `MsgPack_ReadFields` hit, `RCX` (the defArray) was `base+0x2605480`, i.e. image VA
+`0x142605480`. That is exactly the `sweep2.csv` row for id `0x40F` (`TablePair,14021ea81,0,OK,40f,142605480`).
+This is the first confirmation that the static corpus is the **live install**, not just a static
+table — the runtime registry record points at the same shipped `defArray`.
+
+## The decode
+
+The reader buffer at the hit was `[0x29AACEB8230, 0x29AACEB893F)` = **1807 bytes**. Decoding
+sequentially with `Gw2TransportDecode.py` (schema from the image, ids from `sweep2.csv`) produced
+**9 messages that consume exactly 1807 bytes** — no desync, no leftover:
+
+| id | wire length | chain |
+| --- | --- | --- |
+| `0x40F` | 6 | `1,2,2,2,2` |
+| `0x00B` | 2 | `1` |
+| `0x010` | 2 | `1` |
+| `0x415` | 302 | `1,0x11` (string array) |
+| `0x417` | 1445 | `1,0x11` |
+| `0x40C` | 12 | `1,0x11` |
+| `0x418` | 2 | `1` |
+| `0x410` | 20 | `1,0xD` (utf16 string) |
+| `0x428` | 16 | `1,4,4,4,4,2,2` |
+
+Every decoded length matches `maxsize.csv` for the same chain, and the payloads contain readable
+game strings (WvW match configuration), which is what a correct dynamic-width decode looks like.
+Exact buffer consumption is the strongest available check short of a wire fixture.
+
+## What this establishes
+
+- the game connection and its 20-byte handshake key are reachable live with two hardware
+  breakpoints and no patching;
+- `DAT_1426632d0 == conn` identifies the game connection vs the auth connection;
+- the static `sweep2.csv` `defArray` for a live message id equals the runtime record's defArray
+  (id `0x40F`/`0x142605480`);
+- `MsgPack_ReadFields` + the recovered schema decode a real 1807-byte stream into 9 messages with
+  exact-length consumption.
+
+## What this does not establish
+
+- **The transport cipher is not validated.** The captured bytes came from the client's *own*
+  already-decrypted reader buffer, not from our KSA/PRGA implementation. `wireVerified` stays
+  false and no message artifact is promoted to capture-backed.
+- `0x264` was not among the captured messages (it needs a PvP/spectator or skillbar trigger).
+- The raw bytes and the session key are private and uncommitted; a later sanitized fixture must
+  be derived from them deliberately, with provenance.
+
+## Next steps
+
+1. Capture the **encrypted** input to `MsgUtil_CryptStream` (or a pcap) and decrypt it with the
+   captured key, then compare byte-for-byte with the reader buffer above. That is the one test
+   that would validate the cipher reconstruction against real wire bytes.
+2. Trigger a `0x264` (PvP match/spectator skillbar) and capture its decoded record with the schema
+   already in `protocol/messages/205780/0x264.json`.
+3. Derive a sanitized fixture from (1) and record it as the first `capturedReplay` entry.
+
