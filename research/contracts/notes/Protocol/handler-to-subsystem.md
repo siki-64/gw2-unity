@@ -294,19 +294,42 @@ FRAME_MSG_EX`) and is the frame/UI broadcast. The loader itself is the producer 
 (`FUN_1402a6a00` case `0x1000000b` -> `FUN_1402a7e80`; `FUN_1402a77f0` subscribes). So `0x1000000b`
 is a **loader-state broadcast to the UI**, not the load trigger.
 
-The load trigger is therefore an internal caller of `FUN_14094fda0`, which is a **virtual method**: it
-is installed in the `CMapLoader` vtable region (`0x141b7c7xx..0x141b7c9xx`, slot at `0x141b7c930`; its
-sibling `FUN_1409503d0` is nearby). The caller is an indirect dispatch through that vtable, so binding
-it to a specific handler needs either a live breakpoint on `FUN_14094fda0` or a vtable-owner walk —
-neither of which was completed in this pass.
+### Live trace: the load-trigger path
 
-Conclusion: the inbound message that starts a world load is **not** `0x100`; `0x100` is a two-float
-update, and the loader is invoked internally. Both need re-derivation (a capture, or tracing the
-caller of `FUN_14094fda0`).
+A hardware breakpoint on `FUN_14094fda0` caught one `BeginMap` during world entry. At the hit the
+return address was `FUN_1414163a0+0x9a`, `rcx = 0x18033396898` (the manager returned by
+`FUN_14094bf80()`), and `rdx = 0x15e` (the map id). `FUN_1414163a0` stores a teleport/position struct
+(`obj+0x150` flags `| 0x20`, `+0x154`.. `+0x180`) and calls the loader through the manager's vtable
+`+0x188`:
+
+```text
+FUN_1414163a0(obj, mapId, x, y, pos, f, g):
+  obj+0x150 |= 0x20; obj+0x154..+0x180 = params
+  mgr = FUN_14094bf80()
+  (*(mgr->vtable + 0x188))(mgr, mapId)     // == FUN_14094fda0, the loader entry
+  FUN_14023c480(...)
+```
+
+`FUN_1414163a0`'s callers both operate on `*(ctx+0x1c8)` — the same object the `0x40x` capture family
+writes. `FUN_141416670` is an **event handler** (`MsCliGame.cpp`) switching on a subtype `*param_2`:
+
+| Sub-type | Action |
+| --- | --- |
+| `0x23` | `FUN_1414163a0((ctx+0x1c8), ...)` — begin the map load |
+| `0x24` | `FUN_14094bf80()` vtable `+0x1a0` |
+| `0x25` | restore + `FUN_1414163a0(...)` if a flag is set, else `FUN_141417610` |
+| `0x26` | teardown (`FUN_141416b80`/`FUN_1414148f0`, event `0x1414169d0`) |
+
+`FUN_141411760` (a virtual method on the same object) also calls `FUN_1414163a0` with a fallback
+(`*(obj+0x150) & 0x20 == 0`).
+
+**Conclusion:** the world-load trigger is the mission / `ctx+0x1c8` event path (sub-types `0x23`/`0x25`),
+not message id `0x100` (`0x100` is a two-float update on `ChCliContext+0x60[id]`). The remaining link is
+the wire message that produces those mission sub-events.
 
 ## Open
 
-- The caller of the loader entry `FUN_14094fda0` (the actual world-load trigger).
+- The wire message that produces the `MsCliGame` sub-events `0x23`/`0x25` (the world-load trigger).
 - The identity of `*(ctx+0x28)` (the `AgWorld` owner) and the `+0xd0` key-table semantics.
 - The `CmbtCli` combatant and buff layouts behind `FUN_1412c0470`/`0530`.
 - Which subsystem `FUN_141345bd0` is (`0x312`/`0x315`).
