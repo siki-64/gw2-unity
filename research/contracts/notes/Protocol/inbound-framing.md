@@ -11,8 +11,11 @@ Addenda 1, 19, 20, 22, 25; see [msg-dispatch-addenda.md](msg-dispatch-addenda.md
 | Value | Name | Meaning |
 | --- | --- | --- |
 | `1` | `MSGCONN_MODE_CLIENT_START` | handshake start; frames are buffered, not dispatched |
-| `2` | `MSGCONN_MODE_ENCRYPTED` | encrypted phase; `MsgRaw_ClientRecvEncrypt` handshake |
-| `3` | (established) | the raw frame dispatch loop runs |
+| `2` | (initial) | after the constructor sends the client DH public value; awaits the server key frame |
+| `3` | `MSGCONN_MODE_ENCRYPTED` | keyed/established; the encrypted receive pipeline runs |
+
+See [session-state.md](session-state.md) for the writers, transitions and corrections (the earlier
+`2 = MSGCONN_MODE_ENCRYPTED` labelling was wrong; `MSGCONN_MODE_ENCRYPTED` is `3`).
 
 ## Receive pipeline
 
@@ -70,9 +73,11 @@ Mode 3 is a concatenation of messages with **no per-message length**:
 
 ## Handshake frame
 
-`MsgRaw_ClientRecvEncrypt` handles the mode-2 frame (`kind == 0x16`, length byte `0x16`): it derives
-the RC4 key (`frame[2..0x15] XOR conn+0x118`), sets mode 3, runs the KSA, and copies the state to the
-outbound slot. See [handshake-key-derivation.md](handshake-key-derivation.md).
+`MsgRaw_ClientRecvEncrypt` handles dispatch kind `1` (frame `[u8 0x01][u8 0x16][20 bytes]`; the
+precondition is the **length** byte `0x16`, not the kind). It derives the RC4 key
+(`frame[2..0x15] XOR conn+0x118`), sets mode `3`, runs the KSA, and copies the state to the outbound
+slot. See [handshake-key-derivation.md](handshake-key-derivation.md) and
+[session-state.md](session-state.md).
 
 ## Validation
 

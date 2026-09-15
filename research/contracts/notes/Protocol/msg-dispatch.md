@@ -45,6 +45,7 @@ schema encode (Msg::WriteMsg -> FUN_140fea110)   send registry (conn+0x18, +0x50
 | [transport-cipher.md](transport-cipher.md) | RC4-variant key schedule + PRGA, state layout, validation, cross-direction reuse |
 | [handshake-key-derivation.md](handshake-key-derivation.md) | Diffie-Hellman KDF, the client seed, why the wire alone is not enough |
 | [inbound-framing.md](inbound-framing.md) | connection modes, receive pipeline, frame container + LZ4, handshake frame |
+| [session-state.md](session-state.md) | the `MsgConn` mode machine, handshake/control frames, the outbound send model, lifecycle events |
 | [schema-registry.md](schema-registry.md) | channels, registry records, `MsgPack` schema format, direction-specific corpora |
 | [outbound-messages.md](outbound-messages.md) | send encoder, send registry, buffer, flush |
 | [live-capture-evidence.md](live-capture-evidence.md) | captures, fixtures, validation status, operational cautions |
@@ -57,8 +58,12 @@ schema encode (Msg::WriteMsg -> FUN_140fea110)   send registry (conn+0x18, +0x50
   keystream reuse.
 - **Static:** schema-format offsets, registry layouts, the schema corpora, the outbound flush
   internals.
-- **Open:** outbound sequence/acknowledgement rules; the server side of the handshake; Unity
-  EditMode tests (the package is compiled-validated only).
+- **Resolved (negative):** there are no transport-layer outbound sequence/acknowledgement rules for
+  this build; outbound is a plain concatenated encrypted stream (see
+  [session-state.md](session-state.md)).
+- **Open:** the server side of the handshake; whether a real connection uses mode `1`; the runtime
+  does not yet model the mode machine or the handshake frames; Unity EditMode tests (the package is
+  compiled-validated only).
 
 ## Runtime
 
