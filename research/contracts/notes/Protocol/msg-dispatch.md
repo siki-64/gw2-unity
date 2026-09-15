@@ -2651,3 +2651,209 @@ live bytes (`captures/local/205780/s3/`).
 
 ---
 
+# Addendum 23: the handshake key derivation is Diffie-Hellman on a 512-bit prime
+
+**Status:** `FUN_140fede80` and its callees are decoded; the construction is a modular-exponentiation
+key agreement on a 512-bit probable prime whose `P-1` is not smooth; therefore the session key is
+**not** derivable from the wire
+
+This closes Addendum 10 next step 1 (the derivation itself) and settles Addendum 11's capture
+requirement with a reason rather than an absence.
+
+## The function (`FUN_140fede80`, `MsgConn.cpp`)
+
+`FUN_140fede80(size, desc, keyLen, seed, outA, outB)`, when `size == 0x88` and `desc[0] == 1`:
+
+```text
+blobA = desc[0x08 .. 0x48]     // 64 bytes, 512-bit modulus P
+blobB = desc[0x48 .. 0x88]     // 64 bytes, generator G
+small = desc[1] = 4
+R     = FUN_141570640(seed, 512)      // 512-bit value from the 20-byte seed
+outA  = blobB ^ R mod blobA           // the shared secret
+outB  = 4     ^ R mod blobA           // sent to the server
+```
+
+`desc` is `DAT_142109e40`. Addendum 10 then stores `conn+0x118 = outA[0:20]` and sends
+`outB` (`{0x00,len}`, `len <= 0x40`); the RC4 key is the server's mode-2 handshake frame XOR
+`outA[0:20]`. So `outB = 4^R` is the client's public value and `blobB` is the generator the server
+holds the discrete log of (`blobB = 4^s`), i.e. a textbook DH exchange with the shared secret
+`4^(Rs)`.
+
+## The bignum library
+
+| Routine | Operation |
+| --- | --- |
+| `FUN_14156ee00` | from bytes (32-bit **little-endian** limbs) |
+| `FUN_14156ed80` | from small uint |
+| `FUN_14156fa40` | multiply (schoolbook) |
+| `FUN_14156f420` | divide / remainder (Knuth) |
+| `FUN_141570de0` | square |
+| `FUN_141570bf0` / `FUN_141570cd0` | shift left / right |
+| `FUN_14156fdc0` | modular exponentiation (square-and-multiply, 2-bit window) |
+
+`FUN_14156f420(rem, a, m, rem)` computes `a mod m`; `FUN_14156fdc0(out, base, exp, mod)` builds the
+window table `{0, base, base^2, base^3}` and walks the exponent two bits at a time.
+
+## The PRNG (`FUN_141570640`)
+
+```text
+fill 16 32-bit words (512 bits):
+  for each output word:
+    x = (index == 0 ? 0x75bd924 : 0) XOR seed_limb[index]
+    for two steps:
+      x = x / 0xadc8 + x * 0xbc8f          // Schrage reduction for Park-Miller
+      state = x & 0x7fffffff
+      out_word |= (x & 0xffff) << (16 * step)
+    seed_limb[index] = state
+    index = (index + 1) mod seed_word_count
+  rotate the seed limbs by the final index
+```
+
+This is the Park-Miller minimal-standard LCG (`48271`, `2^31-1`) of Addendum 10, but **seeded by the
+20-byte seed and used to expand it to a 512-bit exponent**, not to generate the key directly.
+
+## The seed (`FUN_140fdf2d0`) — client entropy, not wire-derivable
+
+The generator XORs a persistent 20-byte global (`DAT_14288fb80`) with the caller's buffer, folds in
+`timeGetTime()`, `FILETIME` (`FUN_1409ce000`) and two perf-counter reads (`FUN_1409d5010(5)/(7)`),
+SHA-1s the result (`FUN_1415766e0`, `CptSha.cpp`), and XORs that back into the buffer. It is fresh
+client entropy carrying persistent global history, so it is neither reproducible nor brute-forceable
+from the wire.
+
+## The constants, and why the session key is not wire-derivable
+
+`blobA` (modulus `P`, little-endian as stored):
+`f9e43af5 25f1b41f a263a007 48cdf148 98ef8f59 783e8fcd 70b41db9 4afd3d0a
+ 97ac5657 1c3b5ee7 c4a8804f 63961fd8 4158e553 f1ed49cb 4c470b72 598573f9`
+
+`blobB` (generator `G`, little-endian):
+`270e7b58 49658baf 6bbadfe4 a86ee1f0 0596f819 b970eeb9 fcb20802 41c28b09
+ 8ff4737c cd996175 48246508 4eb44ff8 9567c6fb d6a3e6a5 6292623d c358a6c4`
+
+Checked offline (Python Miller-Rabin and trial division): `P` is a **512-bit probable prime**;
+`P-1 = 2^3 · 5^2 · 7 · C`, where `C` is a 502-bit composite with no factor `<= 2·10^6`. `outB = 4^R
+mod P` is on the wire, but recovering `R` is a 512-bit discrete log against a non-smooth modulus, so
+it is infeasible.
+
+**Consequence.** Decoding `FUN_140fede80` does **not** make a bare capture decryptable. A capture
+must still carry per-session material: the 20-byte **seed**, or `conn+0x118` (`outA`) / `conn+0x12C`
+(PRGA state). This is Addendum 11's requirement, now for a proven reason.
+
+## What this establishes
+
+- the exact handshake KDF: Park-Miller expansion of the seed to a 512-bit `R`, then `G^R mod P` and
+  `4^R mod P`;
+- that it is a Diffie-Hellman exchange on a 512-bit prime, not a hash or a keyed KDF;
+- that the modulus is strong enough that the session key is not recoverable from the wire.
+
+## What this does not establish
+
+- the server side of the exchange, or that `blobB = 4^s` for a stable `s`;
+- verification against a captured `(seed, outA)` pair — the reconstruction is static and the
+  constants are read from the image, but no paired vector has been captured yet;
+- whether the outbound path (`conn+0x234`) reuses this connection's secret.
+
+## Next steps
+
+1. Capture a `(seed, outA)` pair from one live connect and confirm the reconstruction end to end;
+   then add a synthetic or captured vector beside `transport-cipher.json`.
+2. Given the key is not wire-derivable, plan the decoder to take the per-session seed/state as an
+   explicit input rather than pretending a pcap is sufficient.
+3. Examine the outbound path (`conn+0x234`).
+
+---
+
+# Addendum 24: the outbound encoder, buffer and flush
+
+**Status:** the send-side encoder, send registry, send buffer/cursor and outbound cipher state are
+located statically; **no outbound wire fixture**
+
+This is the inbound note's long-standing "examine the outbound path" next step. All static.
+
+## The send encoder `FUN_140fea110(conn, rawDataBytes, rawData)`
+
+```c
+assert(conn && rawData && rawDataBytes >= 2);
+if (conn+0x108 == 3 && (*(byte*)conn & 4)) {
+    msgid    = *(u16*)rawData;
+    sendMsg  = FUN_140fed3d0(conn+0x18, msgid);        // send registry lookup
+    assert(sendMsg && sendMsg->defArray[0].defSize != 0);
+    assert(rawDataBytes == sendMsg->defArray[0].defSize);
+    MsgPack_WriteFields(out, &ctx, sendMsg->defArray, rawData, rawData+rawDataBytes, ...);
+    thunk_FUN_140fedc80(conn+0x10, *sendMsg, msgid, ...);   // send stats
+    if (conn+0x38) FUN_14023b130(conn+0x38, conn, 2, 0);    // observer
+}
+```
+
+It is called by **hundreds** of generated per-message senders (`FUN_14125b..`, `FUN_141260..`,
+`FUN_14094..`, `FUN_14141..`, ...), so it is the single outbound encode entry. The `rawData` is a
+**decoded native record**, and its size must equal the send schema's `defArray[0].defSize`, exactly
+the reader/writer contract of Addendum 8 applied to the send side.
+
+## The send registry `FUN_140fed3d0(registry, id)`
+
+```c
+if (*(u32*)(registry + 0x5c) <= id) return 0;
+record = *(qword*)(registry + 0x50) + id * 0x10;      // stride 0x10
+return *(qword*)(record + 8) ? record : 0;            // defArray at +0x08
+```
+
+Base `+0x50`, count `+0x5c`, 16-byte records, `defArray` at `+0x08` — the **table-A (send)** record
+layout proven in Addendum 7 (`FUN_140fecf00`). So the outbound schema corpus is the send tables: for
+channel `0x14` alone, 624 entries (Addendum 3), roughly 3x the recv corpus.
+
+## The flush `FUN_140fe96f0(conn)`
+
+```c
+FUN_140fee540(conn+0xd8, now);            // ping/time accounting, not framing
+if (conn+0x108 == 1) { conn+0xd0 = conn+0x398; return; }   // handshake: no send
+len = conn+0xd0 - (conn+0x398);           // bytes written to the send buffer
+MsgUtil_CryptStream(conn+0x234, len, conn+0x398, temp);
+FUN_140fe3e60(*(conn+8), temp, len);      // transport send
+conn+0xd0 = conn+0x398;                   // reset write cursor
+// debug/stat hooks: FUN_140fedfc0(2,len), FUN_140fedfc0(3,len)
+```
+
+So the outbound layout is:
+
+| Offset | Field |
+| --- | --- |
+| `conn+0x398` | outbound plaintext buffer (message stream), write cursor `conn+0xd0` |
+| `conn+0x234` | outbound RC4 state (`0x108` bytes; the Addendum-10 snapshot target) |
+| `*(conn+8)` | transport object; `FUN_140fe3e60(obj,data,len)` calls `(*(obj+0x30)+0x38)(...)` |
+
+## Asymmetry with inbound
+
+- **Inbound** `FUN_140fe8ef0` wraps payloads in `[u16 compLen][u16 decodedLen]` + LZ4 (Addendum 20).
+  **Outbound** at this level encrypts the raw message stream and hands it to the transport — no
+  `compLen/decodedLen`, no LZ4. If outbound compression exists it is below `FUN_140fe3e60`, or
+  outbound is uncompressed.
+- Inbound and outbound use **separate** PRGA states (`conn+0x12c` vs `conn+0x234`), so the two
+  directions do not share a keystream.
+- `MsgPack_WriteFields` does not bounds-check (Addendum 2); outbound sizes must come from
+  `ComputeMaxSize` first.
+
+## What this establishes
+
+- the outbound encode entry (`FUN_140fea110`) and that it is schema-driven on the **send** corpus;
+- the send registry record layout (`+0x50/+0x5c`, stride `0x10`, `defArray +0x08`);
+- the outbound buffer (`conn+0x398`), cursor (`conn+0xd0`), cipher state (`conn+0x234`) and
+  transport object (`*(conn+8)`);
+- that outbound adds no compLen/LZ4 at the flush layer.
+
+## What this does not establish
+
+- where `conn+0x234` is key-scheduled (Addendum 10 recorded a `0x108`-byte state copy to it; the
+  installer itself is not read here);
+- whether the transport (`FUN_140fe3e60` / vtable `+0x38`) adds framing or compression;
+- send-time sequencing/acknowledgement rules;
+- any outbound wire fixture; no encoder is implemented or validated.
+
+## Next steps
+
+1. Find the write that installs `conn+0x234` and confirm it is the `ClientRecvEncrypt` snapshot.
+2. Determine whether the transport vtable `+0x38` adds framing/compression.
+3. Capture an outbound packet and confirm the cipher and the (a)presence of framing.
+
+---
+
