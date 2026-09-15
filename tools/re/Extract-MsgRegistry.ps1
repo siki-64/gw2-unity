@@ -30,7 +30,7 @@ Output: one record per entry with the decoded id, or a diagnosis naming the
 JSON table dump to decode.
 
 .EXAMPLE
-Extract-MsgRegistry.ps1 -Path protocol/schema/205780/tables/ch14-recv.json
+Extract-MsgRegistry.ps1 -Path protocol/schema/207032/tables/ch14-recv.json
 #>
 [CmdletBinding()]
 param(

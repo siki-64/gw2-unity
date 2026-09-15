@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Gw2.Protocol.Framing
 {
     /// <summary>
-    /// The inbound transport frame container (build 205.780, <c>MsgConn.cpp</c>).
+    /// The inbound transport frame container (<c>MsgConn.cpp</c>).
     /// <para>
     /// After the transport cipher is removed, the buffer is a concatenation of frames:
     /// <c>[u16 compLen][u16 decodedLen][payload]</c>. When <c>compLen == 0</c> the payload is

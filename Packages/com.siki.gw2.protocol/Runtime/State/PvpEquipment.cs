@@ -81,7 +81,7 @@ namespace Gw2.Protocol.State
     }
 
     /// <summary>
-    /// A player's PvP gear provider state (build 205.780, <c>ChCliPlayer +0x97B0</c>), populated by
+    /// A player's PvP gear provider state (<c>ChCliPlayer +0x97B0</c>), populated by
     /// the server-driven <c>0x200..0x207</c> family. See
     /// <c>research/contracts/notes/UI/Widgets/pvp-equipment-state.md</c>.
     /// <para>

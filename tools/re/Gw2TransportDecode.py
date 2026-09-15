@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline decoder for the build 205.780 game-connection receive stream.
+"""Offline decoder for the game-connection receive stream.
 
 Two inputs are supported:
 
@@ -29,7 +29,7 @@ what it decoded and preserves undecoded bytes rather than guessing.
 
 Usage
   python tools/re/Gw2TransportDecode.py --selftest
-  python tools/re/Gw2TransportDecode.py --decrypted stream.bin --ids protocol/schema/205780/sweep2.csv
+  python tools/re/Gw2TransportDecode.py --decrypted stream.bin --ids protocol/schema/207032/sweep2.csv
   python tools/re/Gw2TransportDecode.py --capture enc.bin --key <40-hex> --ids ...
   python tools/re/Gw2TransportDecode.py --capture enc.bin --state conn12C.bin --out plain.bin
 
@@ -53,7 +53,7 @@ IMAGE = r"C:\Program Files (x86)\Steam\steamapps\common\Guild Wars 2\Gw2-64.exe"
 DESC_STRIDE = 0x28
 MSG_MAX_BUFFER_SIZE = 0x2000
 FIXTURE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                       "fixtures", "205780", "0x264-wire.json")
+                       "fixtures", "207032", "0x264-wire.json")
 
 
 class PE:
@@ -499,7 +499,7 @@ def main():
     ap.add_argument("--deframe", action="store_true",
                     help="decode the inbound frame container (LZ4) before parsing")
     ap.add_argument("--ids", metavar="CSV",
-                    default=os.path.join("protocol", "schema", "205780",
+                    default=os.path.join("protocol", "schema", "207032",
                                          "sweep2.csv"))
     ap.add_argument("--image", metavar="PATH", default=IMAGE)
     args = ap.parse_args()

@@ -51,20 +51,20 @@ together with warning escalation. `-Strict` turns warnings into a non-zero exit.
 .\tools\gw2re.ps1 catalog validate
 
 # Stamp a build whose in-memory image you observed. Manual: nothing is registered automatically.
-.\tools\gw2re.ps1 catalog stamp -Build 205780 -BuildLabel 205.780 -ImageSha256 <64-hex> -StampNote "MumbleLink build"
+.\tools\gw2re.ps1 catalog stamp -Build 207032 -BuildLabel 207.032 -ImageSha256 <64-hex> -StampNote "MumbleLink build"
 
 # Evidence --------------------------------------------------------------------------------
 
 # Import a private bundle (capture directory or a single file), recording build, hashes and timestamps
-.\tools\gw2re.ps1 evidence import -Path .\captures\local\205780 -Build 205780 `
-    -BuildLabel 205.780 -Manifest .\artifacts\manifests\205780.json `
+.\tools\gw2re.ps1 evidence import -Path .\captures\local\207032 -Build 207032 `
+    -BuildLabel 207.032 -Manifest .\artifacts\manifests\207032.json `
     -Process gw2-64.exe -RuntimeBase 0x7FF600000000
 
 # Re-hash every manifest entry against the bytes on disk
-.\tools\gw2re.ps1 evidence verify -Manifest .\artifacts\manifests\205780.json
+.\tools\gw2re.ps1 evidence verify -Manifest .\artifacts\manifests\207032.json
 
 # Which bundle produced this file, and which artifacts cite its hash?
-.\tools\gw2re.ps1 evidence provenance -Path .\captures\local\205780\gw2-64.memdump
+.\tools\gw2re.ps1 evidence provenance -Path .\captures\local\207032\gw2-64.memdump
 
 # Findings --------------------------------------------------------------------------------
 

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Gw2.Protocol.Schema
 {
     /// <summary>
-    /// One field of a message schema (<c>MsgPackFieldDef</c>), recovered for build 205.780.
+    /// One field of a message schema (<c>MsgPackFieldDef</c>), recovered from the client image.
     /// <para>
     /// <see cref="FieldType"/> selects the reader behaviour; <see cref="Param"/> is the element
     /// or array count (and, for <c>MP_MSGID</c>, the message id); <see cref="Reference"/> is the

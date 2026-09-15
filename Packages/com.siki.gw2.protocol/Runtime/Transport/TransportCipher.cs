@@ -41,7 +41,7 @@ namespace Gw2.Protocol.Transport
     }
 
     /// <summary>
-    /// The game-connection transport cipher, recovered for build 205.780
+    /// The game-connection transport cipher, recovered from the client image
     /// (<c>MsgUtil.cpp</c>: the key schedule and the RC4-shaped PRGA).
     /// <para>
     /// The key schedule zeroes a 20-byte buffer, copies in up to 20 key bytes (longer is

@@ -4,7 +4,7 @@ namespace Gw2.Protocol.Framing
 {
     /// <summary>
     /// LZ4 block decompression, matching the client's inbound frame payload codec
-    /// (build 205.780, <c>MsgConn.cpp</c>: token, literal/match length extensions,
+    /// (<c>MsgConn.cpp</c>: token, literal/match length extensions,
     /// little-endian u16 match offset, overlapping match copy).
     /// <para>An LZ4 block needs no external dictionary, so it is fully offline-reproducible.</para>
     /// </summary>

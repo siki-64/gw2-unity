@@ -6,7 +6,7 @@ namespace Gw2.Protocol.MsgPack
 {
     /// <summary>
     /// Decodes a mode-3 message stream: a concatenation of <c>[u16 msgId][schema fields]</c>
-    /// records with no per-message length (build 205.780). The leading id selects the schema;
+    /// records with no per-message length. The leading id selects the schema;
     /// the field chain consumes exactly the message.
     /// </summary>
     public static class MessageStreamDecoder

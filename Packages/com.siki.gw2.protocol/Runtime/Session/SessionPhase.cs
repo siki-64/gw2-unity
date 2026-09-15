@@ -3,7 +3,7 @@ using System;
 namespace Gw2.Protocol.Session
 {
     /// <summary>
-    /// The <c>MsgConn</c> mode word (<c>conn+0x108</c>) for build 205.780. Only three values are
+    /// The <c>MsgConn</c> mode word (<c>conn+0x108</c>). Only three values are
     /// reachable. See <c>research/contracts/notes/Protocol/session-state.md</c>.
     /// </summary>
     public enum MsgConnMode
@@ -28,7 +28,7 @@ namespace Gw2.Protocol.Session
     }
 
     /// <summary>
-    /// The phase machine around the codecs for one game connection (build 205.780). It performs no
+    /// The phase machine around the codecs for one game connection. It performs no
     /// I/O: it models the recovered transitions so a connection driver can gate cipher use and
     /// handshake buffering. The transport cipher state itself is supplied separately; on
     /// <see cref="TryEstablish"/> the caller keys both directions from the returned transport key.

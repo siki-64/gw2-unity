@@ -18,7 +18,7 @@
 .EXAMPLE
     .\tools\gw2re.ps1 catalog validate
 .EXAMPLE
-    .\tools\gw2re.ps1 evidence import -Path .\captures\local\205780 -Build 205780 -BuildLabel 205.780
+    .\tools\gw2re.ps1 evidence import -Path .\captures\local\207032 -Build 207032 -BuildLabel 207.032
 .EXAMPLE
     .\tools\gw2re.ps1 evidence verify
 #>
