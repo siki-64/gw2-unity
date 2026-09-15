@@ -83,7 +83,8 @@ discrete log.
 At the game-connection `FUN_140fede80` call, seed `0558904f44f11d2eb022eb43b0a25441b6c0d800`
 produced `conn+0x118 = 390aaf8f5e6104ebb9bc24736365c65a40124e59`, exactly the reconstruction's
 `outA[:20]`. Fixture `tools/re/fixtures/205780/handshake-kdf.json`; reference
-`tools/re/Gw2HandshakeKdf.py`.
+`tools/re/Gw2HandshakeKdf.py`; runtime `Gw2.Protocol.Session.HandshakeKeyExchange` (`ExpandExponent`,
+`Derive`), which reproduces the fixture's synthetic vectors and this captured vector.
 
 ## Open
 
