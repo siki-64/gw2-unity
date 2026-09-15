@@ -46,6 +46,7 @@ schema encode (Msg::WriteMsg -> FUN_140fea110)   send registry (conn+0x18, +0x50
 | [handshake-key-derivation.md](handshake-key-derivation.md) | Diffie-Hellman KDF, the client seed, why the wire alone is not enough |
 | [inbound-framing.md](inbound-framing.md) | connection modes, receive pipeline, frame container + LZ4, handshake frame |
 | [session-state.md](session-state.md) | the `MsgConn` mode machine, handshake/control frames, the outbound send model, lifecycle events |
+| [auth-providers.md](auth-providers.md) | how the launcher/portal auth distinguishes Steam / ANet Portal / Epic; `AuthType` and `PasswordType` enums |
 | [schema-registry.md](schema-registry.md) | channels, registry records, `MsgPack` schema format, direction-specific corpora |
 | [outbound-messages.md](outbound-messages.md) | send encoder, send registry, buffer, flush |
 | [live-capture-evidence.md](live-capture-evidence.md) | captures, fixtures, validation status, operational cautions |
