@@ -109,9 +109,27 @@
   "validation": {
     "static": true,
     "synthetic": false,
-    "capturedReplay": false,
+    "capturedReplay": true,
     "unity": false,
     "liveInterop": false
   },
+  "observedSamples": [
+    {
+      "kind": "decoded-handler-record",
+      "build": 205780,
+      "capturedAtLayer": "MsgPack_ReadFields output / FUN_141257a20 input",
+      "rawHex": "6402DC11000000004E000000",
+      "decoded": { "msgId": "0x264", "skillContentId": "0x11DC", "slot": 0, "context": 0, "playerListIndex": "0x4E" },
+      "note": "Live capture, 2026-09-15. Decoded record, not wire bytes. Session key and raw stream kept private under captures/local."
+    },
+    {
+      "kind": "decoded-handler-record",
+      "build": 205780,
+      "capturedAtLayer": "MsgPack_ReadFields output / FUN_141257a20 input",
+      "rawHex": "6402DC11000000014E000000",
+      "decoded": { "msgId": "0x264", "skillContentId": "0x11DC", "slot": 0, "context": 1, "playerListIndex": "0x4E" },
+      "note": "Same skill and player as the first sample, other context. Two-array selection, per remote-equipped-skills.md."
+    }
+  ],
   "noClaim": "Records static registry-location, schema-shape and handler evidence for one build only. The decoded field layout is schema-directed static evidence, not a captured wire fixture; it does not establish wire compatibility, an encoder, or current server support."
 }

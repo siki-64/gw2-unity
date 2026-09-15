@@ -2000,3 +2000,57 @@ Exact buffer consumption is the strongest available check short of a wire fixtur
    already in `protocol/messages/205780/0x264.json`.
 3. Derive a sanitized fixture from (1) and record it as the first `capturedReplay` entry.
 
+---
+
+# Addendum 15: `0x264` captured live
+
+**Status:** two live `0x264` records captured and decoded; the decoded-field layout is validated on
+real data; **still not a wire fixture** (`wireVerified` stays false)
+
+This closes Addendum 14 next step 2. The client was relaunched and driven the same way (hardware
+breakpoints only).
+
+## Method
+
+- Game-connection handshake captured as before: the key-schedule hit whose `DAT_1426632d0 == conn`
+  (`conn = 0x2572D705020`). The 20-byte game key is private.
+- Instead of conditioning `MsgPack_ReadFields` (conditions need script permission the session did
+  not have), the breakpoint was placed on the **`0x264` handler** `FUN_141257a20`
+  (`base+0x1257a20`). It fires only for `0x264`, so no condition is needed. RDX is the decoded
+  record.
+
+## Captured records
+
+Two `0x264` dispatches were captured (12-byte decoded struct each):
+
+| Sample | bytes | msgid | skillContentId | slot | context | playerListIndex |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | `64 02 DC 11 00 00 00 00 4E 00 00 00` | `0x264` | `0x11DC` | `0` | `0` | `0x4E` |
+| 2 | `64 02 DC 11 00 00 00 01 4E 00 00 00` | `0x264` | `0x11DC` | `0` | `1` | `0x4E` |
+
+They match `protocol/messages/205780/0x264.json` offset-for-offset and total `0x0C`, and the
+handler's field use (`decoded+2` skill, `+6` slot, `+7` context, `+8` player) is confirmed. The
+two samples differ only in **context** (`0` and `1`), which is the two-array selection recorded in
+`remote-equipped-skills.md`; skill and player are identical, so this is one player's record written
+into both context arrays.
+
+## Still not wire-verified
+
+The captured bytes are the **decoded handler record**, not the encrypted wire bytes. The varint
+wire encoding of the two `u32` members is therefore still only statically inferred.
+`wireVerified` stays false; the capture is a decoded-record observation.
+
+## Operational caution
+
+A previous session crashed when a **hardware breakpoint was deleted while the client ran** and a
+later stale `DR` slot re-triggered on the old address. Deleting hardware breakpoints mid-session is
+the prime suspect. Prefer: set the exact breakpoints needed once, and either leave them armed or
+relaunch before re-arming, rather than adding and deleting hardware slots during a session.
+
+## Next steps
+
+1. Validate the cipher: capture the encrypted input to `MsgUtil_CryptStream` for a game-connection
+   packet and decrypt it with the captured key, comparing to the decoded buffer.
+2. Promote a sanitized `0x264` fixture (the 12-byte decoded record) once the wire bytes are also
+   captured and the cipher is confirmed.
+
