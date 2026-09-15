@@ -45,5 +45,46 @@ namespace Gw2.Protocol.MsgPack
             }
             return messages;
         }
+
+        /// <summary>
+        /// Streaming decode for callers that buffer across packets: decode every complete message,
+        /// then leave a truncated tail (a message that has not fully arrived) unconsumed. An
+        /// unknown id is still an error.
+        /// </summary>
+        public static IReadOnlyList<DecodedMessage> TryDecode(MessageSchemaSet schemas,
+                                                              ReadOnlySpan<byte> stream,
+                                                              out int consumed)
+        {
+            if (schemas == null) throw new ArgumentNullException(nameof(schemas));
+
+            var messages = new List<DecodedMessage>();
+            int offset = 0;
+            while (offset < stream.Length)
+            {
+                if (offset + 2 > stream.Length) break; // partial id
+                int messageId = stream[offset] | (stream[offset + 1] << 8);
+                if (!schemas.TryGet(messageId, out MessageSchema schema))
+                    throw new FormatException($"msgpack: unknown message id 0x{messageId:x} at offset {offset}");
+
+                int start = offset;
+                DecodedField[] fields;
+                try
+                {
+                    fields = MsgPackReader.ReadFields(schema.Fields, stream, ref offset);
+                }
+                catch (MsgPackTruncatedException)
+                {
+                    offset = start; // wait for more bytes; re-decoded next call
+                    break;
+                }
+
+                int length = offset - start;
+                if (length > MaxMessageBytes)
+                    throw new FormatException($"msgpack: message 0x{messageId:x} exceeds {MaxMessageBytes} bytes");
+                messages.Add(new DecodedMessage(messageId, start, length, fields));
+            }
+            consumed = offset;
+            return messages;
+        }
     }
 }

@@ -173,7 +173,7 @@ namespace Gw2.Protocol.MsgPack
             int shift = 0;
             for (int i = 0; i < 5; i++)
             {
-                if (off >= data.Length) throw new FormatException("msgpack: varint end of payload");
+                if (off >= data.Length) throw new MsgPackTruncatedException("msgpack: varint end of payload");
                 byte b = data[off++];
                 value |= (ulong)(b & 0x7F) << shift;
                 if ((b & 0x80) == 0) return value & 0xFFFFFFFF;
@@ -195,7 +195,7 @@ namespace Gw2.Protocol.MsgPack
                 }
                 off += 2;
             }
-            throw new FormatException("msgpack: unterminated utf16 string");
+            throw new MsgPackTruncatedException("msgpack: unterminated utf16 string");
         }
 
         private static string ReadCString8(ReadOnlySpan<byte> data, ref int off)
@@ -211,10 +211,10 @@ namespace Gw2.Protocol.MsgPack
                 }
                 off++;
             }
-            throw new FormatException("msgpack: unterminated string");
+            throw new MsgPackTruncatedException("msgpack: unterminated string");
         }
 
-        private static FormatException Overrun(int off, int n, int length) =>
-            new FormatException($"msgpack: read of {n} bytes at {off} overruns payload of {length}");
+        private static MsgPackTruncatedException Overrun(int off, int n, int length) =>
+            new MsgPackTruncatedException($"msgpack: read of {n} bytes at {off} overruns payload of {length}");
     }
 }

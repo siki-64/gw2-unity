@@ -3130,3 +3130,58 @@ confidentiality weakness, not a decode blocker.
 
 ---
 
+# Addendum 29: the runtime codec (inbound end to end, and an outbound encoder)
+
+**Status:** the engine-independent runtime ties cipher -> deframe -> direction-aware schema decode
+into one call, and re-encodes a captured outbound message
+
+This is a runtime deliverable; it does not add protocol evidence.
+
+## Inbound: `ProtocolCodec`
+
+`ProtocolCodec(corpus, cipherState).DecodeInbound(ciphertext)` is stateful and does, per packet:
+
+1. `TransportCipher.Crypt` (advances the persistent state);
+2. deframe every complete `[u16 compLen][u16 decodedLen]` frame (raw or LZ4), retaining a partial
+   trailing frame across calls;
+3. decode every complete `[u16 msgid][fields]` message with the **recv** corpus, retaining a
+   truncated tail across calls.
+
+A truncated read raises `MsgPackTruncatedException` (a `FormatException` subclass) so the streaming
+decoder can wait for more bytes; an unknown id is still a hard error.
+
+## Outbound: `OutboundProtocolCodec` + `MsgPackWriter`
+
+`OutboundProtocolCodec.Encode(messageId, fields)` encodes with `MsgPackWriter` against the **send**
+corpus and encrypts with the outbound state; there is no framing. `MsgPackWriter` is the inverse of
+`MsgPackReader`.
+
+## Validation
+
+- `DecodeInbound` on the captured `0x264` **ciphertext** yields both messages; a packet split
+  mid-frame buffers and then completes.
+- `Encode(0x120, decodedFields)` re-encodes the plaintext `2001888f0101` and re-encrypts it to the
+  captured `5a3160fb37db`.
+- `MsgPackWriter` round-trips the captured outbound message byte for byte.
+
+24 tests pass.
+
+## What this establishes
+
+- the validated inbound pipeline (Addendum 20/22) is runtime code that reproduces a captured packet
+  from ciphertext in one call;
+- the outbound encoder reproduces a captured outbound packet.
+
+## What this does not establish
+
+- Unity 6000.6 editor validation (the package is compiled and tested offline with `dotnet` only);
+- that the encoder generalizes beyond the one captured message;
+- outbound sequencing/acknowledgement rules, or live interoperability.
+
+## Next steps
+
+1. Validate the package in the Unity 6000.6 editor and add a `TextAsset` loader for the corpora.
+2. Broaden the outbound encoder tests as more captured packets become available.
+
+---
+

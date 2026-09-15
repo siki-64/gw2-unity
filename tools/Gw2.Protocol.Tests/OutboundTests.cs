@@ -47,7 +47,7 @@ namespace Gw2.Protocol.Tests
             Assert.AreEqual(1UL, (ulong)messages[0].Fields[2].Value);
 
             // The recv corpus has a different 0x120 chain that does not fit this packet.
-            Assert.ThrowsExactly<FormatException>(
+            Assert.ThrowsExactly<MsgPackTruncatedException>(
                 () => MessageStreamDecoder.Decode(corpus.ForDirection(TrafficDirection.ServerToClient), plaintext));
         }
     }

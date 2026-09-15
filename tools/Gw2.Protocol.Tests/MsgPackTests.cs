@@ -57,7 +57,7 @@ namespace Gw2.Protocol.Tests
         public void TruncatedMessage_Throws()
         {
             var schemas = new MessageSchemaSet(new[] { ConfiguredSkillSchema() });
-            Assert.ThrowsExactly<FormatException>(
+            Assert.ThrowsExactly<MsgPackTruncatedException>(
                 () => MessageStreamDecoder.Decode(schemas, new byte[] { 0x64, 0x02 }));
         }
 
