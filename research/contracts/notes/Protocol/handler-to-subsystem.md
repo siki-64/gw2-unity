@@ -98,6 +98,38 @@ Both reach a `ChCliSkillbar`, but through different `ChCliPlayer` pointers:
 `ChCliPlayer` carries two character pointers (`+0x18 Character`, `+0x20 Character20`); their
 distinction is unresolved and is the main open question this trace raises.
 
+## Message family `0x200..0x207` - PvP gear provider
+
+Every handler resolves the target with `GetPlayerByListIndex(record+0x02)` -> `ChCliPlayer`, then acts
+on the provider at **`ChCliPlayer + 0x97B0`** (`PvpGearProvider`, layout in
+[../UI/Widgets/pvp-equipment-state.md](../UI/Widgets/pvp-equipment-state.md)). Record offsets:
+`+0x02` index, `+0x06`/`+0x0A` rank ids, `+0x0E` flag, `+0x0F` rune, `+0x13` relic, `+0x17` amulet,
+`+0x1B` pointer to four sigil ids (the `0x204` chain's `defSize 0x27`).
+
+| Msg | Handler | Resolve | Setter | Provider write |
+| --- | --- | --- | --- | --- |
+| `0x200` | `FUN_141253c10` | content `0x23` on `+0x06` | `FUN_1411f77c0` | `+0x40` rune |
+| `0x201` | `FUN_141254500` | content `0x23` on `+0x06` | `FUN_1411f79f0` | `+0x48` relic |
+| `0x202` | `FUN_141253cc0` | content `0x36` on `+0x06` | `FUN_1411f7800` | `+0x50` amulet |
+| `0x203` | `FUN_141253d70` | `+0x58` request `0x71` on `+0x06` | `FUN_1411f7840` | `+0x60` hero; `+0x70` bit 1 |
+| `0x204` | `FUN_141253e30` | `+0x1f8` ranks `+0x06`/`+0x0A`; `0x23`/`0x36` gear | `FUN_1411f78e0`, `FUN_1411f7800`, `FUN_1411f79f0`, `FUN_1411f77c0`, `FUN_1411f7a40` | `+0x68`/`+0xB0` ranks, `+0x50`/`+0x48`/`+0x40`, `+0xB8+idx*8` sigils; `+0x70` bit 0 |
+| `0x205` | `FUN_141254130` | - | `FUN_1411b64b0` | destroys the provider (`+0x97B0` cleared) |
+
+Setter bodies (build-local, each stores `def` then fires a provider notification):
+
+| Setter | Write |
+| --- | --- |
+| `FUN_1411f77c0` | `provider+0x40 = def` (rune) |
+| `FUN_1411f79f0` | `provider+0x48 = def` (relic) |
+| `FUN_1411f7800` | `provider+0x50 = def` (amulet) |
+| `FUN_1411f7840` | `provider+0x60 = heroDef`; `provider+0x70` bit 1 = flag |
+| `FUN_1411f78e0` | `provider+0xB0` = rank(`+0x06`), `provider+0x68` = rank(`+0x0A`); `provider+0x70` bit 0 = flag |
+| `FUN_1411f7a40` | assert index `< 4`; `provider+0xB8 + idx*8 = def` (sigils) |
+
+These offsets are exactly the recovered `PvpGearProvider` layout, so the family is now traced from the
+wire record to the provider fields. `0x204` also calls `FUN_1411b6290` (ensure manager) before the
+provider exists; `0x205` calls `FUN_1411b64b0` (destroy) after resolution.
+
 ## Open
 
 - What selects `ChCliPlayer +0x18` vs `+0x20`.
