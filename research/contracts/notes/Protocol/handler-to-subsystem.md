@@ -284,18 +284,26 @@ trigger. The id/handler mapping behind the old claim is likely a live mis-trace.
 
 The map loader (`CMapLoader`) does exist in 205.780 (state strings
 `MapLoader: STATE_LOAD_CONTENT / LOAD_MANIFEST / SERVER_WAIT / MAP_DOWNLOAD / MAP_STREAM /
-MODELS_STREAM / MAP_ASSET_STREAM / AGENT_STREAM / READY_WAIT` at `0x141b7d698..`). It is driven by
-`FUN_14094fda0`, a virtual/event path that sets state `0xd`, fires `FUN_14106dba0(0x1000000b, ...)`
-and then calls `BeginMap` `FUN_140954e10(param+0xfc, mapId, 0, ...)`. It is **not reached directly
-from a message handler**.
+MODELS_STREAM / MAP_ASSET_STREAM / AGENT_STREAM / READY_WAIT` at `0x141b7d698..`). Its load method
+`FUN_14094fda0` sets state `0xd`, broadcasts, and calls `BeginMap` `FUN_140954e10(param+0xfc, mapId,
+0, ...)`; a sibling `FUN_1409503d0` sets state `0xf` and calls `FUN_140954f30`.
 
-Conclusion: the inbound message that starts a world load is **not** `0x100`; the loader is driven by
-an internal event (`0x1000000b`). Both `0x100`'s semantics and the true world-entry message need
-re-derivation (a capture, or tracing the event-`0x1000000b` producer).
+`0x1000000b` is **not** a network event: `FUN_14106dba0` asserts from `FrApi.cpp` (`msgId >=
+FRAME_MSG_EX`) and is the frame/UI broadcast. The loader itself is the producer —
+`FUN_14094fda0` and `FUN_1409503d0` fire `0x1000000b` after changing state — and the consumers are UI
+(`FUN_1402a6a00` case `0x1000000b` -> `FUN_1402a7e80`; `FUN_1402a77f0` subscribes). So `0x1000000b`
+is a **loader-state broadcast to the UI**, not the load trigger.
+
+The load trigger is therefore an internal caller of `FUN_14094fda0` (a virtual method); tracing that
+caller is the remaining step to bind an inbound message to a world load.
+
+Conclusion: the inbound message that starts a world load is **not** `0x100`; `0x100` is a two-float
+update, and the loader is invoked internally. Both need re-derivation (a capture, or tracing the
+caller of `FUN_14094fda0`).
 
 ## Open
 
-- The true world-entry message and the producer of event `0x1000000b`.
+- The caller of the loader entry `FUN_14094fda0` (the actual world-load trigger).
 - The identity of `*(ctx+0x28)` (the `AgWorld` owner) and the `+0xd0` key-table semantics.
 - The `CmbtCli` combatant and buff layouts behind `FUN_1412c0470`/`0530`.
 - Which subsystem `FUN_141345bd0` is (`0x312`/`0x315`).
