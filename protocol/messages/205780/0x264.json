@@ -21,7 +21,12 @@
       {
         "name": "defarray-chain",
         "state": "static",
-        "note": "Descriptor chain at 1425cd320: fieldType 1 (MP_MSGID, id 0x264) -> 4 (MP_OPTIONAL) -> 2 -> 2 -> 4 -> terminal. Field types are build-local inferred names, not wire encoding proof."
+        "note": "Descriptor chain at 1425cd320: fieldType 1 (MP_MSGID, id 0x264) -> 4 -> 2 -> 2 -> 4 -> terminal. Read byte-for-byte from the image; matches msg-dispatch Addendum 8."
+      },
+      {
+        "name": "decoded-record-shape",
+        "state": "static",
+        "note": "Applying MsgPack_ReadFields (140febc30) to the chain: u16 msgid -> decoded+0x00; fieldType 4 base-128 varint (1..5 wire bytes, MSB group first) -> u32 at decoded+0x02; fieldType 2 u8 -> decoded+0x06; fieldType 2 u8 -> decoded+0x07; fieldType 4 varint -> u32 at decoded+0x08. defSize 0x0C, maxSize 0x0E (tools/re/MaxSizeWalk.py, protocol/schema/205780/maxsize.csv). This independently corroborates the packed record in research/contracts/notes/UI/Widgets/remote-equipped-skills.md and refines the two u32 members as varint-encoded on the wire."
       }
     ]
   },
@@ -39,32 +44,50 @@
   ],
   "fields": [
     {
-      "id": "field_0x00",
+      "id": "msgId",
       "offset": 0,
-      "kind": "u32",
-      "confidence": "unknown",
-      "note": "Handler-record slot 0. Native memory, not a wire field."
+      "kind": "u16",
+      "value": "0x264",
+      "confidence": "static",
+      "note": "MP_MSGID (fieldType 1): 2 bytes at decoded+0x00. The id value 0x264 is carried in the descriptor's param slot (+0x10)."
     },
     {
-      "id": "field_0x04",
-      "offset": 4,
-      "kind": "u32",
-      "confidence": "unknown"
+      "id": "skillContentId",
+      "offset": 2,
+      "kind": "compressed-int",
+      "confidence": "static",
+      "note": "fieldType 4: base-128 varint, 1..5 wire bytes, most-significant group first; decodes into a u32 slot. The handler resolves it through the skill-definition lookup. Wire length is not fixed at 4."
     },
     {
-      "id": "field_0x08",
+      "id": "configuredSkillSlot",
+      "offset": 6,
+      "kind": "u8",
+      "confidence": "static",
+      "note": "fieldType 2: 1 wire byte. Passed to ChCliSkill::SetConfiguredSkill as the standard configured-skill slot (validated slot <= 4)."
+    },
+    {
+      "id": "skillContextCode",
+      "offset": 7,
+      "kind": "u8",
+      "confidence": "static",
+      "note": "fieldType 2: 1 wire byte. Passed as the context selector; the exact enum meaning remains unresolved in remote-equipped-skills.md."
+    },
+    {
+      "id": "playerListIndex",
       "offset": 8,
-      "kind": "u32",
-      "confidence": "unknown",
-      "note": "Handler FUN_141257a20 reads this slot as the player id lookup key (ChCliMsg.cpp:0x2460)."
-    },
+      "kind": "compressed-int",
+      "confidence": "static",
+      "note": "fieldType 4: base-128 varint, 1..5 wire bytes; decodes into a u32 slot. Passed to LookupPlayerById. Wire length is not fixed at 4."
+    }
+  ],
+  "priorNativeSlotSketch": [
     {
       "id": "field_0x0C",
       "offset": 12,
       "kind": "opaque",
       "rawHex": "00000000",
       "confidence": "unknown",
-      "note": "Trailing bytes preserved because their role is not established."
+      "note": "Preserved from the earlier handler-slot sketch. The schema-decoded record is only 0x0C bytes, so this native slot is not part of it; retained because its role was never established."
     }
   ],
   "sessionPrerequisites": [
@@ -73,14 +96,14 @@
   "wireFixtures": [],
   "unresolved": [
     {
-      "question": "What are the wire bytes, opcode encoding and transforms for this message?",
+      "question": "What are the concrete wire bytes for this message, and is the varint bit order confirmed by data?",
       "kind": "framing",
-      "note": "The recv registry slot, defArray chain and handler are now statically located (msg-dispatch Addendum 7), but no capture decodes end to end. The MsgPack schema names field types only; the concrete wire byte layout for id 0x264 is still unverified."
+      "note": "The recv registry slot, defArray chain, decoded record shape and handler are statically located (msg-dispatch Addendum 7-8), but no capture decodes end to end. The schema-directed parse (defSize 0x0C, maxSize 0x0E) is static; a captured frame is still required, and a skill id or player index above 0x7F would confirm the base-128 varint's most-significant-group-first order from data."
     },
     {
-      "question": "Which build-specific schema variant selects this record's shape?",
+      "question": "What selects this build's schema variant, and does the runtime registry match the static tables?",
       "kind": "schema-variant",
-      "note": "The defArray chain at 1425cd320 is located statically (fieldType 1 MSGID -> 4 -> 2 -> 2 -> 4). Its lazy defSize/maxSize caches are computed at registration by MsgPack_ComputeDefSize/ComputeMaxSize; the wire layout still requires a capture."
+      "note": "The chain at 1425cd320 is read from the shipped static table. The runtime record array (count at registry+0x7c) was not read from a live instance, so the static corpus is not yet reconciled with the live install."
     }
   ],
   "validation": {
@@ -90,5 +113,5 @@
     "unity": false,
     "liveInterop": false
   },
-  "noClaim": "Records static registry-location and handler evidence for one build only. It does not establish wire compatibility, an encoder, or current server support."
+  "noClaim": "Records static registry-location, schema-shape and handler evidence for one build only. The decoded field layout is schema-directed static evidence, not a captured wire fixture; it does not establish wire compatibility, an encoder, or current server support."
 }

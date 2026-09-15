@@ -1171,4 +1171,179 @@ byte layout, which still requires a capture.
    corpus matches the live install.
 
 
+---
 
+# Addendum 8: the maxSize bound checked across the corpus, and two schema corrections
+
+**Status:** the `maxSize <= 0x2000` check is complete for all 1770 chains; the size table and the
+`MsgPackFieldDef` offsets are corrected; **still no wire fixture**
+
+This addendum closes Addendum 7 next step 1 (and Addendum 6 next step 5). Two Addendum-2/6
+transcriptions turned out to disagree with the image and are corrected here from the bytes and
+from `MsgPack_ReadFields` itself.
+
+## 1. The bound holds across the whole corpus
+
+`tools/re/MaxSizeWalk.py` maps `Gw2-64.exe` VA→file read-only and reimplements
+`MsgPack_ComputeDefSize` (`140fe9830`) and `MsgPack_ComputeMaxSize` (`140fe98b0`) over every
+`OK` `defArray` pointer in `protocol/schema/205780/sweep2.csv`. Output:
+`protocol/schema/205780/maxsize.csv`.
+
+| Quantity | Result |
+| --- | --- |
+| Unique chains walked | 1770 |
+| Chains referencing at least one id | 1770 |
+| Distinct ids covered | 1256 (matches the sweep's distinct-id count) |
+| `maxSize <= 0x2000` | **1770 / 1770** |
+| Largest `maxSize` | 8189 (`0x1FFD`), 3 bytes under the bound |
+| Largest `defSize` | 198 |
+| `defSize > maxSize` | 0 |
+
+No violation. This was the expected result — the client's own validator asserts the bound at
+startup (`MsgChannel.cpp:0x81`) — so the value of the check is that a **wrong descriptor offset
+would have produced a violation**, and none did. It is a whole-corpus consistency test of the
+extraction, not new protocol behaviour.
+
+The earlier claim in Addendum 6 that the per-descriptor check "is not yet computed" is now
+closed, and Addendum 7's next step 1 with it.
+
+## 2. Correction: the size table at `142109500`
+
+Addendum 2's 26-row size table and Addendum 6's "`maxSize` overrides" list are **not** the bytes
+in the image. The actual table is **27** dwords-pairs, `{size, flags}`, indexed by
+`fieldType * 8`, read byte-for-byte from `142109500`:
+
+| `ft` | size | flags | `ft` | size | flags | `ft` | size | flags |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `0x00` | 0 | 1 | `0x09` | 16 | 1 | `0x12` | 10 | 0 |
+| `0x01` | 2 | 1 | `0x0a` | 16 | 0 | `0x13` | 8 | 0 |
+| `0x02` | 1 | 1 | `0x0b` | 16 | 1 | `0x14` | 9 | 0 |
+| `0x03` | 2 | 1 | `0x0c` | 28 | 1 | `0x15` | 10 | 0 |
+| `0x04` | 4 | 0 | `0x0d` | 8 | 0 | `0x16` | 0 | 0 |
+| `0x05` | 8 | 1 | `0x0e` | 8 | 0 | `0x17` | 4 | 1 |
+| `0x06` | 4 | 1 | `0x0f` | 8 | 0 | `0x19` | 4 | 1 |
+| `0x07` | 8 | 1 | `0x10` | 8 | 0 | `0x1a` | 8 | 1 |
+| `0x08` | 12 | 1 | `0x11` | 9 | 0 | | | |
+
+`flags != 0` is a fixed-size scalar; `flags == 0` is composite and its `maxSize` is computed by
+the switch in `MsgPack_ComputeMaxSize` (`4 -> +5`, `0xa -> +0x11`, `0xf -> inner+8`,
+`0x10 -> inner*param+8`, `0x11 -> inner*param+9`, `0x12 -> inner*param+10`, `0x14 -> u16+9`,
+`0x15 -> u16+10`).
+
+**The table is self-consistent with the reader.** `MsgPack_ReadFields` copies exactly `size[ft]`
+output bytes for every fixed-size type (`1/3 -> 2`, `2 -> 1`, `5/7/1a -> 8`, `6/19 -> 4`,
+`8 -> 0xc`, `9/b -> 0x10`, `c -> 0x1c`, `17 -> 4`), and the pointer-shaped composites each
+occupy `8` (`0xf`, `0x10`, `0x13`), `9` (`0x11`, `0x14`, `1 + 8`) or `10` (`0x12`, `0x15`,
+`2 + 8`). That is a second, independent confirmation of the bytes, and it is what made the
+old transcription's error visible.
+
+Note in particular that `size[1] = 2` and `size[2] = 1`; the earlier table had `size[1] = 1`
+and `size[2] = 2`, which is how a `String.format`-style argument shift would present itself.
+The earlier values appear to be a flattened `{size, flags}` stream, not a size table.
+
+## 3. Correction: `MsgPackFieldDef` offsets
+
+The struct stride is `0x28` (confirmed in Addendum 2 and unchanged). The field offsets in
+Addendum 2's table are shifted by one qword. Read from `MsgPack_ComputeMaxSize`,
+`MsgPack_ComputeDefSize` and `MsgPack_ReadFields` together, the offsets are:
+
+| Offset | Type | Field | Evidence |
+| --- | --- | --- | --- |
+| `0x00` | `u32` | `fieldType` | `*(uint*)(def+0)` in all three |
+| `0x10` | `u32` | `param` | `(int)plVar4[-1]` in MaxSize; `param_1[4]` in DefSize/ReadFields |
+| `0x18` | `pointer` | `refTypeDef` | `*plVar4` / `*(int**)(param_1+6)`; asserted non-null |
+| `0x20` | `u32` | `defSize` (cache) | `*piVar3` in DefSize; `param_1[8]` is the nested read budget |
+| `0x24` | `u32` | `maxSize` (cache) | `*(int*)(plVar4 + 0xc)` in MaxSize |
+| `0x28` | `pointer` | `nextDef` | `piVar3[2]` / `plVar4[2]` = next `fieldType` |
+
+The earlier table placed `param` at `+0x08`, `refTypeDef` at `+0x10`, `defSize` at `+0x18`,
+`maxSize` at `+0x1C` and `nextDef` at `+0x20` — every composite field one qword low. A consumer
+that used those offsets would read `refTypeDef` out of the `param` slot and compute nested sizes
+from a value that is not a pointer.
+
+## 4. Fields `4` and `0x0a` share a variable-length integer reader
+
+`MsgPack_ReadStringOrArray` (`140fec3c0`) is not a string copier. It reads a **base-128
+variable-length integer** from the wire cursor:
+
+```text
+scan 1..5 bytes for the first with the high bit clear;
+decode from the terminator back to the first byte:
+    value = (value << 7) | (byte & 0x7f)
+write the 32-bit value to the output slot (+4 bytes);
+advance the cursor past the terminator.
+```
+
+So the first wire byte is the **most significant** 7-bit group (a big-endian base-128 varint),
+not the little-endian order of the protobuf varint. It fails closed: >5 bytes without a
+terminator, or end-of-payload, returns 0 and sets the error flag.
+
+`MsgPack_ReadFields` calls it for `fieldType 4` directly, and for `fieldType 0x0a` after copying
+a `0xc`-byte array header. In both cases the decoded value lands in a `u32` output slot, which
+is why `size[4] = 4` while `maxSize` adds `+5` (worst case is a 5-byte integer).
+
+This is the length/count prefix the Addendum-2 enum called `MP_OPTIONAL` / `MP_ARRAY`, and it is
+why those two types share a "tail" in the codec. A `fieldType 4` scalar is therefore not a fixed
+4-byte field on the wire; it is a varint of 1..5 bytes that decodes into 4.
+
+## 5. `0x264`'s chain, resolved against the handler record
+
+The chain at `1425cd320` is `1 (MP_MSGID, id 0x264) -> 4 -> 2 -> 2 -> 4 -> 0`. Applying the
+corrected reader:
+
+| Desc | `fieldType` | Wire read | Output slot |
+| --- | --- | --- | --- |
+| 0 | `1` `MP_MSGID` | `u16` id `0x264` | `+0x00` |
+| 1 | `4` varint | 1..5 bytes | `+0x02` (`u32`) |
+| 2 | `2` | 1 byte | `+0x06` |
+| 3 | `2` | 1 byte | `+0x07` |
+| 4 | `4` varint | 1..5 bytes | `+0x08` (`u32`) |
+| — | — | **defSize `0x0C`, maxSize `0x0E`** | |
+
+`maxsize.csv` reports exactly `defSize 12, maxSize 14` for `1425cd320`.
+
+This is the **first independent corroboration** of the hand-recovered packed record in
+[`../UI/Widgets/remote-equipped-skills.md`](../UI/Widgets/remote-equipped-skills.md), which
+records the same record as `u16` msgid, `u32` at `+0x02`, `u8` at `+0x06`, `u8` at `+0x07`,
+`u32` at `+0x08`, size `0x0C`. The static schema and the handler's field usage agree on every
+offset and on the total size, by two different routes.
+
+It also **refines** that record: the two `u32` members (`+0x02` skill content id, `+0x08`
+`PlayerListIndex`) are varint-encoded on the wire, not fixed 4-byte little-endian. The decoded
+struct is `0x0C`; the wire frame is at most `0x0E`.
+
+## What this establishes
+
+- `maxSize <= 0x2000` holds for all 1770 extracted chains, with the closest at 8189;
+- the binary size table at `142109500` (27 entries), cross-checked against `MsgPack_ReadFields`
+  output widths, and a correction of the Addendum-2/6 transcription;
+- the corrected `MsgPackFieldDef` offsets (`param +0x10`, `refTypeDef +0x18`, `defSize +0x20`,
+  `maxSize +0x24`, `nextDef +0x28`);
+- that `fieldType 4`/`0x0a` carry a 1..5-byte base-128 varint (MSB group first);
+- the decoded layout of `0x264` (`defSize 0x0C`, `maxSize 0x0E`) and its agreement with the
+  hand-recovered handler record.
+
+## What this does not establish
+
+- **Still no wire fixture.** The `0x264` layout above is a static, schema-directed parse; no
+  captured frame has been decoded. `wireVerified` stays false and the varint is still a
+  build-local encoding.
+- The varint is inferred from `MsgPack_ReadStringOrArray`'s instructions, not from a sample that
+  exercises it at >1 byte. A capture with a value that needs two or more groups would confirm
+  the bit order.
+- The runtime registry instance is still not read; the static corpus is not reconciled with the
+  live install.
+- The KSA at `140feea50` and the outbound path remain unrecovered.
+- The `sweep2.csv` extraction itself still rests on the argument-recovery heuristic for the two
+  stack-argument sites; the `maxSize` check exercises the descriptors, not the registrar
+  argument decoding.
+
+## Next steps
+
+1. Take a captured frame and decode it end to end against the `0x264` schema; a skill id or
+   player index above 0x7F would confirm the varint order from data.
+2. Recover the KSA at `140feea50` (unchanged).
+3. Read the runtime registry's `count` at `+0x7c` and spot-check a `defArray` pointer against
+   `sweep2.csv` in a debugger session.
+4. Extend `MaxSizeWalk.py` to also emit the nested `refTypeDef` tree so the per-field wire widths
+   are machine-readable for codec work.
