@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Offline test harness for the engine-independent Gw2.Protocol package sources.
+       It compiles Packages/com.siki.gw2.protocol/Runtime directly and validates it
+       against the reviewed fixtures. Runtime code stays in the package; this project
+       is tooling and is not part of the Unity build. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\Packages\com.siki.gw2.protocol\Runtime\**\*.cs" />
+    <Compile Include="*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="MSTest.TestAdapter" />
+    <PackageReference Include="MSTest.TestFramework" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\re\fixtures\205780\*.json" LinkBase="fixtures" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\protocol\schema\205780\chains.json" LinkBase="fixtures" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

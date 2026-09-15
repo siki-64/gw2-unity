@@ -138,3 +138,6 @@ __pycache__/
 # Research tooling projects are hand-written, unlike the Unity-generated
 # project files matched by the `*.csproj` rule.
 !research/**/*.csproj
+
+# The Gw2.Protocol runtime test harness is hand-written tooling too.
+!tools/Gw2.Protocol.Tests/*.csproj

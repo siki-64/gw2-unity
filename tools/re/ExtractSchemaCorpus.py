@@ -1,0 +1,151 @@
+#!/usr/bin/env python3
+"""Emit the build 205.780 message-schema corpus as JSON.
+
+For every message id in the live per-connection recv registry map
+(protocol/schema/205780/live_ids.csv), read its MsgPackFieldDef chain from
+Gw2-64.exe and emit the field tree, including nested refTypeDef chains:
+
+  {
+    "build": 205780,
+    "messages": {
+      "0x264": [ {"t":1,"p":612}, {"t":4}, {"t":2}, {"t":2}, {"t":4} ],
+      ...
+    }
+  }
+
+Field keys: t = fieldType, p = param, r = nested refTypeDef chain (only for the
+composite types). The terminal marker (fieldType 0 / 0x18) is not emitted; the
+reader treats the end of the array as the end of the chain.
+
+Read-only. Addresses are build-local; the output is build-stamped so a consumer
+cannot carry it to another build.
+
+Usage
+  python tools/re/ExtractSchemaCorpus.py
+  python tools/re/ExtractSchemaCorpus.py --ids live_ids.csv --out chains.json
+"""
+
+import argparse
+import csv
+import json
+import os
+import struct
+import sys
+
+ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
+IMAGE = r"C:\Program Files (x86)\Steam\steamapps\common\Guild Wars 2\Gw2-64.exe"
+DEFAULT_IDS = os.path.join(ROOT, "protocol", "schema", "205780", "live_ids.csv")
+DEFAULT_OUT = os.path.join(ROOT, "protocol", "schema", "205780", "chains.json")
+
+DESC_STRIDE = 0x28
+MAX_DEPTH = 16
+
+
+class PE:
+    def __init__(self, path):
+        with open(path, "rb") as f:
+            self.blob = f.read()
+        dos = struct.unpack_from("<I", self.blob, 0x3C)[0]
+        assert self.blob[dos:dos + 4] == b"PE\x00\x00", "not a PE"
+        nsec = struct.unpack_from("<H", self.blob, dos + 6)[0]
+        opt_size = struct.unpack_from("<H", self.blob, dos + 20)[0]
+        opt = dos + 24
+        magic = struct.unpack_from("<H", self.blob, opt)[0]
+        if magic == 0x10B:
+            self.image_base = struct.unpack_from("<I", self.blob, opt + 28)[0]
+        else:
+            self.image_base = struct.unpack_from("<Q", self.blob, opt + 24)[0]
+        sec_base = opt + opt_size
+        self.sections = []
+        for i in range(nsec):
+            off = sec_base + i * 40
+            vsize, vaddr, rawsize, rawptr = struct.unpack_from("<IIII", self.blob, off + 8)
+            self.sections.append((vaddr, vsize, rawptr, rawsize))
+
+    def read_va(self, va, size):
+        rva = va - self.image_base
+        for vaddr, vsize, rawptr, rawsize in self.sections:
+            if vaddr <= rva < vaddr + max(vsize, rawsize):
+                off = rawptr + (rva - vaddr)
+                return self.blob[off:off + size]
+        raise KeyError(f"VA 0x{va:x} not mapped")
+
+    def u32(self, va):
+        return struct.unpack_from("<I", self.read_va(va, 4))[0]
+
+    def u64(self, va):
+        return struct.unpack_from("<Q", self.read_va(va, 8))[0]
+
+
+def read_chain(pe, va, depth, active):
+    """Read a field chain. Returns a list of {t,p,r} dicts (terminal excluded)."""
+    fields = []
+    for _ in range(4096):
+        ft = pe.u32(va)
+        if ft == 0 or ft == 0x18:
+            break
+        field = {"t": ft}
+        param = pe.u32(va + 0x10)
+        if param:
+            field["p"] = param
+        ref = pe.u64(va + 0x18)
+        # Only composite types carry a nested chain; guard cycles and depth.
+        if ref and depth < MAX_DEPTH and ref not in active:
+            try:
+                active.add(ref)
+                nested = read_chain(pe, ref, depth + 1, active)
+                active.discard(ref)
+                if nested:
+                    field["r"] = nested
+            except KeyError:
+                active.discard(ref)
+        fields.append(field)
+        va += DESC_STRIDE
+    return fields
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--image", default=IMAGE)
+    ap.add_argument("--ids", default=DEFAULT_IDS)
+    ap.add_argument("--out", default=DEFAULT_OUT)
+    args = ap.parse_args()
+
+    pe = PE(args.image)
+    id_map = {}
+    with open(args.ids, newline="") as f:
+        for r in csv.DictReader(f):
+            if r.get("tag") == "OK" and r.get("ptr"):
+                id_map.setdefault(int(r["id"], 16), r["ptr"])
+
+    messages = {}
+    unreadable = 0
+    for mid in sorted(id_map):
+        try:
+            chain = read_chain(pe, int(id_map[mid], 16), 0, set())
+        except KeyError:
+            unreadable += 1
+            continue
+        messages[f"0x{mid:x}"] = chain
+
+    body = {
+        "build": 205780,
+        "buildLabel": "205.780",
+        "imageSha256": "d2ae84876a0b93277fccb368969046b848bb0403fd09db420389c813d2459b23",
+        "source": "protocol/schema/205780/live_ids.csv (live game-connection recv registry) "
+                  "plus MsgPackFieldDef chains read from Gw2-64.exe",
+        "fieldKeys": {"t": "fieldType", "p": "param", "r": "nested refTypeDef chain"},
+        "provenance": "Generated by tools/re/ExtractSchemaCorpus.py (msg-dispatch Addendum 8 offsets).",
+        "messages": messages,
+    }
+    with open(args.out, "w", newline="\n") as f:
+        json.dump(body, f, indent=1, sort_keys=True)
+        f.write("\n")
+    size = os.path.getsize(args.out)
+    print(f"wrote {args.out}: {len(messages)} messages, {size} bytes, "
+          f"{unreadable} unreadable chains")
+
+
+if __name__ == "__main__":
+    sys.exit(main())
