@@ -3080,6 +3080,53 @@ fit the outbound packet.
 
 1. Re-read the live send array's populated slots (not just `count`) to confirm the 481 ids.
 2. Capture an inbound and an outbound state at a common offset to test the two-time-pad inference.
+   (Done — Addendum 28.)
+
+---
+
+# Addendum 28: the cross-direction keystream reuse is confirmed
+
+**Status:** the two-time-pad inference (Addendum 25) is confirmed empirically on a live connection
+
+One paused snapshot of a live game connection gave both PRGA states:
+
+| State | i | j |
+| --- | --- | --- |
+| `conn+0x12C` (inbound) | `0xeb` | `0x6e` |
+| `conn+0x234` (outbound) | `0x25` | `0x57` |
+
+Advancing the outbound state by **2,795,974 bytes** reproduces the inbound state's `i`, `j` and full
+256-byte S-box **exactly**. A whole-permutation coincidence is not chance, so the two directions are
+one keystream: the client encrypts both directions with a single RC4 stream, and
+
+```text
+ciphertext_in XOR ciphertext_out = plaintext_in XOR plaintext_out   (equal absolute positions)
+```
+
+At the snapshot the inbound had processed 2,795,974 more bytes than the outbound.
+
+This confirms the code-level inference of Addendum 25 (the handshake copies `conn+0x12c` to
+`conn+0x234`) and closes Addendum 26's open item. Fixture
+`tools/re/fixtures/205780/keystream-reuse.json`, with the `KeystreamReuseTests` regression.
+
+Consequence unchanged: decoding still uses one direction's state, so the reuse is a transport-layer
+confidentiality weakness, not a decode blocker.
+
+## What this establishes
+
+- the inbound and outbound transports share one keystream (two-time pad);
+- the alignment is exact over 2.8M bytes, so the handshake copy is total.
+
+## What this does not establish
+
+- whether the server mirrors the reuse (its side was not observed);
+- how much plaintext that exposes in practice (each direction is only protected where the other has
+  no overlapping traffic).
+
+## Next steps
+
+1. Out of inbound-transport scope: this is evidence to record against the transport cipher, not a
+   message-layer task.
 
 ---
 
