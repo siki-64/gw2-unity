@@ -1491,3 +1491,149 @@ handshake/control, which is consistent with Addendum 1's finding that mode-3 tra
    payload against the schema in Addendum 8.
 3. Recover the KSA call site for the send side and confirm whether it reuses the same key state.
 
+
+---
+
+# Addendum 10: the game-connection key exchange, and where it stops
+
+**Status:** the constructor that writes `conn+0x118` and the XOR key agreement are located and
+read; the derivation between them is a big-integer/PRNG construction whose exact form is **not**
+reconstructed; **still no wire fixture**
+
+Addendum 9 next step 1 is partially closed: the field `conn+0x118` is **not** the handshake
+seed. It is overwritten with a derived value before any encrypted frame is read.
+
+## New owners
+
+| Identity (durable) | Ghidra address (build-local) | Source unit / note |
+| --- | --- | --- |
+| `MsgConn::SetMode` | `140fea330` | `MsgConn.cpp`; writes `conn+0x108` |
+| `MsgConn::SetDispatchCallback` | `140fea3a0` | `MsgConn.cpp` |
+| game-net event handler | `14023ed80` | `GcGameCmd.cpp`; creates/tears down the game conn |
+| `MsgConn` constructor | `140fe9b00` | `MsgConn.cpp`; seeds and derives `conn+0x118` |
+| handshake KDF | `140fede80` | key-derivation helper, `MsgConn.cpp` |
+| `MsgRaw::ClientRecvEncrypt` | `140fe87f0` | XOR agreement + KSA install |
+| `MsgRaw::ClientRecvError` | `140fe8a90` | mode-2/kind-2 path |
+
+`MsgConn::SetMode(conn, x)` sets `conn+0x108 = 3` when `x == 0` and `= 1` otherwise. It asserts
+`msgConn->protocol == NET_PROTOCOL_CLI2GAME` and `msgConn != NULL`.
+
+## Connection creation
+
+`FUN_14023ed80` (the game-net event handler) creates the game connection on event `1`:
+
+```c
+piVar3   = FUN_140fedfb0(local_1b8);      // local_1b8[0] = 0x88, piVar3 = &DAT_142109e40
+DAT_1426632d0 = FUN_140fe9b00(param_2, 0, FUN_14023ec30,
+                              local_1b8[0], piVar3, 0x14, param_4 + 0x34);
+```
+
+So the constructor is called with **key length `0x14`** and a **seed source at `param_4+0x34`**.
+`FUN_140fedfb0` is two instructions: it writes `0x88` through its argument and returns
+`&DAT_142109e40` (the KDF descriptor). Event `4` forwards packets to
+`Net_OnClientPacketReceived`; event `3` tears the connection down.
+
+## The constructor: seed, derive, overwrite, send
+
+`FUN_140fe9b00` calls `FUN_140fe8b70(param_1, param_2, 2)` to allocate the connection.
+`FUN_140fe8b70` stores that third argument at `conn+0x108`, so the game connection is
+**created in mode `2`** (`MSGCONN_MODE_ENCRYPTED`), consistent with `ClientRecvEncrypt`
+requiring mode `2`. `FUN_140fe9b00` then, read from the code:
+
+1. Stores its callback argument (`FUN_14023ec30`, whose error label is
+   `Gc::GameSrvEncryptCallback`) at `conn+0x110`.
+2. If the seed length is `0`, `FUN_140fdf2d0(0x14, conn+0x118)` fills the 20 key bytes from a
+   time/entropy-mixed generator. Otherwise the seed dwords are copied from `param_7`
+   (`param_4+0x34`), clamped to 20 and asserted dword-aligned.
+3. `FUN_140fede80(0x88, &DAT_142109e40, 0x14, conn+0x118, outA, outB)` derives two values from
+   the 20 seed bytes.
+4. `conn+0x118` is **zeroed** (`FUN_1409b9dc0(...,0x14)`) and then overwritten with the first
+   `min(len, 0x14)` bytes of `outA`.
+5. `outB` is sent to the server through `FUN_140fe3e60`, prefixed with a two-byte header
+   `{0x00, len}` where `len` is `outB`'s byte length (`<= 0x40`, asserted). `FUN_140fe3e60` is a
+   thin virtual send: `(*(*(conn+0x30) + 0x38))(*(conn+0x30), len, bytes)`.
+
+So the value the server eventually returns is XORed against a **locally derived** 20-byte key,
+not against a seed the client sent in the clear.
+
+## The KDF descriptor and helper
+
+`DAT_142109e40` is `0x88` bytes: `{u32 1, u32 4, blobA[0x40], blobB[0x40]}`.
+
+| Field | Value |
+| --- | --- |
+| `+0x00` | `1` (checked by `FUN_140fede80`, else it does nothing) |
+| `+0x04` | `4` (fed to a helper as a small integer) |
+| `+0x08` | `blobA` = `f9e43af5..598573f9` (64 bytes) |
+| `+0x48` | `blobB` = `270e7b58..c358a6c4` (64 bytes) |
+
+`FUN_140fede80` loads `blobA`, `blobB`, the integer `4` and the 20 seed bytes into four
+big-integer contexts, generates `0x40` bytes from a PRNG seeded by the seed context, and combines
+them into two outputs (`outA`, `outB`). The PRNG helper `FUN_141570640` is a **Park-Miller
+minimal-standard LCG**: multiplier `48271` (`0xbc8f`), modulus `2^31-1`, with the Schrage
+reduction `x/44488 + x*48271` (the `0xadc8` constant). The contexts are manipulated by an
+anonymous big-integer library (`FUN_14156ee00` loads bytes into limbs and trims trailing zero
+limbs; `FUN_14156fdc0` combines contexts). `CptSha.cpp` SHA-1 (`FUN_1415766e0`) is present in
+the image but is **not** the routine this path calls.
+
+The exact `FUN_140fede80`/`FUN_14156fdc0` construction (which combination, and whether it is a
+modular/DH-style exchange or a keyed derivation) is not reconstructed.
+
+## The XOR agreement and the receive cipher state
+
+`MsgRaw_ClientRecvEncrypt` in mode `2`, for a frame whose kind byte is `1` and whose length byte
+is `0x16`:
+
+```text
+key[0..19] = frame[2..0x15] XOR conn[0x118..0x12b]     // 20 bytes
+conn+0x108 = 3
+MsgUtil_Rc4Ksa(conn+0x12c, 0x14, key)                  // inbound cipher state
+copy 0x108 bytes conn+0x12c -> conn+0x234              // a second state snapshot
+(*(conn+0x110))(record, param_3, {0x300000, 0xc451b58})
+```
+
+`MsgConn::Dispatch` then decrypts mode-3 traffic with
+`MsgUtil_CryptStream(conn+0x12c, len, src, dst)`, so **the inbound cipher state is at
+`conn+0x12c`** (i at `+0x12c`, j at `+0x130`, `S[256]` at `+0x134`). The 20 bytes at
+`conn+0x118` are the derived key material; they are not themselves the cipher state.
+
+`MsgRaw::ClientRecvError` (kind `2`, mode `2`, length byte `> 9`) also calls the `conn+0x110`
+callback, with `frame+2` as the payload.
+
+## What this establishes
+
+- `conn+0x118` is written by the `MsgConn` constructor `FUN_140fe9b00`, then overwritten by the
+  first 20 bytes of a derived value; it is not the handshake seed.
+- the seed is either `param_4+0x34` (a 20-byte field of the game-net event) or a time/entropy
+  generator when the seed length is zero;
+- the KDF descriptor `{1, 4, blobA[64], blobB[64]}` at `142109e40` and its Park-Miller
+  (`48271`/`2^31-1`) PRNG helper;
+- the client sends a second derived value (`outB`, `<= 0x40` bytes) with a `{0x00, len}` header;
+- the game connection is created in mode `2`, and `conn+0x110` is the constructor's callback
+  (`FUN_14023ec30`, error label `Gc::GameSrvEncryptCallback`);
+- the mode-2/kind-1 handshake frame carries the server's 20-byte value, which is XORed with the
+  stored 20 bytes to form the RC4 key;
+- the inbound cipher state lives at `conn+0x12c`, and a second `0x108`-byte snapshot is copied to
+  `conn+0x234`.
+
+## What this does not establish
+
+- **The derivation itself.** `FUN_140fede80`'s exact construction and the big-integer/PRNG
+  library semantics are not recovered, so the 20 bytes at `conn+0x118` cannot yet be reproduced
+  from a seed.
+- **The seed's origin.** `param_4+0x34` comes from the game-net event struct; what fills it
+  (a login/platform token, a previous handshake, or entropy) is not traced.
+- the meaning of the `{0x300000, 0xc451b58}` argument passed to the `conn+0x110` callback;
+- whether `conn+0x234` is the outbound cipher state or a retransmit snapshot, and whether the
+  send path installs a separate KSA;
+- **Still no wire fixture.** Nothing here is validated against captured bytes.
+
+## Next steps
+
+1. Recover `FUN_140fede80` and the `FUN_14156fdc0` combination into a reference implementation,
+   then add a keyed test vector alongside `Gw2TransportCipher.py`.
+2. Trace where `param_4+0x34` is filled, back through the event-1 producer, to identify the seed.
+3. Decode the `{0x300000, 0xc451b58}` argument and `FUN_14023ec30`'s full behaviour.
+4. Determine whether `conn+0x234` is used by the send path, which would fix the outbound cipher
+   entry point.
+
