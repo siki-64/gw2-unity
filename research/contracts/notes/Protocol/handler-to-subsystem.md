@@ -327,8 +327,45 @@ writes. `FUN_141416670` is an **event handler** (`MsCliGame.cpp`) switching on a
 not message id `0x100` (`0x100` is a two-float update on `ChCliContext+0x60[id]`). The remaining link is
 the wire message that produces those mission sub-events.
 
+## Message `0x1AB` / `0x1AD` - player roster lifecycle
+
+`ChCliContext` (slot `0x13` / `+0x98`) owns the player roster: `Players +0x80`, capacity `+0x88`,
+count `+0x8C`. `GetPlayerByListIndex` (vtable `+0x110`) bounds-checks the index and returns
+`Players[index]`; each `ChCliPlayer` stores its own index at `+0x74`.
+
+| Msg | Handler | Resolve | Effect |
+| --- | --- | --- | --- |
+| `0x1AB` | `FUN_141251040` | asserts `!PlayerFind(rec+2)` | `ChCliContext::PlayerCreate` `FUN_1411b2b30(rec+2, rec+6 name, rec+0x0e key, rec+0x1e flag)` |
+| `0x1AD` | `FUN_141251120` | `GetPlayerByListIndex(rec+2)` (assert player) | `ChCliContext::PlayerRemove` `FUN_1411b2cd0` (clears `Players[index]`, destroys the player) |
+
+Records (corpus chains; `t` values are decimal):
+
+```text
+0x1AB  [msgid, varint playerId, 0x0d utf-16 name, 0x0b 16-byte key, varint flags]
+0x1AD  [msgid, varint playerId]
+```
+
+`PlayerCreate` (`ChCliContext.cpp:0x600`) asserts the slot is empty
+(`m_playerArray.Count() <= playerId || !m_playerArray[playerId]`), allocates `0xA178` bytes, and
+constructs `ChCliPlayer` (`FUN_1411b5530`): it stores the index at `+0x74`, copies the 16-byte key to
+`+0x78`/`+0x80`, copies the UTF-16 name into `+0x60`, and sets a status at `+0x20` from flag bit 0
+(`2` when set, `3` otherwise). It then grows `Players` to `playerId + 1` and publishes the pointer,
+registering the object in an auxiliary map at `+0x2f8`/`+0x300`.
+
+`PlayerRemove` reads the player's own index (vtable `+0xe8`), asserts `m_playerArray[playerId]`,
+clears the slot, removes the auxiliary-map entry, and destroys the object.
+
+**Identifier mapping:** `PlayerListIndex` (`rec+2`) is the roster index domain. It is distinct from
+the character-list index and `Agent.agentId`
+(see [../Context/context-and-health.md](../Context/context-and-health.md)). The 16-byte key copied
+into the player is an **unresolved** identity field; it is preserved, not named.
+
+Runtime: `Gw2.Protocol.State.PlayerStateStore` handles `0x1AB`/`0x1AD` (`PlayerAddMessageId` /
+`PlayerRemoveMessageId`) to create/remove players and set `PlayerState.Name`/`Key`/`AddFlags`.
+
 ## Open
 
+- The meaning of the `0x1AB` 16-byte key and its trailing flag word.
 - The wire message that produces the `MsCliGame` sub-events `0x23`/`0x25` (the world-load trigger).
 - The identity of `*(ctx+0x28)` (the `AgWorld` owner) and the `+0xd0` key-table semantics.
 - The `CmbtCli` combatant and buff layouts behind `FUN_1412c0470`/`0530`.

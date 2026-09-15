@@ -26,6 +26,37 @@ namespace Gw2.Protocol.State
         /// <summary>The list index this state is keyed by.</summary>
         public PlayerListIndex Index { get; }
 
+        /// <summary>Player name from the roster message (<c>0x1AB</c>); null until seen.</summary>
+        public string Name { get; private set; }
+
+        /// <summary>
+        /// The opaque 16-byte key the roster message carries and the native constructor copies into
+        /// the player object. Its meaning (account/character identity bridge) is unresolved; it is
+        /// preserved rather than named.
+        /// </summary>
+        public byte[] Key { get; private set; }
+
+        /// <summary>The roster message's trailing flag word (<c>0x1AB</c> field 4), semantics unresolved.</summary>
+        public uint AddFlags { get; private set; }
+
+        /// <summary>Apply a roster identity; returns true when the stored identity changed.</summary>
+        internal bool SetIdentity(string name, ReadOnlySpan<byte> key, uint addFlags)
+        {
+            bool changed = Name != name || AddFlags != addFlags || !KeyMatches(key);
+            Name = name;
+            AddFlags = addFlags;
+            Key = key.ToArray();
+            return changed;
+        }
+
+        private bool KeyMatches(ReadOnlySpan<byte> key)
+        {
+            if (Key == null || Key.Length != key.Length) return false;
+            for (int i = 0; i < Key.Length; i++)
+                if (Key[i] != key[i]) return false;
+            return true;
+        }
+
         /// <summary>
         /// The skill configured for <paramref name="context"/>/<paramref name="slot"/>
         /// (<see cref="SkillContentId.None"/> when unset).

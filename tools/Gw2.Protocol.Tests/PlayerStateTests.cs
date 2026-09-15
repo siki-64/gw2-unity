@@ -40,6 +40,33 @@ namespace Gw2.Protocol.Tests
             return new DecodedMessage(PlayerStateStore.ConfiguredSkillUpdateMessageId, 0, 0, fields);
         }
 
+        private static DecodedMessage PlayerAdd(uint playerId, string name, byte[] key, uint flags)
+        {
+            var fields = new List<DecodedField>
+            {
+                new DecodedField(1, true, (ulong)PlayerStateStore.PlayerAddMessageId),
+                new DecodedField(4, true, (ulong)playerId),
+                new DecodedField(0x0d, true, name),
+                new DecodedField(0x0b, true, key),
+                new DecodedField(4, true, (ulong)flags),
+            };
+            return new DecodedMessage(PlayerStateStore.PlayerAddMessageId, 0, 0, fields);
+        }
+
+        private static DecodedMessage PlayerRemove(uint playerId) =>
+            new DecodedMessage(PlayerStateStore.PlayerRemoveMessageId, 0, 0, new List<DecodedField>
+            {
+                new DecodedField(1, true, (ulong)PlayerStateStore.PlayerRemoveMessageId),
+                new DecodedField(4, true, (ulong)playerId),
+            });
+
+        private static byte[] Seq16(byte start)
+        {
+            var b = new byte[16];
+            for (int i = 0; i < b.Length; i++) b[i] = (byte)(start + i);
+            return b;
+        }
+
         // Full pipeline: captured wire -> cipher -> frame -> schema -> state.
         [TestMethod]
         public void Replay_CapturedWire_UpdatesConfiguredSkills()
@@ -118,6 +145,63 @@ namespace Gw2.Protocol.Tests
             Assert.IsTrue(store.Remove(index));
             Assert.IsFalse(store.Remove(index));
             Assert.AreEqual(0, store.PlayerCount);
+        }
+
+        [TestMethod]
+        public void Roster_AddSetsIdentity()
+        {
+            var store = new PlayerStateStore();
+            byte[] key = Seq16(0xA0);
+            Assert.AreEqual(1, store.Apply(PlayerAdd(0x4E, "Arena.1234", key, 1)));
+            Assert.AreEqual(1, store.PlayerCount);
+
+            Assert.IsTrue(store.TryGet(new PlayerListIndex(0x4E), out PlayerState player));
+            Assert.AreEqual("Arena.1234", player.Name);
+            Assert.AreEqual(1u, player.AddFlags);
+            CollectionAssert.AreEqual(key, player.Key);
+        }
+
+        [TestMethod]
+        public void Roster_AddThenSkillUpdate_ShareThePlayer()
+        {
+            var store = new PlayerStateStore();
+            store.Apply(PlayerAdd(1, "Arena.5678", new byte[16], 0));
+            store.Apply(ConfiguredSkillUpdate(0x1206, 2, 0, 1));
+
+            Assert.IsTrue(store.TryGet(new PlayerListIndex(1), out PlayerState player));
+            Assert.AreEqual("Arena.5678", player.Name);
+            Assert.AreEqual(new SkillContentId(0x1206),
+                player.GetConfiguredSkill(SkillContextCode.A0, ConfiguredSkillSlot.UtilitySkill2));
+        }
+
+        [TestMethod]
+        public void Roster_RemoveClearsThePlayer()
+        {
+            var store = new PlayerStateStore();
+            store.Apply(PlayerAdd(9, "X", new byte[16], 0));
+            Assert.AreEqual(1, store.Apply(PlayerRemove(9)));
+            Assert.AreEqual(0, store.PlayerCount);
+            // Removing an unknown player is a no-op, not an error.
+            Assert.AreEqual(0, store.Apply(PlayerRemove(9)));
+        }
+
+        [TestMethod]
+        public void Roster_AddIsIdempotent()
+        {
+            var store = new PlayerStateStore();
+            DecodedMessage message = PlayerAdd(3, "N", new byte[16], 0);
+            Assert.AreEqual(1, store.Apply(message));
+            Assert.AreEqual(0, store.Apply(message));
+        }
+
+        [TestMethod]
+        public void Roster_Malformed_Throws()
+        {
+            var store = new PlayerStateStore();
+            var empty = new DecodedMessage(PlayerStateStore.PlayerAddMessageId, 0, 0, new List<DecodedField>());
+            Assert.ThrowsExactly<FormatException>(() => store.Apply(empty));
+            // The key must be exactly 16 bytes.
+            Assert.ThrowsExactly<FormatException>(() => store.Apply(PlayerAdd(1, "N", new byte[15], 0)));
         }
 
         [TestMethod]

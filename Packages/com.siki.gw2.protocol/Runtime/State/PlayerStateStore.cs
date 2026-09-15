@@ -21,6 +21,12 @@ namespace Gw2.Protocol.State
         /// <summary>Per-player configured standard-skill assignment (<c>ChCliSkillMessageId</c>).</summary>
         public const int ConfiguredSkillUpdateMessageId = 0x264;
 
+        /// <summary>Player roster add (<c>ChCliContext::PlayerCreate</c>).</summary>
+        public const int PlayerAddMessageId = 0x1AB;
+
+        /// <summary>Player roster remove (<c>ChCliContext::PlayerRemove</c>).</summary>
+        public const int PlayerRemoveMessageId = 0x1AD;
+
         private readonly Dictionary<uint, PlayerState> _players = new Dictionary<uint, PlayerState>();
 
         /// <summary>The tracked players.</summary>
@@ -57,6 +63,10 @@ namespace Gw2.Protocol.State
             if (message == null) throw new ArgumentNullException(nameof(message));
             switch (message.MessageId)
             {
+                case PlayerAddMessageId:
+                    return ApplyPlayerAdd(message);
+                case PlayerRemoveMessageId:
+                    return ApplyPlayerRemove(message);
                 case ConfiguredSkillUpdateMessageId:
                     return ApplyConfiguredSkillUpdate(message);
                 default:
@@ -71,6 +81,36 @@ namespace Gw2.Protocol.State
             int changes = 0;
             for (int i = 0; i < messages.Count; i++) changes += Apply(messages[i]);
             return changes;
+        }
+
+        // Chain (build 205.780): MP_MSGID, playerId (varint u32), name (0x0d utf-16 cstring),
+        // key (0x0b 16-byte blob), flags (varint u32).
+        private int ApplyPlayerAdd(DecodedMessage message)
+        {
+            IReadOnlyList<DecodedField> fields = message.Fields;
+            if (fields == null || fields.Count < 5)
+                throw new FormatException(
+                    $"msgpack: 0x1ab record has {fields?.Count ?? 0} fields, expected 5");
+
+            var index = new PlayerListIndex((uint)AsUInt(fields[1], "playerId"));
+            string name = AsString(fields[2], "name");
+            byte[] key = AsBytes(fields[3], "key", 0x10);
+            uint flags = (uint)AsUInt(fields[4], "flags");
+
+            PlayerState player = GetOrCreate(index);
+            return player.SetIdentity(name, key, flags) ? 1 : 0;
+        }
+
+        // Chain (build 205.780): MP_MSGID, playerId (varint u32).
+        private int ApplyPlayerRemove(DecodedMessage message)
+        {
+            IReadOnlyList<DecodedField> fields = message.Fields;
+            if (fields == null || fields.Count < 2)
+                throw new FormatException(
+                    $"msgpack: 0x1ad record has {fields?.Count ?? 0} fields, expected 2");
+
+            var index = new PlayerListIndex((uint)AsUInt(fields[1], "playerId"));
+            return Remove(index) ? 1 : 0;
         }
 
         // Chain (build 205.780): MP_MSGID, skillContentId (varint u32), slot (u8), context (u8),
@@ -98,7 +138,21 @@ namespace Gw2.Protocol.State
         private static ulong AsUInt(DecodedField field, string name)
         {
             if (field == null || !(field.Value is ulong value))
-                throw new FormatException($"msgpack: 0x264 field '{name}' is not an unsigned integer");
+                throw new FormatException($"msgpack: field '{name}' is not an unsigned integer");
+            return value;
+        }
+
+        private static string AsString(DecodedField field, string name)
+        {
+            if (field == null || !(field.Value is string value))
+                throw new FormatException($"msgpack: field '{name}' is not a string");
+            return value;
+        }
+
+        private static byte[] AsBytes(DecodedField field, string name, int length)
+        {
+            if (field == null || !(field.Value is byte[] value) || value.Length != length)
+                throw new FormatException($"msgpack: field '{name}' is not a {length}-byte blob");
             return value;
         }
     }
