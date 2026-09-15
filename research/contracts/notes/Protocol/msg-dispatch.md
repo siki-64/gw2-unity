@@ -2279,3 +2279,88 @@ id space) may need re-checking against the live registry.
 2. Re-check the catalog's `0x264` chain and the `maxsize.csv` corpus against the live map for
    colliding ids.
 
+---
+
+# Addendum 19: the live schema map, and the inbound stream is framed
+
+**Status:** the live per-connection schema map is extracted and validated; the RC4-decrypted inbound
+stream is a **framed container** that must be deframed before message parsing; **no wire message
+decode yet**
+
+## The live schema map
+
+`captures/local/205780/registry.bin` is a dump of the game connection's recv registry region
+(record stride `0x20`, `defArray` at `+0x08`, `dispatchType` at `+0x10`, handler at `+0x18`). It is
+emitted as `protocol/schema/205780/live_ids.csv`, **1241 ids**.
+
+Validation:
+
+- session 1's 1807-byte decoded reader buffer decodes **exactly** (9 messages, no leftover) with
+  `live_ids.csv`;
+- `0x264 -> 1425cd320`, matching `protocol/messages/205780/0x264.json`;
+- `0x40F -> 142605480`, matching the live record seen in Addendum 14.
+
+**`live_ids.csv` supersedes `sweep2.csv` as the schema map.** `sweep2.csv` has 469 ids with more
+than one candidate defArray (Addendum 18); the live map resolves each id to the one actually
+installed in the game connection's registry.
+
+## The inbound stream is framed
+
+`FUN_140fe8ef0` (`MsgConn.cpp`; called by `MsgConn::Dispatch` in mode 3, between the append and
+`Msg_DispatchStream`) reads frames out of the decrypted buffer at `conn+0x58`:
+
+- a frame is a 4-byte header plus a payload;
+- the payload is decoded — copied raw when the method word is `0`, otherwise through
+  `FUN_141574a00` — into an intermediate buffer;
+- the decoded payload is appended to `conn+0x80`, which is what `Msg_DispatchStream` parses as the
+  message stream.
+
+So the inbound pipeline is:
+
+```text
+RC4 decrypt (MsgUtil_CryptStream, conn+0x12C)
+  -> frame container at conn+0x58
+  -> deframe/expand (FUN_140fe8ef0 -> FUN_141574a00 when needed)
+  -> message stream at conn+0x80
+  -> MsgPack_ReadFields (schema from the live registry)
+```
+
+This explains why the raw decrypted wire bytes do not parse as messages: they are frames, not the
+message stream. The captured decrypted wire (`wire_plain*.bin`) shows a repeated ~44-byte record,
+consistent with a frame payload rather than a `[msgid][fields]` stream. `FUN_140fee3b0` is a plain
+ring-buffer append (no re-framing) and `FUN_140fee4e0` a growable append; neither explains the
+framing.
+
+## Durable inputs for static continuation
+
+The live session can be restarted; the following are on disk under the git-ignored
+`captures/local/205780/`:
+
+| File | Purpose |
+| --- | --- |
+| `registry.bin` | live recv registry region dump (source of `live_ids.csv`) |
+| `wire_plain*.bin`, `wire_state*.bin` | RC4-decrypted inbound frames (per packet) |
+| `first_stream.bin` | a decoded reader buffer (session 1), decodes exactly with `live_ids.csv` |
+| `game_rc4key.bin` | that session's key (session-specific) |
+
+## What this establishes
+
+- the live per-connection schema map, `protocol/schema/205780/live_ids.csv` (1241 ids), validated;
+- the inbound framing layer and where it feeds (`conn+0x58` -> `conn+0x80`);
+- that the wire plaintext is frames, not the message stream, so the earlier wire desync was a
+  framing gap, not a schema gap.
+
+## What this does not establish
+
+- the exact frame header field order (payload length / method at `+0x00` vs `+0x02`);
+- the `FUN_141574a00` payload encoding (compression) for non-zero method frames;
+- any wire message decode; no artifact is promoted.
+
+## Next steps
+
+1. Pin the frame header from `FUN_140fe8ef0`'s instructions and implement the deframer; analyse
+   `FUN_141574a00` for non-zero-method frames.
+2. Deframe the captured wire plaintext and decode with `live_ids.csv` to obtain the first real wire
+   message.
+3. Re-derive `maxsize.csv` and the catalog chains from `live_ids.csv` where ids collide.
+
