@@ -30,6 +30,27 @@ One object holds both arrays; `FUN_140fed3d0` (send) and `FUN_140fed3b0` (recv) 
 id (no hashing). A live read gave: send `base +0x50 / count +0x5c / stride 0x10`; recv
 `base +0x70 / count +0x7c / stride 0x20`.
 
+### It is a shared, refcounted global — not per-connection
+
+`conn+0x18` is not allocated per connection. The constructor binds it from
+`FUN_140fed450(protocol, isClient)`, which walks a **global list** (`DAT_142890078`) under a critical
+section (`DAT_142890034`), matches on `(entry+0x20 == protocol, entry+0x24 == isClient)`, and returns
+the shared entry with its refcount incremented (`FUN_1409b48c0`). So there are only a handful of
+registries — keyed by **(protocol, client/server role)** — reused by every connection with the same
+key. A miss returns `0` (the caller then has no recv/send tables).
+
+The registry object also carries a **flood-policy callback at `+0x28`**: `FUN_140fed430` invokes it
+(directly, `0xFFFFFFFF` when absent) and `Msg::DispatchStream` compares the per-window receive count
+against it to raise `ERR_FLOODING` (`MsgConn.cpp:0xb32`, 1000-tick window).
+
+Both tables are the same object: recv at `+0x70`/`+0x7c` (32-byte records), send at `+0x50`/`+0x5c`
+(16-byte records). This is why the committed corpus has a **recv** and a **send** variant for the
+same id space.
+
+There is no global collection of *connections* at the game layer: the game client holds one game
+connection (`DAT_1426632d0`, `GcGameCmd.cpp`, see [session-state.md](session-state.md)); the PortalCli
+service instead keeps a `s_socketManager` singleton.
+
 ## The schema: `MsgPackFieldDef`
 
 Stride `0x28`. Offsets (corrected, Addendum 8):
