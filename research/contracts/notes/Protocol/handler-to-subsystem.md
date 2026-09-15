@@ -262,8 +262,40 @@ Observed `AgWorld` (registry) fields, build-local: sub-mode `+0x10`, key table `
 priority queue `+0x150`, `+0x178`, counters `+0x1bc`, `+0x1cc`, `+0x1d0`, `+0x1d4`, `+0x1f8`,
 `+0x20c`.
 
+## World entry and the map loader (correction to the `0x100` lead)
+
+The catalog's `0x100` lead ([../UI/Widgets/pvp-equipment-state.md](../UI/Widgets/pvp-equipment-state.md))
+says it "starts world loading". The build-205.780 recv registration does **not** support that.
+
+`0x100`'s recv handler, via the same pairing that resolves `0x264 -> FUN_141257a20` correctly, is
+**`FUN_14124bc70`** (`ChCliMsg.cpp`):
+
+```text
+FUN_14124bc70(decoded):
+  obj = FUN_1411afe40( ChCliContext, rec+2 )    // array ChCliContext+0x60, count +0x6c
+  assert obj
+  sub = (*(obj+0x68))()                          // virtual
+  FUN_141202be0(sub, float@rec+6)                // sets sub+8
+  FUN_141202ce0(sub, float@rec+10)               // sets sub+0x24
+```
+
+So `0x100` is a two-float update on an object selected from a `ChCliContext` array — not a world-load
+trigger. The id/handler mapping behind the old claim is likely a live mis-trace.
+
+The map loader (`CMapLoader`) does exist in 205.780 (state strings
+`MapLoader: STATE_LOAD_CONTENT / LOAD_MANIFEST / SERVER_WAIT / MAP_DOWNLOAD / MAP_STREAM /
+MODELS_STREAM / MAP_ASSET_STREAM / AGENT_STREAM / READY_WAIT` at `0x141b7d698..`). It is driven by
+`FUN_14094fda0`, a virtual/event path that sets state `0xd`, fires `FUN_14106dba0(0x1000000b, ...)`
+and then calls `BeginMap` `FUN_140954e10(param+0xfc, mapId, 0, ...)`. It is **not reached directly
+from a message handler**.
+
+Conclusion: the inbound message that starts a world load is **not** `0x100`; the loader is driven by
+an internal event (`0x1000000b`). Both `0x100`'s semantics and the true world-entry message need
+re-derivation (a capture, or tracing the event-`0x1000000b` producer).
+
 ## Open
 
+- The true world-entry message and the producer of event `0x1000000b`.
 - The identity of `*(ctx+0x28)` (the `AgWorld` owner) and the `+0xd0` key-table semantics.
 - The `CmbtCli` combatant and buff layouts behind `FUN_1412c0470`/`0530`.
 - Which subsystem `FUN_141345bd0` is (`0x312`/`0x315`).
