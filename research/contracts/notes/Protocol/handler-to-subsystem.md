@@ -197,6 +197,34 @@ The map key is `skillDef + 0x28` — the **native skill content key**, not the w
 *semantics* of the keyed map, the container and the bitmap are still unresolved; only their shape and
 writers are recovered.
 
+### `ChCliSkill` readers (vtable `PTR_FUN_142164318`)
+
+The consumers are the object's own virtual methods (the handler-facing setters above are free
+functions). Recovered slots:
+
+| Slot | Method | Role |
+| --- | --- | --- |
+| `+0x00` | `FUN_141223520` | enumerate a skill's content entries and match via `FUN_14120f100` |
+| `+0x08` | `FUN_141223330` | availability against a content table (bit masks, mode checks) |
+| `+0x10` | `FUN_141223240` | search three content kinds for a key |
+| `+0x18` | `FUN_141223440` | **bitmap predicate**: key `>> 5` word / `& 0x1f` bit in `+0x28`; true when the bit is clear (or word index `>= +0x34`) |
+| `+0x20` | `FUN_141223770` | resolve a skillDef key through `CnContext` `+0x80`/`+0x230` |
+| `+0x28` | `FUN_141223820` | `+0x08` map lookup by `skillDef+0x28`; resolve the stored value through `CnContext +0x230` |
+| `+0x38` | `FUN_1412238f0` | `+0x58` plus the sum of the `+0x08` map entries' `+0x8` field |
+| `+0x48` | `FUN_141223b40` | `ChCliContext +0x390` entry -> `+0x14` |
+| `+0x58` | `FUN_141223c10` | **`GetConfiguredSkill(slot, context)`** -> `+0x60`/`+0x88` at `slot*8`; asserts `slot <= 4 \|\| slot == 0x15` |
+| `+0x68` | `FUN_141223c90` | forwards to vtable `+0x60` |
+| `+0x70` | `FUN_141223d10` | count entries whose `+0xC` equals a value |
+| `+0x88` | `FUN_141223ff0` | `ChCliContext +0x390` entry -> sub-object |
+| `+0x98` | `FUN_141224090` | enumerate the continent/region/content tree, collect via `FUN_141222c00` |
+| `+0xa0` | `FUN_141224390` | compare vtable `+0x78` against an entry's `+0xC` |
+| `+0xa8` | `FUN_141224430` | **availability classifier**: combines the `+0x28` bitmap bit, a parent-chain definition, continent/world checks (`FUN_14140dd90`) and a `FUN_141284870` table; returns a flag and writes a `0..4` status |
+
+Conclusion: the consumers of the `+0x08` map and the `+0x40` container are skill **availability,
+enumeration and selection** logic, and the `+0x60`/`+0x88` getter is the confirmed configured-skill
+reader (`0x264`). The exact meaning of the map/container *values* is still not nameable from this
+pass, so the family remains unmodelled in the runtime.
+
 ## Captured-stream families
 
 The message ids actually observed in the private captures (Addenda 14, 20), traced to their
