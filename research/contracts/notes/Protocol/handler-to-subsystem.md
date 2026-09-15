@@ -212,16 +212,23 @@ FUN_14102aac0(registry, 0, key = u16@rec+2, seqArg = u32@rec+4/+5, obj):
 insert typed objects into an `AgWorld` list. Every object carries a network id (`+0x18`), a sequence
 and flag word (`+0x1c`), a registry back-link (`+0x58`) and a related-object link (`+0x20`).
 
-The per-message builders turn the decoded record into a typed object:
+The per-message builders (`FUN_141030110(obj, kind, typeBits, manager)` is the shared base
+constructor) turn the decoded record into a typed object:
 
-| Msg | Builder | Kind / type bits | vtable |
-| --- | --- | --- | --- |
-| `0x21` | `FUN_141030410` | kind `0`, `(rec+8) \| 0x8810800` | `PTR_FUN_142114dc8` |
-| `0x23` | `FUN_141030750` | kind `3`, `(rec+8) \| 0x8801000` | `PTR_FUN_142114ea8` |
+| Msg | Builder | Kind | vtable | Record fields used |
+| --- | --- | --- | --- | --- |
+| `0x21` | `FUN_141030410` | `0x00` | `142114dc8` | `rec+8` flags, `rec+9` sub-record, `rec+4` |
+| `0x23` | `FUN_141030750` | `0x03` | `142114ea8` | `i16` angles `rec+0x1e`/`+0x20` (`* π/32766`), sub-record `rec+0x16`, list `rec+0x0d`/`+0x0e` |
+| `0x33` | `FUN_141031000` | `0x0b` | `142115068` | `rec+4` flags |
+| `0x34` | `FUN_141031040` | `0x0c` | `1421150a0` | sub-record `rec+0x16`, list `rec+0x0d`/`+0x0e`, `rec+9`, `rec+4` |
+| `0x39` | `FUN_141031740` | `0x11` | `1421151b8` | vec3 `rec+0x1e`/`+0x26`/`+0x2a`/`+0x32`, speed `rec+0x36`, sub-record, list |
+| `0x47` | `FUN_141032d60` | `0x1e` | `142115490` | `rec+9`, `rec+10` |
+| `0x4f` | `FUN_141033030` | `0x23` | `1421155a8` | float angles `rec+0x16`/`+0x1a`, list, `rec+9` |
+| `0x54` | `FUN_1410334d0` | `0x29` | `1421156f8` | list `rec+0x0d`/`+0x0e`, `rec+9` |
 
-`FUN_141030750` reads a placement: two `i16` at `rec+0x1e`/`rec+0x20` as angles
-(`value * π / 32766`, `0x7fff` = infinity), a sub-record at `rec+0x16`, and a count/list at
-`rec+0x0d`/`rec+0x0e` — i.e. a world transform/placement definition.
+So the family is a set of typed world/entity content definitions (placements, transforms, lists),
+not character state. Each sets the object's kind and a `typeBits` word (`(rec+8) | 0x8010000`,
+`| 0x8801000`, ...) and its vtable.
 
 Reliability/ordering lives in `FUN_14102ad80(registryWindow, seq, base)`, a `/0x28`-sized sliding
 window with reorder/late-handling, and `FUN_14102aac0` can emit an outbound message through
