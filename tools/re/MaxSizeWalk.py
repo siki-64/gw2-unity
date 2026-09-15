@@ -2,11 +2,17 @@
 """Compute MsgPack defSize/maxSize per defArray chain across the 205.780 corpus.
 
 Reads Gw2-64.exe directly (PE VA->file mapping), walks every descriptor chain
-referenced by protocol/schema/205780/sweep2.csv, and computes per chain:
+referenced by the schema corpus, and computes per chain:
 
   maxSize  exactly as MsgPack_ComputeMaxSize (140fe98b0) does;
   defSize  exactly as MsgPack_ComputeDefSize (140fe9830) does;
   ok       maxSize <= MSG_MAX_BUFFER_SIZE (0x2000), the validator's bound.
+
+The default corpus is protocol/schema/205780/live_ids.csv, the live per-connection
+recv schema map dumped from the game connection's registry. It supersedes
+sweep2.csv as a schema map because sweep2.csv has 469 ids with more than one
+candidate defArray and its first-row choice is often wrong (msg-dispatch
+Addendum 18). Pass --corpus sweep2.csv to reproduce the older static sweep.
 
 Read-only: never writes to the image. Run offline from the repository root.
 
@@ -14,24 +20,31 @@ Output columns:
   ptr,ids,maxSize,defSize,fieldCount,fields,ok
 
 where ids is a semicolon-joined list of the message ids that reference this
-chain (in sweep2.csv), fields is a comma-joined list of fieldType hex values
-(including the terminal marker), and ok is True iff maxSize <= 0x2000.
+chain, fields is a comma-joined list of fieldType hex values (including the
+terminal marker), and ok is True iff maxSize <= 0x2000.
+
+With --compare OLDCSV, also emits --collisions OUTCSV: for every id present in
+both corpora whose chain pointer differs, the old (first-OK-row) chain and the
+live chain, so colliding catalog chains can be re-derived.
 
 The defSize column is the size of the decoded struct the reader writes
 (MsgPack_ReadFields output), i.e. the sum of the size-table entry per field.
 It is not the wire length; maxSize is the worst-case wire length.
 """
 
+import argparse
 import csv
 import os
 import struct
 import sys
 
+ROOT = os.path.join(os.path.dirname(__file__), "..", "..")
+
 IMAGE = r"C:\Program Files (x86)\Steam\steamapps\common\Guild Wars 2\Gw2-64.exe"
-CORPUS = os.path.join(os.path.dirname(__file__), "..", "..", "protocol",
-                      "schema", "205780", "sweep2.csv")
-OUT = os.path.join(os.path.dirname(__file__), "..", "..", "protocol",
-                   "schema", "205780", "maxsize.csv")
+CORPUS = os.path.join(ROOT, "protocol", "schema", "205780", "live_ids.csv")
+OUT = os.path.join(ROOT, "protocol", "schema", "205780", "maxsize.csv")
+COLLISIONS = os.path.join(ROOT, "protocol", "schema", "205780",
+                          "collisions.csv")
 
 MSG_MAX_BUFFER_SIZE = 0x2000
 SIZE_TABLE_VA = 0x142109500
@@ -86,8 +99,60 @@ class PE:
         return struct.unpack_from("<Q", self.read_va(va, 8))[0]
 
 
+def load_id_map(path):
+    """msgId -> defArray pointer, taking the first OK row per id (as the
+    offline decoder's load_id_map does)."""
+    m = {}
+    with open(path, newline="") as f:
+        for r in csv.DictReader(f):
+            if r.get("tag") == "OK" and r.get("ptr"):
+                m.setdefault(int(r["id"], 16), r["ptr"])
+    return m
+
+
+def chain_fields(pe, ptr):
+    fields = []
+    va = int(ptr, 16)
+    for _ in range(4096):
+        ft = pe.read_u32(va)
+        fields.append(ft)
+        if ft == 0 or ft == 0x18:
+            break
+        va += DESC_STRIDE
+    return fields
+
+
+def compare_collisions(pe, live, old, out_path):
+    """Emit ids whose live chain differs from the old first-row chain."""
+    rows = []
+    for mid in sorted(live):
+        lp, op = live[mid], old.get(mid)
+        if op is None or lp == op:
+            continue
+        rows.append((f"{mid:x}", op, ",".join(f"{x:x}" for x in
+                    chain_fields(pe, op)), lp,
+                    ",".join(f"{x:x}" for x in chain_fields(pe, lp))))
+    with open(out_path, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["id", "oldPtr", "oldFields", "livePtr", "liveFields"])
+        w.writerows(rows)
+    return rows
+
+
 def main():
-    pe = PE(IMAGE)
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--image", default=IMAGE)
+    ap.add_argument("--corpus", default=CORPUS,
+                    help="schema CSV (default: live_ids.csv)")
+    ap.add_argument("--out", default=OUT, help="maxSize CSV to write")
+    ap.add_argument("--compare", metavar="OLDCSV",
+                    help="second corpus to diff against (e.g. sweep2.csv)")
+    ap.add_argument("--collisions", default=COLLISIONS,
+                    help="collision report CSV written with --compare")
+    args = ap.parse_args()
+
+    pe = PE(args.image)
     # Size table: 27 entries of {size:dword, flags:dword} indexed by fieldType*8.
     # Verified byte-for-byte against the binary at 0x142109500 (indices 0x00..0x1a).
     # flags != 0 means a fixed-size scalar (size is its output size); flags == 0
@@ -102,7 +167,7 @@ def main():
     print("size table:", size)
     print("flags table:", flags)
 
-    rows = list(csv.DictReader(open(CORPUS, newline="")))
+    rows = list(csv.DictReader(open(args.corpus, newline="")))
     seen = {}
     for r in rows:
         if r["tag"] == "OK" and r["ptr"]:
@@ -160,18 +225,29 @@ def main():
                         total, defsize, len(fields), ",".join(
                             f"{x:x}" for x in fields), ok))
 
-    with open(OUT, "w", newline="") as f:
+    with open(args.out, "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["ptr", "ids", "maxSize", "defSize", "fieldCount",
                     "fields", "ok"])
         w.writerows(results)
 
     ok_count = sum(1 for x in results if x[6])
+    print(f"corpus: {args.corpus}")
     print(f"chains: {len(results)}  ok<=0x2000: {ok_count}  "
           f"violations: {violations}")
     for r in results:
         if not r[6]:
             print("  VIOLATION", r)
+
+    if args.compare:
+        live = load_id_map(args.corpus)
+        old = load_id_map(args.compare)
+        rows = compare_collisions(pe, live, old, args.collisions)
+        shared = len(set(live) & set(old))
+        print(f"compare: {args.compare}")
+        print(f"ids: live={len(live)} old={len(old)} shared={shared}  "
+              f"differing chains={len(rows)} -> {args.collisions}")
+
     return 0 if violations == 0 else 1
 
 

@@ -2439,3 +2439,118 @@ the self-test now covers a raw frame, a hand-built LZ4 block, and a bad-offset r
 2. Re-derive `maxsize.csv` and any colliding catalog chains from `live_ids.csv`.
 3. Examine the outbound path (`conn+0x234`) and its framing/LZ4 for encoders.
 
+---
+
+# Addendum 21: the size corpus re-derived from the live map
+
+**Status:** `maxsize.csv` is regenerated from `live_ids.csv`; 194 ids whose first-row chain was
+wrong are enumerated in `collisions.csv`; the corrected chains are independently validated against
+live schema RVAs already recorded in the PvP note; **still no wire fixture**
+
+This closes Addendum 20 next step 2 and the Addendum-18 "re-check against the live map" step.
+All work is offline; the private capture is not modified.
+
+## 1. The walker takes a corpus
+
+`tools/re/MaxSizeWalk.py` was hard-wired to `sweep2.csv`. It now takes `--corpus` (default
+`live_ids.csv`), `--out`, and `--compare OLDCSV`, which writes `--collisions` for every id present in
+both corpora whose chain pointer differs. The default corpus is the live map because Addendum 18
+showed `sweep2.csv`'s first-OK-row choice is wrong whenever an id has more than one candidate
+defArray (469 of 1256 ids).
+
+## 2. The regenerated corpus
+
+```
+corpus: protocol/schema/205780/live_ids.csv
+chains: 1241  ok<=0x2000: 1241  violations: 0
+```
+
+`protocol/schema/205780/maxsize.csv` now has **1241 chains** (was 1770, which counted each
+candidate chain separately), `maxSize <= 0x2000` for every one. The previous 8189-byte maximum is not
+reproduced by the live set; the bound still holds, which is a property of the live install, not a
+new decode.
+
+## 3. 194 ids had the wrong chain in the old map
+
+```
+compare: protocol/schema/205780/sweep2.csv
+ids: live=1241 old=1256 shared=1241  differing chains=194
+```
+
+`protocol/schema/205780/collisions.csv` lists each as `id,oldPtr,oldFields,livePtr,liveFields`. The
+first rows show the damage is structural, not cosmetic:
+
+| Id | old chain (`sweep2` first row) | live chain |
+| --- | --- | --- |
+| `0x01` | `1,0` (id-only) | `1,4,4,4,4,0` |
+| `0x18` | `1,3,4,a,8,3,2,4,14,0` | `1,0` |
+| `0x1c` | `1,2,0` | `1,4,0` |
+| `0x100` | `1,4,2,0` | `1,4,6,6,0` |
+
+For these ids the old `maxsize.csv` described a different message entirely, so any consumer that
+read wire lengths from it would under/over-run.
+
+## 4. Independent validation against live evidence
+
+The PvP note records live handler/schema RVA pairs captured at the dispatch boundary
+([`../UI/Widgets/pvp-equipment-state.md`](../UI/Widgets/pvp-equipment-state.md), "payload tracer"):
+`0x200 0x25C3990`, `0x201 0x25C3AB0`, `0x202 0x25C3BA0`, `0x203 0x25C3DE0`,
+`0x204 0x25C3FA0`, `0x205 0x25C41E0`. With image base `0x140000000` these are exactly the live
+defArrays this walk used for `0x200`..`0x205`:
+
+| Id | live defArray | maxSize | defSize | fields |
+| --- | --- | --- | --- | --- |
+| `0x200` | `1425c3990` | 12 | 10 | `1,4,4,0` |
+| `0x201` | `1425c3ab0` | 12 | 10 | `1,4,4,0` |
+| `0x202` | `1425c3ba0` | 12 | 10 | `1,4,4,0` |
+| `0x203` | `1425c3de0` | 13 | 11 | `1,4,4,2,0` |
+| `0x204` | `1425c3fa0` | 66 | 39 | `1,4,4,4,2,4,4,4,10,4,0` |
+| `0x205` | `1425c41e0` | 7 | 6 | `1,4,0` |
+
+The old `sweep2` chains for all six were different pointers (`142577b50`, `142577bf0`, `142577cc0`,
+`1425795c0`, `142579660`, `14257ace0`). So the regeneration is confirmed by an **independent live
+capture** taken for a different purpose, not by the registry dump that produced `live_ids.csv`.
+
+The note's `0x204` "descriptor-proven trailing four bytes" (`defSize` after the first `0x23` bytes)
+is consistent with the live chain's `defSize 39` (`0x27`) and `maxSize 66` (`0x42`).
+
+## 5. Catalog-relevant outcomes
+
+- `0x264` -> `1425cd320` is **unchanged**: it is not in the collision set, so
+  `protocol/messages/205780/0x264.json` and the catalog entry remain valid. `defSize 12`,
+  `maxSize 14`.
+- `0x27C` -> `1425d08c0` and `0x1A5` -> `1425bcfd0` are also unchanged.
+- `0x100` **did change**: `1425c7ad0` (`1,4,2,0`, 8/7) to `1425d7b90` (`1,4,6,6,0`, 15/14). The
+  catalog records `0x100` only as a semantic-call-trace research lead with no chain, so no catalog
+  field is wrong, but any future `0x100` artifact must use the live chain.
+- `0x200..0x207` are now the live chains; `0x206` (`1425c4450`) and `0x207` (`1425c42e0`) were also
+  corrected even though the PvP note's live pair list stopped at `0x205`.
+
+## What this establishes
+
+- `maxsize.csv` is derived from the live per-connection map, not the collision-prone static sweep;
+- 1241 live chains, every one under the `0x2000` bound;
+- the exact set of 194 ids whose `sweep2` first-row chain was wrong;
+- the six corrected `0x200`..`0x205` chains match live schema RVAs recorded independently in the PvP
+  note;
+- `0x264`, `0x27C` and `0x1A5` chains are unchanged, so their artifacts need no re-derivation.
+
+## What this does not establish
+
+- `live_ids.csv` is one session's registry (`count 1340`, 1241 populated). It is the authoritative
+  map for that connection, not proof that another build or connection registers the same chains.
+- The collision set is relative to `live_ids.csv`; ids absent from the live map (1256 - 1241 = 15
+  static ids) are not compared and could still be absent or renamed.
+- No wire message decode is added; `wireVerified` stays false.
+- The `maxSize` computation itself was validated by Addendum 8's corpus check, not re-derived here.
+
+## Next steps
+
+1. Capture a `0x264` on the wire and promote a sanitized fixture (unchanged; the one missing
+   `wireVerified` artifact).
+2. Re-check any catalog or note field that quoted a `sweep2` chain against `collisions.csv` (the
+   `0x100` lead is the only catalog id in the set).
+3. Examine the outbound path (`conn+0x234`) for encoders.
+
+---
+

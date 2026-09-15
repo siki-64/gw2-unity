@@ -98,12 +98,12 @@
     {
       "question": "What are the concrete wire bytes for this message, and is the varint bit order confirmed by data?",
       "kind": "framing",
-      "note": "The recv registry slot, defArray chain, decoded record shape and handler are statically located (msg-dispatch Addendum 7-8), but no capture decodes end to end. The schema-directed parse (defSize 0x0C, maxSize 0x0E) is static; a captured frame is still required, and a skill id or player index above 0x7F would exercise the base-128 varint's little-endian (LSB-first) continuation from data."
+      "note": "The recv registry slot, defArray chain, decoded record shape and handler are statically located (msg-dispatch Addendum 7-8), and the inbound wire pipeline now decodes captured frames end to end (Addendum 20: RC4 -> deframe/LZ4 -> schema). No captured frame is a 0x264, however: decoding the on-disk capture yields 52 messages and none is 0x264 (Addendum 21). The schema-directed parse (defSize 0x0C, maxSize 0x0E) is still static for this id; a captured 0x264 with a skill id or player index above 0x7F would exercise the base-128 varint's little-endian (LSB-first) continuation from data."
     },
     {
-      "question": "What selects this build's schema variant, and does the runtime registry match the static tables?",
+      "question": "Does the live per-connection registry resolve 0x264 to the same defArray, and would another build or connection do the same?",
       "kind": "schema-variant",
-      "note": "The chain at 1425cd320 is read from the shipped static table. The runtime record array (count at registry+0x7c) was not read from a live instance, so the static corpus is not yet reconciled with the live install."
+      "note": "Resolved for this build and connection: the live game-connection recv registry was read in process (msg-dispatch Addendum 18) and emitted as protocol/schema/205780/live_ids.csv (Addendum 19), where 0x264 resolves to 1425cd320, matching this artifact. The static corpus is therefore reconciled with the live install for 0x264, and maxsize.csv is now live-derived (Addendum 21). What remains is cross-build/other-connection: the chain is build-local and the registry merge is per connection, so a different build or connection must be re-derived, not assumed equal."
     }
   ],
   "validation": {
