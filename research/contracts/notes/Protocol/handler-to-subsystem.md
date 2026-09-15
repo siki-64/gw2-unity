@@ -294,8 +294,11 @@ FRAME_MSG_EX`) and is the frame/UI broadcast. The loader itself is the producer 
 (`FUN_1402a6a00` case `0x1000000b` -> `FUN_1402a7e80`; `FUN_1402a77f0` subscribes). So `0x1000000b`
 is a **loader-state broadcast to the UI**, not the load trigger.
 
-The load trigger is therefore an internal caller of `FUN_14094fda0` (a virtual method); tracing that
-caller is the remaining step to bind an inbound message to a world load.
+The load trigger is therefore an internal caller of `FUN_14094fda0`, which is a **virtual method**: it
+is installed in the `CMapLoader` vtable region (`0x141b7c7xx..0x141b7c9xx`, slot at `0x141b7c930`; its
+sibling `FUN_1409503d0` is nearby). The caller is an indirect dispatch through that vtable, so binding
+it to a specific handler needs either a live breakpoint on `FUN_14094fda0` or a vtable-owner walk —
+neither of which was completed in this pass.
 
 Conclusion: the inbound message that starts a world load is **not** `0x100`; `0x100` is a two-float
 update, and the loader is invoked internally. Both need re-derivation (a capture, or tracing the
