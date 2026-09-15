@@ -4,6 +4,7 @@
   "supportedWireBuilds": [],
   "buildStamps": [
     {
+      "name": "ConfiguredSkillRecordLead",
       "build": 205780,
       "buildLabel": "205.780",
       "stampedAtUtc": "2026-09-14T00:00:00Z",
