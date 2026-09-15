@@ -138,5 +138,14 @@ connection object lives in the global `DAT_1426632d0`:
 - Whether a real game connection enters mode `1` or remains in mode `2` until keyed.
 - The purpose of the `conn+0xd8` timestamp ring.
 - The server side of the handshake and of the key delivery frame.
-- The runtime package does not yet model this machine or emit/parse the handshake frames; the DH
-  modexp (512-bit) is not implemented in the runtime.
+- The DH modexp (512-bit) is not implemented in the runtime, so the client cannot yet compute `outA`
+  / `outB` from a seed; the runtime models the mode machine and the handshake frames only.
+
+## Runtime
+
+`Gw2.Protocol.Session` implements this machine for build 205.780: `MsgConnMode` / `SessionPhase`
+(the mode word and its recovered transitions, including `ApplySetMode` and `TryEstablish`) and
+`HandshakeFrame` (`EncodeClientHello`, `TryClassify`, `TryDecodeServerKey`, `DeriveTransportKey`).
+`SessionPhase.TryEstablish` returns the transport key, which keys both `TransportCipher` directions.
+`EncodeClientHello` is a static reconstruction with no captured frame; everything else is backed by
+Addendum 26 and the asserts above.
