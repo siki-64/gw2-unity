@@ -2953,3 +2953,78 @@ header is really `{0x00, len+2}`, the `+2` being the two header bytes themselves
 
 ---
 
+# Addendum 26: the handshake KDF and the outbound path, confirmed live
+
+**Status:** `FUN_140fede80` is confirmed against a live capture; one outbound packet is captured
+end to end; the outbound path uses a **separate send schema table**
+
+Both captures come from one connect (build 205.780, hardware breakpoints only, no patching). Private
+bytes are under `captures/local/205780/s5/`.
+
+## The handshake KDF is confirmed
+
+At the game-connection `FUN_140fede80` call (`RDX = DAT_142109e40`, `R8 = 0x14`, seed at `R9`):
+
+| Item | Value |
+| --- | --- |
+| seed (`conn+0x118` before overwrite) | `0558904f44f11d2eb022eb43b0a25441b6c0d800` |
+| predicted `outA[:20]` (`Gw2HandshakeKdf.py`) | `390aaf8f5e6104ebb9bc24736365c65a40124e59` |
+| captured `conn+0x118` after the call | `390aaf8f5e6104ebb9bc24736365c65a40124e59` |
+
+Exact match. This closes Addendum 23 next step 1: the Park-Miller expansion and the modular
+exponentiation (`outA = G^R mod P`) reproduce the client's derived key material. The seed itself is
+client entropy (`R9 = conn+0x118`), so the conclusion is unchanged — a capture still needs the seed
+or the key.
+
+## One outbound packet, captured end to end
+
+Breakpoint on the flush `FUN_140fe96f0(conn)` (`conn = 0x29b1cc18660`):
+
+```text
+plaintext (conn+0x398, len 6)   20 01 88 8F 01 01
+pre-flush state (conn+0x234)    i = 0x71, j = 0x2f
+ciphertext (flush stack temp)   5A 31 60 FB 37 DB
+```
+
+`Crypt(conn+0x234, plaintext) = 5a3160fb37db == captured ciphertext`. So the outbound cipher, the
+`conn+0x234` state, and the flush path are all confirmed on real bytes.
+
+## Outbound uses a separate send schema table
+
+`20 01 88 8F 01 01` decodes as msgid `0x120`:
+
+| Table | Chain | Decode |
+| --- | --- | --- |
+| recv (`live_ids.csv`) | `1,4,4,2,4` | overruns the 6-byte packet |
+| send (table A) | `1,4,2` | msgid `0x120`, varint `0x4788`, u8 `1` |
+
+So inbound and outbound have **different chains for the same id**. A decoder needs the send corpus
+(table A, 16-byte records, `defArray +0x08`) for outbound; the runtime's `chains.json` is the recv
+corpus and does not apply to the outbound direction.
+
+This also confirms the Addendum-25 result empirically: the flush encrypts the raw
+`[u16 msgid][fields]` stream — no `[compLen][decodedLen]` and no LZ4 on the outbound side — and hands
+`(len, temp)` to the transport (`FUN_140fe3e60`), which adds no message-layer framing.
+
+## What this establishes
+
+- the handshake KDF reconstruction is correct against live data;
+- the outbound cipher (`conn+0x234`), plaintext buffer (`conn+0x398`) and flush (`FUN_140fe96f0`) are
+  correct against a captured packet;
+- outbound carries no compression container and uses the send schema table.
+
+## What this does not establish
+
+- an empirical two-time-pad test: it needs the inbound and outbound states at a common keystream
+  offset from one connection; the reuse remains a code-level inference (Addendum 25);
+- the full send schema corpus (not yet extracted);
+- outbound sequence/acknowledgement rules.
+
+## Next steps
+
+1. Extract the send schema corpus (table A) as a build artifact, analogous to `chains.json`, and
+   extend the runtime decoder to take a direction-specific corpus.
+2. Capture an inbound and an outbound state at a common offset to test the two-time-pad inference.
+
+---
+
