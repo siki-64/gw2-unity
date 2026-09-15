@@ -2239,21 +2239,43 @@ combined stream does not decode from any offset cleanly.
 may re-frame (or prepend/consume) the decrypted bytes before the schema walk. That path was not
 analysed and is the leading explanation.
 
+## Correction: the static sweep is not a usable schema map
+
+Reading live registry records for ids `0x01..0x18` and comparing with `sweep2.csv` shows the naive
+first-row map is wrong. `sweep2.csv` has **469 ids with more than one candidate defArray** (of 1256
+distinct), and the live registry picks a different one for many of them:
+
+| Id | live | naive first row |
+| --- | --- | --- |
+| `0x01` | `1425a9070` | `1425a8fa0` |
+| `0x02` | `1425a9160` | `1425a8ff0` |
+| `0x18` | `1425ca340` | `1425af4a0` |
+
+The live defArrays come from **many** registration sites (`0x01/0x02` -> `1401a6fc1`, `0x18` ->
+`14020a031`, `0x11` -> `140207d8d`, `0x0b` -> `140230f4d`, `0x06` -> `14021ee6d`, ...), so the game
+connection's registry is a **merge across channels**, not one channel's table. Filtering by a single
+site is not sufficient.
+
+This is the real cause of the wire-stream desync: the offline decoder used the wrong chain for
+colliding ids. It also means any earlier catalog work that assumed the first-row chain (or a global
+id space) may need re-checking against the live registry.
+
 ## What this establishes
 
 - the live recv registry object and lookup layout, read in process;
-- the live `count` (1340) and a record verified against the static corpus;
-- that the `0x48` collision resolves to the naive first row, so it is not the wire-parse cause.
+- the live `count` (1340) and records verified against the static corpus;
+- the static `sweep2.csv` map is unsafe: 469/1256 ids collide, and the live registry merges many
+  sites, so the first-row chain is often wrong.
 
 ## What this does not establish
 
-- Why the combined wire stream does not decode from a boundary (reader re-framing not analysed).
+- The full live map (the registry region is ~42880 bytes; only the head was read).
 - Any wire message decode; no artifact is promoted.
 
 ## Next steps
 
-1. Analyse `FUN_140fee3b0` / the pre-`ReadFields` copy to see whether the reader re-frames the
-   decrypted bytes, and align the offline parser accordingly.
-2. Emit the live registry as a schema map (read `count` records) and use it as the decoder's
-   source instead of `sweep2.csv`.
+1. Read the whole live registry region (`base 0x247236EC3A0`, `count * 0x20` bytes) and emit it as
+   the schema map; re-decode the captured wire stream with it.
+2. Re-check the catalog's `0x264` chain and the `maxsize.csv` corpus against the live map for
+   colliding ids.
 
