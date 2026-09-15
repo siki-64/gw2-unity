@@ -87,7 +87,7 @@ namespace Gw2.Protocol.Tests
             var schema = MessageSchema.FromChain(new[]
             {
                 new FieldDefinition(1, 0x264),
-                new FieldDefinition(0x11, 0, new[] { new FieldDefinition(2) }),
+                new FieldDefinition(0x11, 4, new[] { new FieldDefinition(2) }),
             });
             var schemas = new MessageSchemaSet(new[] { schema });
             var messages = MessageStreamDecoder.Decode(schemas, new byte[] { 0x64, 0x02, 0x02, 0x07, 0x09 });
@@ -109,6 +109,57 @@ namespace Gw2.Protocol.Tests
             var schemas = new MessageSchemaSet(new[] { schema });
             Assert.ThrowsExactly<FormatException>(() => MessageStreamDecoder.Decode(
                 schemas, new byte[] { 0x64, 0x02, 0x80, 0x80, 0x80, 0x80, 0x80, 0x00 }));
+        }
+
+        // A field's descriptor param is the client's maximum for its variable-length types
+        // (MsgPack_ReadFields fails when the wire count/length exceeds it).
+        [TestMethod]
+        public void ParamMax_IsEnforced()
+        {
+            static MessageSchemaSet Set(int type, int param) => new MessageSchemaSet(new[]
+            {
+                MessageSchema.FromChain(new[]
+                {
+                    new FieldDefinition(1, 0x264),
+                    new FieldDefinition(type, param, new[] { new FieldDefinition(2) }),
+                }),
+            });
+
+            // 0x11: u8 count <= param
+            var a = Set(0x11, 2);
+            MessageStreamDecoder.Decode(a, new byte[] { 0x64, 0x02, 0x02, 0x01, 0x02 });        // count == param
+            Assert.ThrowsExactly<FormatException>(() =>
+                MessageStreamDecoder.Decode(a, new byte[] { 0x64, 0x02, 0x03, 0x01, 0x02, 0x03 }));
+
+            // 0x12: u16 count <= param
+            var b = Set(0x12, 2);
+            MessageStreamDecoder.Decode(b, new byte[] { 0x64, 0x02, 0x02, 0x00, 0x01, 0x02 });
+            Assert.ThrowsExactly<FormatException>(() =>
+                MessageStreamDecoder.Decode(b, new byte[] { 0x64, 0x02, 0x03, 0x00, 0x01, 0x02, 0x03 }));
+
+            // 0x14: u8 length <= (param & 0xFFFF)
+            var c = Set(0x14, 0x10004); // high bits ignored, low u16 = 4
+            MessageStreamDecoder.Decode(c, new byte[] { 0x64, 0x02, 0x04, 1, 2, 3, 4 });
+            Assert.ThrowsExactly<FormatException>(() =>
+                MessageStreamDecoder.Decode(c, new byte[] { 0x64, 0x02, 0x05, 1, 2, 3, 4, 5 }));
+
+            // 0x15: u16 length <= (param & 0xFFFF)
+            var d = Set(0x15, 4);
+            MessageStreamDecoder.Decode(d, new byte[] { 0x64, 0x02, 0x04, 0x00, 1, 2, 3, 4 });
+            Assert.ThrowsExactly<FormatException>(() =>
+                MessageStreamDecoder.Decode(d, new byte[] { 0x64, 0x02, 0x05, 0x00, 1, 2, 3, 4, 5 }));
+
+            // 0x0d: utf16 length incl. NUL <= param * 2
+            var e = Set(0x0d, 2);
+            MessageStreamDecoder.Decode(e, new byte[] { 0x64, 0x02, 0x41, 0x00, 0x00, 0x00 });      // "A" (4B)
+            Assert.ThrowsExactly<FormatException>(() =>
+                MessageStreamDecoder.Decode(e, new byte[] { 0x64, 0x02, 0x41, 0x00, 0x42, 0x00, 0x00, 0x00 }));
+
+            // 0x0e: 8-bit string length incl. NUL <= param
+            var g = Set(0x0e, 2);
+            MessageStreamDecoder.Decode(g, new byte[] { 0x64, 0x02, 0x41, 0x00 });                // "A" (2B)
+            Assert.ThrowsExactly<FormatException>(() =>
+                MessageStreamDecoder.Decode(g, new byte[] { 0x64, 0x02, 0x41, 0x42, 0x00 }));
         }
     }
 }

@@ -55,8 +55,37 @@ struct/string arrays, `0x13` fixed bytes, `0x14/0x15` length-prefixed bytes. **V
 build-local.**
 
 `fieldType 4` / `0x0a` carry a base-128 varint (1..5 bytes, little-endian, LSB group first).
-`MsgPack_ReadFields` bounds-checks; `MsgPack_WriteFields` does not (outbound sizes must come from
-`ComputeMaxSize`).
+
+### Per-type wire reads (`MsgPack_ReadFields`, verbatim from the switch)
+
+| `fieldType` | Wire read | `param` role |
+| --- | --- | --- |
+| `1`, `3` | 2 bytes | - |
+| `2` | 1 byte | - |
+| `5`, `7`, `0x1a` | 8 bytes | - |
+| `6`, `0x19`, `0x17` | 4 bytes | - |
+| `8` | `0xc` bytes | - |
+| `9`, `0xb` | `0x10` bytes | - |
+| `0xc` | `0x1c` bytes | - |
+| `4` | base-128 varint, 1..5 bytes | - |
+| `0xa` | `0xc` header + varint count | - |
+| `0xd` | NUL-terminated utf-16 (u16 scan) | **max** u16 elements incl. NUL |
+| `0xe` | NUL-terminated 8-bit string | **max** bytes incl. NUL |
+| `0xf` | 1-byte present + subchain | - |
+| `0x10` | `param` sub-structs | fixed element count |
+| `0x11` | u8 count + sub-structs | **max** count |
+| `0x12` | u16 count + sub-structs | **max** count |
+| `0x13` | `param` raw bytes | exact byte length |
+| `0x14` | u8 length + bytes | **max** length (low u16) |
+| `0x15` | u16 length + bytes | **max** length (low u16) |
+| `0x16` | (fails; no data path) | - |
+| `0`, `0x18` | chain end | - |
+
+The reader enforces `param` as the **maximum** for `0xd/0xe/0x11/0x12/0x14/0x15` (it fails when the
+wire count/length exceeds it); `0x10`/`0x13` use `param` as the exact count/length. Every fixed-size
+field is bounds-checked against the payload end. `MsgPack_WriteFields` does not bounds-check
+(outbound sizes must come from `ComputeMaxSize`). The runtime `MsgPackReader` mirrors this, including
+the `param` maximum.
 
 ## Corpora
 
