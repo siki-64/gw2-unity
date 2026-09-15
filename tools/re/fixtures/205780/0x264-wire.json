@@ -33,7 +33,7 @@
       "playerListIndex": 1
     }
   ],
-  "provenance": "Live game connection, build 205.780, captured read-only at the 0x264 handler (x64dbg hardware breakpoint); decrypted with the reconstructed transport cipher. Method in research/contracts/notes/Protocol/msg-dispatch.md Addendum 22.",
+  "provenance": "Live game connection, build 205.780, captured read-only at the 0x264 handler (x64dbg hardware breakpoint); decrypted with the reconstructed transport cipher. Method in research/contracts/notes/Protocol/msg-dispatch-addenda.md Addendum 22.",
   "sanitization": "Retained: the 19-byte wire frame and the pre-packet cipher state needed to decrypt it. Excluded: the 20-byte session key and any player identity beyond the list index.",
   "noClaim": "One captured packet from one build and connection. It confirms the 0x264 wire encoding and the transport frame layout; it does not establish a general decoder/encoder or current server support."
 }

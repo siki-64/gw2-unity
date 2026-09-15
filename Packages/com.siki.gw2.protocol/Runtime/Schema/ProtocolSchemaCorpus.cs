@@ -4,7 +4,7 @@ namespace Gw2.Protocol.Schema
 {
     /// <summary>
     /// A build's schema corpora for both directions. Inbound and outbound have **different** chains
-    /// per message id (build 205.780; msg-dispatch Addendum 26), so a consumer must select the
+    /// per message id (build 205.780; msg-dispatch-addenda Addendum 26), so a consumer must select the
     /// corpus by direction: server-to-client uses <see cref="Recv"/>, client-to-server uses
     /// <see cref="Send"/>.
     /// </summary>

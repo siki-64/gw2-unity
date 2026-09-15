@@ -11,7 +11,7 @@ namespace Gw2.Protocol.Tests
     [TestClass]
     public class MsgPackTests
     {
-        // fieldType 1 = MP_MSGID, 4 = base-128 varint, 2 = u8 (msg-dispatch Addendum 8).
+        // fieldType 1 = MP_MSGID, 4 = base-128 varint, 2 = u8 (msg-dispatch-addenda Addendum 8).
         private static MessageSchema ConfiguredSkillSchema() => MessageSchema.FromChain(new[]
         {
             new FieldDefinition(1, 0x264),

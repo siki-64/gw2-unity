@@ -17,6 +17,6 @@
   },
   "outboundToInboundAdvance": 2795974,
   "meaning": "Advancing the outbound PRGA (conn+0x234) by 2795974 bytes reproduces the inbound state (conn+0x12C) exactly, so both directions use the same keystream; the inbound had processed that many more bytes.",
-  "provenance": "Live game connection, build 205.780, one paused snapshot (msg-dispatch Addendum 28). Session key not retained.",
+  "provenance": "Live game connection, build 205.780, one paused snapshot (msg-dispatch-addenda Addendum 28). Session key not retained.",
   "noClaim": "One connection. It confirms the code-level inference (Addendum 25) that the outbound state is a copy of the inbound KSA state; it does not make a bare capture decryptable."
 }

@@ -42,7 +42,7 @@
       }
     ]
   },
-  "provenance": "Live game connection, build 205.780, captured at the outbound flush FUN_140fe96f0; the ciphertext was read from the flush stack temp and equals Crypt(conn+0x234, plaintext). msg-dispatch Addendum 26.",
+  "provenance": "Live game connection, build 205.780, captured at the outbound flush FUN_140fe96f0; the ciphertext was read from the flush stack temp and equals Crypt(conn+0x234, plaintext). msg-dispatch-addenda Addendum 26.",
   "sanitization": "Retained: the 6-byte wire frame and the pre-flush cipher state. Excluded: the session key.",
   "noClaim": "One outbound packet from one build and connection. It confirms the outbound cipher and the absence of a compression container; it does not establish the full send schema or sequence rules."
 }

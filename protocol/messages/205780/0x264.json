@@ -16,12 +16,12 @@
       {
         "name": "recv-registry-slot",
         "state": "static",
-        "note": "Channel 0x14 table B (recv) entry 513. Table B is proven recv from FUN_140fecd10 installing 32-byte MsgRegistryRecord slots with dispatchType=1 and handlerFn at +0x18 (see msg-dispatch Addendum 7). defArray at 1425cd320, handler FUN_141257a20 in ChCliMsg.cpp."
+        "note": "Channel 0x14 table B (recv) entry 513. Table B is proven recv from FUN_140fecd10 installing 32-byte MsgRegistryRecord slots with dispatchType=1 and handlerFn at +0x18 (see msg-dispatch-addenda Addendum 7). defArray at 1425cd320, handler FUN_141257a20 in ChCliMsg.cpp."
       },
       {
         "name": "defarray-chain",
         "state": "static",
-        "note": "Descriptor chain at 1425cd320: fieldType 1 (MP_MSGID, id 0x264) -> 4 -> 2 -> 2 -> 4 -> terminal. Read byte-for-byte from the image; matches msg-dispatch Addendum 8."
+        "note": "Descriptor chain at 1425cd320: fieldType 1 (MP_MSGID, id 0x264) -> 4 -> 2 -> 2 -> 4 -> terminal. Read byte-for-byte from the image; matches msg-dispatch-addenda Addendum 8."
       },
       {
         "name": "decoded-record-shape",
@@ -56,7 +56,7 @@
       "offset": 2,
       "kind": "compressed-int",
       "confidence": "observed",
-      "note": "fieldType 4: base-128 varint, 1..5 wire bytes, little-endian (least-significant group first); decodes into a u32 slot. The handler resolves it through the skill-definition lookup. Wire length is not fixed at 4. Confirmed from a live capture (msg-dispatch Addendum 22): 0x11DC encodes as DC 23, 0x1206 as 86 24, 0x122B as AB 24."
+      "note": "fieldType 4: base-128 varint, 1..5 wire bytes, little-endian (least-significant group first); decodes into a u32 slot. The handler resolves it through the skill-definition lookup. Wire length is not fixed at 4. Confirmed from a live capture (msg-dispatch-addenda Addendum 22): 0x11DC encodes as DC 23, 0x1206 as 86 24, 0x122B as AB 24."
     },
     {
       "id": "configuredSkillSlot",
@@ -77,7 +77,7 @@
       "offset": 8,
       "kind": "compressed-int",
       "confidence": "observed",
-      "note": "fieldType 4: base-128 varint, 1..5 wire bytes; decodes into a u32 slot. Passed to LookupPlayerById. Wire length is not fixed at 4. Confirmed from a live capture (msg-dispatch Addendum 22): player index 1 encodes as a single byte 01."
+      "note": "fieldType 4: base-128 varint, 1..5 wire bytes; decodes into a u32 slot. Passed to LookupPlayerById. Wire length is not fixed at 4. Confirmed from a live capture (msg-dispatch-addenda Addendum 22): player index 1 encodes as a single byte 01."
     }
   ],
   "priorNativeSlotSketch": [
@@ -100,7 +100,7 @@
       "build": 205780,
       "sha256": "644ef0306404828e2dc7bf0acdad02e4508a06cfc7eb0097d2cd52613f08441d",
       "length": 19,
-      "provenance": "Live game connection, build 205.780, captured at the 0x264 handler in x64dbg (msg-dispatch Addendum 22); fixture at tools/re/fixtures/205780/0x264-wire.json. The pre-packet cipher state was recovered by rewinding conn+0x12C by the frame length, and the derived ciphertext was independently located in the process's network buffer.",
+      "provenance": "Live game connection, build 205.780, captured at the 0x264 handler in x64dbg (msg-dispatch-addenda Addendum 22); fixture at tools/re/fixtures/205780/0x264-wire.json. The pre-packet cipher state was recovered by rewinding conn+0x12C by the frame length, and the derived ciphertext was independently located in the process's network buffer.",
       "sanitization": "Only the 19-byte wire frame and its pre-packet cipher state are retained; the session key and player identity are not.",
       "expectedDecode": "RC4 -> transport frame 0f000e00e0640286240200016402ab24010001 -> LZ4 -> two 0x264: skill 0x1206 slot 2 ctx 0 player 1; skill 0x122B slot 1 ctx 0 player 1.",
       "unknownFields": []
@@ -110,7 +110,7 @@
     {
       "question": "Does the live per-connection registry resolve 0x264 to the same defArray, and would another build or connection do the same?",
       "kind": "schema-variant",
-      "note": "Resolved for this build and connection: the live game-connection recv registry was read in process (msg-dispatch Addendum 18) and emitted as protocol/schema/205780/live_ids.csv (Addendum 19), where 0x264 resolves to 1425cd320, matching this artifact. The static corpus is therefore reconciled with the live install for 0x264, and maxsize.csv is now live-derived (Addendum 21). What remains is cross-build/other-connection: the chain is build-local and the registry merge is per connection, so a different build or connection must be re-derived, not assumed equal."
+      "note": "Resolved for this build and connection: the live game-connection recv registry was read in process (msg-dispatch-addenda Addendum 18) and emitted as protocol/schema/205780/live_ids.csv (Addendum 19), where 0x264 resolves to 1425cd320, matching this artifact. The static corpus is therefore reconciled with the live install for 0x264, and maxsize.csv is now live-derived (Addendum 21). What remains is cross-build/other-connection: the chain is build-local and the registry merge is per connection, so a different build or connection must be re-derived, not assumed equal."
     }
   ],
   "validation": {
@@ -149,7 +149,7 @@
           { "msgId": "0x264", "skillContentId": "0x122B", "slot": 1, "context": 0, "playerListIndex": 1 }
         ]
       },
-      "note": "Live capture, 2026-09-15, build 205.780. Pre-packet RC4 state i=0xAB j=0x6C. The ciphertext was confirmed by locating the identical bytes in the process network buffer at 0x25032B52658. See msg-dispatch Addendum 22."
+      "note": "Live capture, 2026-09-15, build 205.780. Pre-packet RC4 state i=0xAB j=0x6C. The ciphertext was confirmed by locating the identical bytes in the process network buffer at 0x25032B52658. See msg-dispatch-addenda Addendum 22."
     }
   ],
   "noClaim": "Records registry-location, schema-shape and handler evidence for one build only, plus one captured wire frame. The 0x264 varint byte order and the transport frame layout are captured evidence; a general encoder/decoder is not established and build 205780 is not declared server-supported."
