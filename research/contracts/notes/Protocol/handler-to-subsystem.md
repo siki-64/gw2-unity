@@ -363,9 +363,38 @@ into the player is an **unresolved** identity field; it is preserved, not named.
 Runtime: `Gw2.Protocol.State.PlayerStateStore` handles `0x1AB`/`0x1AD` (`PlayerAddMessageId` /
 `PlayerRemoveMessageId`) to create/remove players and set `PlayerState.Name`/`Key`/`AddFlags`.
 
+## Player-subsystem message map (`0x1A5`..`0x1B0`)
+
+`ctx = FUN_1409b4820()`. Ids are resolved by **matching the defArray pointer to
+[`live_ids.csv`](../../../protocol/schema/205780/live_ids.csv)**, because the static registration
+table is stored in source order, not id order (see [schema-registry.md](schema-registry.md)).
+
+| Msg | Handler | Record (corpus) | Effect |
+| --- | --- | --- | --- |
+| `0x1A5` | `FUN_141250e70` | `u8, u8, u32 x4` | loader/map manager (`FUN_14094bf80`) vtable `+0xB0`; a non-zero flag also drives `FUN_1409908a0` vtable `+0x1A0` |
+| `0x1A6` | `FUN_141250f10` | `12-byte vec3, u8` | owned player (`ctx+0x98` vtable `+0x68`) -> vtable `+0x78` sub-object, `FUN_1411d0260(vec3, u8)` |
+| `0x1A7` | `FUN_141250dc0` | `varint` | `FUN_1409908a0` vtable `+0xC0`; if set, vtable `+0x198(0)` |
+| `0x1A8` | `FUN_141250e00` | `varint` | content resolve `ctx+0xe0` vtable `+0x58` type `0x88`, then `FUN_1409908a0` vtable `+0x198(def)` |
+| `0x1A9` | `FUN_141250fa0` | `u8` | owned player, `FUN_1411b7560(player, u8)` |
+| `0x1AA` | `FUN_141251000` | `u32, u32` | `ctx+0x98` vtable `+0x60` object, `+0x570(u32, u32)` |
+| `0x1AB` | `FUN_141251040` | `varint, utf-16 name, 16-byte key, varint` | **`ChCliContext::PlayerCreate`** (roster add) |
+| `0x1AC` | `FUN_1412510b0` | `varint x4` | player by index, `FUN_1411b7a00(player, rec)` |
+| `0x1AD` | `FUN_141251120` | `varint` | **`ChCliContext::PlayerRemove`** (roster remove) |
+| `0x1AE` | `FUN_141251190` | - | `FUN_1411b2fb0(ChCliContext, ...)` (no record fields) |
+| `0x1AF` | `FUN_141251210` | `varint, 0x10 array` | player by index, `FUN_141231050(player + 0x9308, vec3)` |
+| `0x1B0` | `FUN_1412511b0` | `varint` | player by index, `FUN_14122f4d0(player + 0x9308)` |
+
+Distinctions:
+
+- Roster lifecycle is `0x1AB`/`0x1AD` only.
+- `0x1A6`/`0x1A9` act on the **owned** player (`ctx+0x98` vtable `+0x68`), not a roster index.
+- `0x1AF`/`0x1B0` update a player sub-object at `+0x9308` (a transform); its identity is unresolved.
+- `0x1A5`/`0x1A7`/`0x1A8` are loader/content paths, not player state.
+
 ## Open
 
 - The meaning of the `0x1AB` 16-byte key and its trailing flag word.
+- The identity of the `ChCliPlayer + 0x9308` sub-object (`0x1AF`/`0x1B0`) and the `0x1AC` setter.
 - The wire message that produces the `MsCliGame` sub-events `0x23`/`0x25` (the world-load trigger).
 - The identity of `*(ctx+0x28)` (the `AgWorld` owner) and the `+0xd0` key-table semantics.
 - The `CmbtCli` combatant and buff layouts behind `FUN_1412c0470`/`0530`.
