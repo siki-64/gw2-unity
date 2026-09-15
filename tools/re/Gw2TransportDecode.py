@@ -27,7 +27,13 @@ what it decoded and preserves undecoded bytes rather than guessing.
 Usage
   python tools/re/Gw2TransportDecode.py --selftest
   python tools/re/Gw2TransportDecode.py --decrypted stream.bin --ids protocol/schema/205780/sweep2.csv
-  python tools/re/Gw2TransportDecode.py --capture enc.bin --key <40-hex> --ids ... 
+  python tools/re/Gw2TransportDecode.py --capture enc.bin --key <40-hex> --ids ...
+  python tools/re/Gw2TransportDecode.py --capture enc.bin --state conn12C.bin --out plain.bin
+
+--state is the 0x108-byte cipher state captured at conn+0x12C (i u32, j u32,
+S[256]). It starts the PRGA directly, so a capture taken mid-session decrypts
+without replaying the whole keystream; use it when the capture does not begin at
+the first encrypted byte.
 """
 
 import argparse
@@ -340,6 +346,16 @@ def selftest():
         if dec != value:
             errors.append(f"varint round-trip {value:#x} -> {dec:#x}")
 
+    # A serialized state (i u32, j u32, S[256]) must reload and continue
+    # identically, which is what --state depends on.
+    st1, _ = cipher.key_schedule(bytes(range(20)))
+    cipher.crypt_stream(st1, bytes(range(37)))      # advance out of phase
+    blob = struct.pack("<II", st1[0], st1[1]) + bytes(st1[2])
+    st2 = [struct.unpack_from("<I", blob, 0)[0],
+           struct.unpack_from("<I", blob, 4)[0], list(blob[8:8 + 256])]
+    if cipher.crypt_stream(st1, bytes(48)) != cipher.crypt_stream(st2, bytes(48)):
+        errors.append("serialized state did not reload identically")
+
     return errors
 
 
@@ -352,6 +368,11 @@ def main():
     ap.add_argument("--key", metavar="HEX", help="20-byte RC4 key")
     ap.add_argument("--key-file", metavar="PATH",
                     help="file holding the 20-byte key (x64dbg conn118.bin)")
+    ap.add_argument("--state", metavar="PATH",
+                    help="0x108-byte PRGA state (i u32, j u32, S[256]) captured at "
+                         "conn+0x12C; decrypts a mid-session capture with no KSA")
+    ap.add_argument("--out", metavar="PATH",
+                    help="write the decrypted stream bytes here")
     ap.add_argument("--ids", metavar="CSV",
                     default=os.path.join("protocol", "schema", "205780",
                                          "sweep2.csv"))
@@ -364,7 +385,7 @@ def main():
             print("FAIL", e)
         if errors:
             return 1
-        print("OK Gw2TransportDecode selftest (4 groups)")
+        print("OK Gw2TransportDecode selftest (5 groups)")
         return 0
 
     if not (args.decrypted or args.capture):
@@ -372,21 +393,37 @@ def main():
         return 0
 
     if args.capture:
-        key = None
-        if args.key:
-            key = bytes.fromhex(args.key)
-        elif args.key_file:
-            with open(args.key_file, "rb") as f:
-                key = f.read()[:20]
-        if not key or len(key) != 20:
-            print("error: --capture needs a 20-byte --key or --key-file")
-            return 2
-        state, _ = cipher.key_schedule(key)
         with open(args.capture, "rb") as f:
-            data = cipher.crypt_stream(state, f.read())
+            enc = f.read()
+        if args.state:
+            raw = open(args.state, "rb").read()
+            if len(raw) < 0x108:
+                print("error: --state must be 0x108 bytes (i,j,S[256])")
+                return 2
+            i = struct.unpack_from("<I", raw, 0)[0]
+            j = struct.unpack_from("<I", raw, 4)[0]
+            state = [i, j, list(raw[8:8 + 256])]
+        else:
+            key = None
+            if args.key:
+                key = bytes.fromhex(args.key)
+            elif args.key_file:
+                with open(args.key_file, "rb") as f:
+                    key = f.read()[:20]
+            if not key or len(key) != 20:
+                print("error: --capture needs --state, a 20-byte --key, or --key-file")
+                return 2
+            state, _ = cipher.key_schedule(key)
+        data = cipher.crypt_stream(state, enc)
     else:
         with open(args.decrypted, "rb") as f:
             data = f.read()
+
+    if args.out:
+        with open(args.out, "wb") as f:
+            f.write(data)
+        print(f"wrote {len(data)} bytes to {args.out}")
+        return 0
 
     pe = PE(args.image)
     id_map = load_id_map(args.ids)
