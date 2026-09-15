@@ -130,6 +130,42 @@ These offsets are exactly the recovered `PvpGearProvider` layout, so the family 
 wire record to the provider fields. `0x204` also calls `FUN_1411b6290` (ensure manager) before the
 provider exists; `0x205` calls `FUN_1411b64b0` (destroy) after resolution.
 
+## Message family `0x25B..0x265` - per-player `ChCliSkill`
+
+All resolve a target with `GetPlayerByListIndex` (record field varies, see below) and then call a
+`ChCliSkill` method at `ChCliPlayer + 0x9BD8`. Handler addresses and the `ChCliSkill` offset each
+method writes (build-local):
+
+| Msg | Handler | Method | Writes / effect |
+| --- | --- | --- | --- |
+| `0x25B` | `FUN_1412573f0` | `FUN_141224f70` | `+0x58 = rec+2`, `+0x5C = rec+6`; observer `+0xB0` |
+| `0x25C` | `FUN_141257460` | `FUN_141224b50` | looks up `ChCliContext+0x390` by `rec+2`, then observer `+0xB0` |
+| `0x25D` | `FUN_1412574d0` | `FUN_141224bb0` | `+0x20` = skill id (from `skillDef+0x28`) |
+| `0x25E` | `FUN_141257590` | `FUN_141224c00` | clears `+0x28`/`+0x30`, resets container `+0x40` |
+| `0x25F` | `FUN_1412575f0` | `FUN_141224c40` | keyed table at `+0x40`/`+0x48`, entry `{skillId, rec+0x0A}`; observer `+0xB0` |
+| `0x260` | `FUN_1412576b0` | `FUN_141224d90` | keyed table `+0x08`/`+0x10` (count `+0x0C`), entries `{id, defId}`; skillbar notify |
+| `0x261` | `FUN_141257720` | `FUN_141224ec0` | add to container `+0x40`; clear a bit in the bitmap at `+0x28` keyed by skill id; skillbar + observer |
+| `0x262` | `FUN_1412577e0` | not `ChCliSkill` | resolves an agent (`FUN_14101ee40(rec+2)`) and drives the attack-target path (`FUN_1411d7350`/`FUN_1411d7390`) |
+| `0x263` | `FUN_141257960` | `FUN_141224fb0` | keyed table `+0x08`/`+0x10`, entry `{skillIdA, skillIdB}`; also `ChCliPlayer+0x618`; skillbar notify |
+| `0x264` | `FUN_141257a20` | `FUN_141225160` | `+0x60`/`+0x88` at `slot*8` (context A/B); observer + skillbar |
+| `0x265` | `FUN_141257ac0` | `FUN_141225220` | add to container `+0x40`; `+0x20` = skill id; observer `+0xB0` with the two flag bits |
+
+The target index field is not uniform across the family: `0x25B` uses `rec+0x0A`, `0x25C` uses
+`rec+0x12`, `0x25D/0x25F/0x261` use `rec+6`, `0x25E/0x260` use `rec+2`, `0x263` uses `rec+0x0A`,
+`0x264` uses `rec+8`, `0x265` uses `rec+7`. Skill ids are resolved through
+`CnContext+0xe0` vtable `+0x230` (type `0x40`) except `0x264` (`+0x238`, type `0x41`).
+
+So the family populates four distinct `ChCliSkill` storages:
+
+- `+0x58`/`+0x5C` - two scalars (`0x25B`);
+- `+0x20` - the current skill id (`0x25D`, `0x265`);
+- `+0x08`/`+0x10` (+ count `+0x0C`) - a keyed table of `{id, value}` 12-byte entries (`0x260`, `0x263`);
+- `+0x40`/`+0x48` - another keyed container plus the `+0x28` bitmap (`0x25E`, `0x25F`, `0x261`, `0x265`);
+- `+0x60`/`+0x88` - the five configured standard skills (`0x264`).
+
+Every method ends by notifying the `ChCliSkill+0xB0` observer list, and most also notify the owned
+`ChCliSkillbar` (through `ChCliPlayer`'s character link).
+
 ## Open
 
 - What selects `ChCliPlayer +0x18` vs `+0x20`.
