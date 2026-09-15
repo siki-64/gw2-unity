@@ -78,21 +78,37 @@ namespace Gw2.Protocol.MsgPack
                     byte[] header = ReadBytes(data, ref offset, 0x0C);
                     value = new DecodedArrayHeader(header, (int)ReadVarint(data, ref offset));
                     break;
-                case 0x0d: // utf-16, NUL-terminated
+                case 0x0d: // utf-16, NUL-terminated; param = max u16 elements incl. NUL
+                {
+                    int start = offset;
                     value = ReadCString16(data, ref offset);
+                    RequireMax(ft, offset - start, f.Param * 2);
                     break;
-                case 0x0e: // utf-8/ascii, NUL-terminated
+                }
+                case 0x0e: // utf-8/ascii, NUL-terminated; param = max bytes incl. NUL
+                {
+                    int start = offset;
                     value = ReadCString8(data, ref offset);
+                    RequireMax(ft, offset - start, f.Param);
                     break;
+                }
                 case 0x13: // fixed byte region, length = param
                     value = ReadBytes(data, ref offset, f.Param);
                     break;
-                case 0x14: // 1-byte length prefix + bytes
-                    value = ReadBytes(data, ref offset, ReadU8(data, ref offset));
+                case 0x14: // 1-byte length prefix + bytes; param = max length (low u16)
+                {
+                    int n = ReadU8(data, ref offset);
+                    RequireMax(ft, n, f.Param & 0xFFFF);
+                    value = ReadBytes(data, ref offset, n);
                     break;
-                case 0x15: // 2-byte length prefix + bytes
-                    value = ReadBytes(data, ref offset, ReadU16(data, ref offset));
+                }
+                case 0x15: // 2-byte length prefix + bytes; param = max length (low u16)
+                {
+                    int n = ReadU16(data, ref offset);
+                    RequireMax(ft, n, f.Param & 0xFFFF);
+                    value = ReadBytes(data, ref offset, n);
                     break;
+                }
                 case 0x0f: // MP_OPTIONAL: present flag + nested chain
                     present = ReadU8(data, ref offset) != 0;
                     value = present ? (object)ReadSubchain(f, data, ref offset, depth) : null;
@@ -100,12 +116,20 @@ namespace Gw2.Protocol.MsgPack
                 case 0x10: // struct array, fixed param count
                     value = ReadArray(f, f.Param, data, ref offset, depth);
                     break;
-                case 0x11: // struct array, 1-byte count
-                    value = ReadArray(f, ReadU8(data, ref offset), data, ref offset, depth);
+                case 0x11: // struct array, 1-byte count; must be <= param
+                {
+                    int n = ReadU8(data, ref offset);
+                    RequireMax(ft, n, f.Param);
+                    value = ReadArray(f, n, data, ref offset, depth);
                     break;
-                case 0x12: // struct array, 2-byte count
-                    value = ReadArray(f, ReadU16(data, ref offset), data, ref offset, depth);
+                }
+                case 0x12: // struct array, 2-byte count; must be <= param
+                {
+                    int n = ReadU16(data, ref offset);
+                    RequireMax(ft, n, f.Param);
+                    value = ReadArray(f, n, data, ref offset, depth);
                     break;
+                }
                 case 0x16: // MP_SRV_ALIGN with data present
                     throw new FormatException("msgpack: MP_SRV_ALIGN has data");
                 default:
@@ -134,6 +158,18 @@ namespace Gw2.Protocol.MsgPack
             for (int i = 0; i < count; i++)
                 items.Add(ReadSubchain(f, data, ref offset, depth));
             return items;
+        }
+
+        /// <summary>
+        /// The client bounds every variable-length field by its descriptor <c>param</c>
+        /// (<c>MsgPack_ReadFields</c> fails when the wire count/length exceeds it). Enforcing it here
+        /// keeps the reader from accepting a message the client rejects.
+        /// </summary>
+        private static void RequireMax(int fieldType, int value, int max)
+        {
+            if (value > max)
+                throw new FormatException(
+                    $"msgpack: fieldType 0x{fieldType:x} declares {value}, exceeding param max {max}");
         }
 
         private static byte ReadU8(ReadOnlySpan<byte> data, ref int off)
